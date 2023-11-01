@@ -1,5 +1,6 @@
 # elsparkcyklar-app
-This project is part of the course vteam at Blekinge Tekniska Högskolan.
+This project is part of the course *vteam* at Blekinge Tekniska Högskolan.
+All the background material for this project can be accessed at the course's webpage at [dbwebb.se](https://dbwebb.se/kurser/vteam-v1).
 
 ## Clone this repository
 
