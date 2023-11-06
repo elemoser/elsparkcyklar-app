@@ -17,7 +17,7 @@ git init
 
 The easiest way to clone this repository is to do so with an SSH key for your account.
 If you are unsure whether you have an SSH key already, you can follow [this guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys?platform=linux) to check your *~/.ssh* file.
-If you fo not have a SSH key added to your account yet, follow the steps below:
+If you do not have a SSH key added to your account yet, follow the steps below:
 
 * [create a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key) 
 * [add the key to your account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account#adding-a-new-ssh-key-to-your-account)
