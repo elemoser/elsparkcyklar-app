@@ -86,4 +86,20 @@ git branch -r
 git branch -a
 ```
 
+## Run application
+Use docker-compose to run the application.
 
+```
+# start server
+docker-compose up --build server
+
+# start server i bakgrunden
+docker-compose up --build -d server
+
+# start server in development mode
+# (refreshes after updates)
+docker-compose up --build dev-server
+
+# shut down all containers
+docker-compose down
+```

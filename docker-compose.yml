@@ -1,0 +1,46 @@
+version: "3.8"
+# network in which container live
+networks:
+  cyckelwebb:
+# services for the application
+services:
+  # backend server
+  server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: "server"
+    ports:
+      - "1337:1337"
+    volumes:
+      - "./backend:/server"
+    # How to start the server
+    # Alternatively create another service (see below)
+    command: "npm run start"
+    networks:
+      - cyckelwebb
+    # restart: "always"
+
+  # start server in dev mode (with nodemon)
+  dev-server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: "server"
+    ports:
+      - "1337:1337"
+    volumes:
+      - "./backend:/server"
+    command: "npm run start-dev"
+    networks:
+      cyckelwebb:
+
+  # frontend app
+  # webapp:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     cyckelwebb:
+  #   links:
+  #     - "server:server"
