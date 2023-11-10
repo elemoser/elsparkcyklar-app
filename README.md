@@ -2,6 +2,11 @@
 This project is part of the course *vteam* at Blekinge Tekniska Högskolan.
 All the background material for this project can be accessed at the course's webpage at [dbwebb.se](https://dbwebb.se/kurser/vteam-v1).
 
+**Table of contents**
+* [Clone this repo](#clone-this-repository)
+* [Workflow](#workflow-workflow)
+* [Run application](#run-application)
+
 ## Clone this repository
 
 ```
@@ -86,4 +91,20 @@ git branch -r
 git branch -a
 ```
 
+## Run application
+Use docker-compose to run the application.
 
+```
+# start server
+docker-compose up --build server
+
+# start server i bakgrunden
+docker-compose up --build -d server
+
+# start server in development mode
+# (refreshes after updates)
+docker-compose up --build dev-server
+
+# shut down all containers
+docker-compose down
+```
