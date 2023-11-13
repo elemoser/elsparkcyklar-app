@@ -4,7 +4,7 @@ All the background material for this project can be accessed at the course's web
 
 **Table of contents**
 * [Clone this repo](#clone-this-repository)
-* [Workflow](#workflow-workflow)
+* [Workflow](#workflow)
 * [Run application](#run-application)
 
 ## Clone this repository
