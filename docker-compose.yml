@@ -6,7 +6,7 @@ networks:
 services:
   # backend server
   server:
-    image: node:latest
+    image: node:20
     container_name: "server"
     ports:
       - "1338:1338"
@@ -23,7 +23,7 @@ services:
 
   # start server in dev mode (with nodemon)
   dev-server:
-    image: node:latest
+    image: node:20
     container_name: "server"
     ports:
       - "1338:1338"
