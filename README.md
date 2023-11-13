@@ -96,14 +96,14 @@ Use docker-compose to run the application.
 
 ```
 # start server
-docker-compose up --build server
+docker-compose up server
 
 # start server i bakgrunden
-docker-compose up --build -d server
+docker-compose up -d server
 
 # start server in development mode
 # (refreshes after updates)
-docker-compose up --build dev-server
+docker-compose up dev-server
 
 # shut down all containers
 docker-compose down
