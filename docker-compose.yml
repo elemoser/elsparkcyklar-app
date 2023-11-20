@@ -12,6 +12,7 @@ services:
       - "1338:1338"
     volumes:
       - "./backend:/server"
+      - "./db:/db"
     working_dir: /server
     # How to start the server
     # Alternatively create another service (see below)
@@ -29,8 +30,23 @@ services:
       - "1338:1338"
     volumes:
       - "./backend:/server"
+      - "./db:/db"
     working_dir: /server
     command:  bash -c "npm install && npm run start-dev"
+    networks:
+      - cyckelwebb
+    restart: "always"
+
+  # database container, is reached through volume ./db:/db
+  # A database will be created from sql/
+  # start with docker compose up -d sqlite-db
+  sqlite-db:
+    image: "eeemiiil/sqlite:1"
+    container_name: "database"
+    volumes:
+      - "./db:/db"
+    working_dir: /db
+    command: bash -c "./setup.db.bash && tail -f /dev/null"
     networks:
       - cyckelwebb
     restart: "always"
