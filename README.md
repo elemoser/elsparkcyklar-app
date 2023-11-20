@@ -3,9 +3,12 @@ This project is part of the course *vteam* at Blekinge Tekniska Högskolan.
 All the background material for this project can be accessed at the course's webpage at [dbwebb.se](https://dbwebb.se/kurser/vteam-v1).
 
 **Table of contents**
-* [Clone this repo](#clone-this-repository)
-* [Workflow](#workflow-workflow)
-* [Run application](#run-application)
+- [elsparkcyklar-app](#elsparkcyklar-app)
+  - [Clone this repository](#clone-this-repository)
+  - [Workflow](#workflow)
+    - [Collection of useful git commands](#collection-of-useful-git-commands)
+  - [Run application](#run-application)
+  - [Database](#database)
 
 ## Clone this repository
 
@@ -96,15 +99,29 @@ Use docker-compose to run the application.
 
 ```
 # start server
-docker-compose up --build server
+docker-compose up server
 
 # start server i bakgrunden
-docker-compose up --build -d server
+docker-compose up -d server
 
 # start server in development mode
 # (refreshes after updates)
-docker-compose up --build dev-server
+docker-compose up dev-server
+
+# start database (sqlite) in background
+docker-compose up -d sqlite-db
 
 # shut down all containers
 docker-compose down
+```
+## Database
+```
+# start database (sqlite) in background
+docker-compose up -d sqlite-db
+
+The database (bikr.db) is created when the sqlite-db container is initiated. To reach bikr.db from other applications in the same 
+docker network, the containers (both sqlite-db and the connecting part) need to have "./db:/db" as a volume in docker-compose.yml. 
+Once the sqlite-db container is initiated/setup the setup.db.bash is executed and creates a database (bikr.db) as a volume. It 
+overwrites the existing local db/bikr.db file you may already have upon container initialization.
+The database design is based on our first proper database modelling draft on https://miro.com/app/board/uXjVNUOg_Os=/.
 ```

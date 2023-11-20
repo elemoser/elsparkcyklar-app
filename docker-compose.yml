@@ -6,34 +6,50 @@ networks:
 services:
   # backend server
   server:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: node:20
     container_name: "server"
     ports:
-      - "1337:1337"
+      - "1338:1338"
     volumes:
       - "./backend:/server"
+      - "./db:/db"
+    working_dir: /server
     # How to start the server
     # Alternatively create another service (see below)
-    command: "npm run start"
+    command: bash -c "npm install && npm run start"
     networks:
       - cyckelwebb
-    # restart: "always"
+    # container is always restarted if it stops
+    restart: "always"
 
   # start server in dev mode (with nodemon)
   dev-server:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: node:20
     container_name: "server"
     ports:
-      - "1337:1337"
+      - "1338:1338"
     volumes:
       - "./backend:/server"
-    command: "npm run start-dev"
+      - "./db:/db"
+    working_dir: /server
+    command:  bash -c "npm install && npm run start-dev"
     networks:
-      cyckelwebb:
+      - cyckelwebb
+    restart: "always"
+
+  # database container, is reached through volume ./db:/db
+  # A database will be created from sql/
+  # start with docker compose up -d sqlite-db
+  sqlite-db:
+    image: "eeemiiil/sqlite:1"
+    container_name: "database"
+    volumes:
+      - "./db:/db"
+    working_dir: /db
+    command: bash -c "./setup.db.bash && tail -f /dev/null"
+    networks:
+      - cyckelwebb
+    restart: "always"
 
   # frontend app
   # webapp:
