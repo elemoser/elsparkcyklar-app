@@ -108,7 +108,7 @@ docker-compose up -d server
 # (refreshes after updates)
 docker-compose up dev-server
 
-# start database (sqlite) in background
+# start database (sqlite)
 docker-compose up sqlite-db
 
 # shut down all containers
@@ -122,5 +122,5 @@ docker-compose up sqlite-db
 The database (bikr.db) is created when the sqlite-db container is initiated. Use the path ./db:/db" as a volume in docker-compose.yml
 to add the database in server or dev-server (backend). 
 Initiating the sqlite-db overwrites any existing local db/bikr.db file you may already have upon container initialization.
-The database design is based on our first proper database modelling draft on https://miro.com/app/board/uXjVNUOg_Os=/.
+The database design is based on our first proper database modelling draft on [Miro](https://miro.com/app/board/uXjVNUOg_Os=/).
 ```
