@@ -37,19 +37,15 @@ services:
       - cyckelwebb
     restart: "always"
 
-  # database container, is reached through volume ./db:/db
-  # A database will be created from sql/
-  # start with docker compose up -d sqlite-db
+  # A database will be created from db/sql/setup.sql
+  # create db with: docker compose up sqlite-db
   sqlite-db:
     image: "eeemiiil/sqlite:1"
     container_name: "database"
     volumes:
       - "./db:/db"
     working_dir: /db
-    command: bash -c "./setup.db.bash && tail -f /dev/null"
-    networks:
-      - cyckelwebb
-    restart: "always"
+    command: bash -c "./setup.db.bash"
 
   # frontend app
   # webapp:
