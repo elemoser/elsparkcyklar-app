@@ -101,7 +101,7 @@ Use docker-compose to run the application.
 # start server
 docker-compose up server
 
-# start server i bakgrunden
+# start server in background
 docker-compose up -d server
 
 # start server in development mode
@@ -110,6 +110,9 @@ docker-compose up dev-server
 
 # start database (sqlite)
 docker-compose up sqlite-db
+
+# start webapp in development mode
+docker-compose up webapp
 
 # shut down all containers
 docker-compose down
