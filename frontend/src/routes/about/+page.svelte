@@ -1,2 +1,4 @@
-<h1>Welcome to the about page</h1>
-<p>This works so nicely.</p>
+<h1>Om projektet</h1>
+<p>Detta fungerar så fint.</p>
+
+<button><a href="/">Tillbaks</a></button>
