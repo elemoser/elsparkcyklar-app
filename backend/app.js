@@ -1,24 +1,28 @@
+
 const express = require("express");
-const sqlite3 = require('sqlite3').verbose();
+const cors = require('cors');
+
 const app = express();
+const bodyParser = require('body-parser');
 const port = 1338;
-let db = new sqlite3.Database('/db/bikr.db');
+
+const users = require('./routes/users.js');
+const city = require('./routes/city.js');
+
+app.use(cors());
+app.options('*', cors());
+
+app.disable('x-powered-by');
+
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.get("/", (req, res) => {
     res.send('Hello World!')
 })
 
-/**
- * @description Test route for getting all users from sqlite db
- */
-app.get("/user", (req, res) => {
-    db.all('SELECT * FROM user', (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json({ users: rows });
-    });
-})
+app.use("/v1/users", users);
+app.use("/v1/city", city);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
