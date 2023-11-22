@@ -37,26 +37,34 @@ services:
       - cyckelwebb
     restart: "always"
 
-  # database container, is reached through volume ./db:/db
-  # A database will be created from sql/
-  # start with docker compose up -d sqlite-db
+  # A database will be created from db/sql/setup.sql
+  # create db with: docker compose up sqlite-db
   sqlite-db:
     image: "eeemiiil/sqlite:1"
     container_name: "database"
     volumes:
       - "./db:/db"
     working_dir: /db
-    command: bash -c "./setup.db.bash && tail -f /dev/null"
-    networks:
-      - cyckelwebb
-    restart: "always"
+    command: bash -c "./setup.db.bash"
 
   # frontend app
-  # webapp:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     cyckelwebb:
-  #   links:
-  #     - "server:server"
+  webapp:
+    image: node:20
+    container_name: "webapp"
+    restart: unless-stopped
+    expose:
+      - 5173
+    ports:
+      - "5173:5173"
+    volumes:
+      - "./frontend:/webapp"
+    working_dir: /webapp
+    command:  bash -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - cyckelwebb
+    environment:
+      - NODE_ENV=development
+    # linking the server and app is not needed
+    # if these services run within the same network
+    # links:
+    #   - "server:server"
