@@ -79,15 +79,15 @@ const users = {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        if (role === "") {
+        if (!role) {
             role = "customer"
         }
 
-        if (balance === "") {
+        if (!balance) {
             balance = 0.00
         }
 
-        if (subscriber=== "") {
+        if (!subscriber) {
             subscriber = 0
         }
 
@@ -129,6 +129,10 @@ const users = {
                 balance,
                 subscriber
             } = req.body;
+
+            if (Object.keys(req.body).length < 8) {
+                return res.status(400).json({ error: 'Missing required fields' });
+            }
 
             db.run(`
             UPDATE user
