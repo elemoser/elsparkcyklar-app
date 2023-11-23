@@ -1,8 +1,11 @@
 <script>
+    import Navbar from "$lib/components/Navbar.svelte";
     import { app_name } from "$lib/index.js";
 
     let register = false;
 </script>
+
+<Navbar/>
 
 <h1>{app_name}</h1>
 <p>Här kan du komma åt <a href="/about">om sidan</a></p>
