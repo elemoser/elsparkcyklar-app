@@ -143,9 +143,6 @@ PUT /v1/users/id/[user_id]
 Required parameters:
 ```
 id
-```
-Optional parameters:
-```
 role
 first_name
 last_name

@@ -13,21 +13,29 @@ CREATE TABLE user (
 );
 -- Generate mock data
 INSERT INTO user (id, first_name, last_name, phone, mail, balance, subscriber)
-VALUES 
+VALUES
     (202311230001, 'John', 'Doe', '555-1234', 'john.doe@example.com', 100.50, 1),
     (202311230002, 'Jane', 'Smith', '555-5678', 'jane.smith@example.com', 50.25, 0),
     (202311240003, 'alice', 'Johnson', '666-9876', 'alice.johnson@example.com', 75.75, 1),
     (202311240004, 'pelle', 'namnsson', '555-9846', 'pelle.johnson@example.com', 75.75, 1)
 ;
-select * from user;
 
--- City Table
 DROP TABLE IF EXISTS city;
 CREATE TABLE city (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    bounds TEXT
+    min_latitude REAL NOT NULL,
+    max_latitude REAL NOT NULL,
+    min_longitude REAL NOT NULL,
+    max_longitude REAL NOT NULL
 );
+
+INSERT INTO city (id, name, min_latitude, max_latitude, min_longitude, max_longitude)
+VALUES
+    (1, 'Stockholm', 59.3175, 59.8575, 17.8411, 18.3108),
+    (2, 'Göteborg', 57.5485, 57.8687, 11.6923, 12.1696),
+    (3, 'Malmö', 55.5307, 55.6146, 12.9151, 13.0469)
+;
 
 -- Bike Table
 DROP TABLE IF EXISTS bike;
