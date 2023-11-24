@@ -12,3 +12,7 @@ html {
 	box-sizing: border-box;
 	background-color: $light-color;
 }
+
+.wrapper {
+	margin: 0 $calculated-line-height;
+}

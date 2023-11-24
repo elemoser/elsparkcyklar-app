@@ -1,4 +1,6 @@
 <script>
+	import { app_name } from '$lib/index.js';
+
 	const navLinks = [
 		{ name: 'Home', url: '/' },
 		{ name: 'About', url: '/about' }
@@ -7,7 +9,7 @@
 
 <nav>
 	<div class="logo">
-		<p>BiKR</p>
+		<p>{app_name}</p>
 	</div>
 	<ul>
 		{#each navLinks as link}
