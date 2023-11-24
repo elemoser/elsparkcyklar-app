@@ -1,4 +1,3 @@
-
 PRAGMA foreign_keys = ON;
 -- User Table
 DROP TABLE IF EXISTS user;
@@ -13,32 +12,14 @@ CREATE TABLE user (
     subscriber INTEGER DEFAULT 0
 );
 
--- Generate mock data
-INSERT INTO user (id, first_name, last_name, phone, mail, balance, subscriber)
-VALUES
-    (202311230001, 'John', 'Doe', '555-1234', 'john.doe@example.com', 100.50, 1),
-    (202311230002, 'Jane', 'Smith', '555-5678', 'jane.smith@example.com', 50.25, 0),
-    (202311240003, 'alice', 'Johnson', '666-9876', 'alice.johnson@example.com', 75.75, 1),
-    (202311240004, 'pelle', 'namnsson', '555-9846', 'pelle.johnson@example.com', 75.75, 1)
-<<<<<<< HEAD
-;
-
+-- City Table
 DROP TABLE IF EXISTS city;
 CREATE TABLE city (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    min_latitude REAL NOT NULL,
-    max_latitude REAL NOT NULL,
-    min_longitude REAL NOT NULL,
-    max_longitude REAL NOT NULL
+    bounds TEXT,
+    radius INTEGER DEFAULT 5000
 );
-
-INSERT INTO city (id, name, min_latitude, max_latitude, min_longitude, max_longitude)
-VALUES
-    (1, 'Stockholm', 59.3175, 59.8575, 17.8411, 18.3108),
-    (2, 'Göteborg', 57.5485, 57.8687, 11.6923, 12.1696),
-    (3, 'Malmö', 55.5307, 55.6146, 12.9151, 13.0469)
-;
 
 -- Bike Table
 DROP TABLE IF EXISTS bike;
@@ -137,6 +118,12 @@ CREATE TABLE log (
 
     FOREIGN KEY (booking_id) REFERENCES booking(id)
 );
-=======
-;
->>>>>>> 98237d4 (implemented sequelize and workflow for it. Also automated the creation of db-models from bikr.db. Docker compose.yml is updated to include the automation bash script for setting up the db-models. Added some more mock data for each db table. There is enough data in city to draw a circle, the bike table contains atleast one bike that should be in Stockholms accepted bounds.)
+
+DROP TABLE IF EXISTS price;
+CREATE TABLE price (
+    id INTEGER PRIMARY KEY,
+    start_fee FLOAT DEFAULT 20.00,
+    cost_per_minute FLOAT DEFAULT 3.00,
+    free_parking_fee FLOAT DEFAULT 20.00,
+    start_free_park_discount FLOAT DEFAULT 0.5
+);
