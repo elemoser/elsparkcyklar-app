@@ -6,8 +6,8 @@ const config = {
 	preprocess: preprocess({
 		scss: {
 			includePaths: ['./src/lib/styles'],
-			prependData: `@import 'global.scss';`,
-		},
+			prependData: `@import 'global.scss';`
+		}
 	}),
 	kit: {
 		// The default "adapter-auto" only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
