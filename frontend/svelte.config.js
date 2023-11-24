@@ -6,7 +6,7 @@ const config = {
 	preprocess: preprocess({
 		scss: {
 			includePaths: ['./src/lib/styles'],
-			prependData: `@import 'main.scss';`,
+			prependData: `@import 'global.scss';`,
 		},
 	}),
 	kit: {

@@ -1,0 +1,21 @@
+/* COLOR VARIABLES */
+$dark-color: #9747ff;
+$light-color: #e4ccff;
+$contrast-color: #ffcd29;
+$text-color: #333;
+
+/* FONT VARIABLES */
+$header-font: 'Open Sans', sans-serif;
+$text-font: 'Montserrat', sans-serif;
+
+$base-line-height: 1.4;
+$base-font-size: 1.25rem;
+$calculated-line-height: $base-line-height * $base-font-size;
+
+/* FUNCTIONS */
+/*
+@function calculateLineHeight($base-line-height, $base-font-size) {
+    $magic-number: $base-line-height * $base-font-size;
+    @return $magic-number;
+}
+*/
