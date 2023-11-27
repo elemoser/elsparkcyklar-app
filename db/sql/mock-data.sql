@@ -22,7 +22,7 @@ VALUES
 INSERT INTO bike (id, battery, city_id, speed, position, state, disabled)
 VALUES
     (1, 80, 1, 25.0, '59.3293, 18.0686', 'active', 0),
-    (2, 60, 2, 22.5, '59.3099, 18.0752', 'inactive', 1),
+    (2, 60, 1, 22.5, '59.3099, 18.0752', 'inactive', 1),
     (3, 90, 3, 28.0, '55.6044, 13.0038', 'active', 0),
     (4, 70, 4, 20.0, '59.8586, 17.6389', 'active', 0),
     (5, 75, 5, 18.5, '58.4108, 15.6214', 'inactive', 1);
