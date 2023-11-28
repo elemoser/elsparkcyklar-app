@@ -79,7 +79,7 @@ By always running the following commands before making a new upload we can avoid
 git checkout bugfix
 
 # Get the latest version of *develop*
-git rebase origin/develop
+git pull origin develop --rebase
 
 # This might cause code conflicts. It's kind of the point. Solve them manually...
 
