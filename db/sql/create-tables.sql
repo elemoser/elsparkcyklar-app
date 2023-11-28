@@ -27,10 +27,9 @@ CREATE TABLE bike (
     id INTEGER NOT NULL PRIMARY KEY,
     battery INTEGER,
     city_id INTEGER,
-    speed REAL,
+    speed REAL DEFAULT 0.00,
     position TEXT,
-    state TEXT,
-    disabled INTEGER,
+    state TEXT DEFAULT "available",
 
     FOREIGN KEY (city_id) REFERENCES city(id)
 );

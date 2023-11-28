@@ -104,14 +104,14 @@ const users = {
             }
 
             const newUser = await User.create({
-                id,
+                id: parseInt(id),
                 role,
                 first_name,
                 last_name,
                 phone,
                 mail,
-                balance,
-                subscriber,
+                balance: parseFloat(balance),
+                subscriber: parseInt(subscriber),
             });
 
             res.status(200).json({ message: "User created successfully", user: newUser });
@@ -154,8 +154,8 @@ const users = {
                 last_name,
                 phone,
                 mail,
-                balance,
-                subscriber,
+                balance: parseFloat(balance),
+                subscriber: parseInt(subscriber),
             });
 
             res.status(200).json({ message: "User updated successfully" });

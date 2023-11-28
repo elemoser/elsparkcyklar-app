@@ -19,13 +19,13 @@ VALUES
     (5, 'Linköping', '58.4108, 15.6214');
 
 -- Inserting data into the Bike Table
-INSERT INTO bike (id, battery, city_id, speed, position, state, disabled)
+INSERT INTO bike (id, battery, city_id, speed, position, state)
 VALUES
-    (1, 80, 1, 25.0, '59.3293, 18.0686', 'active', 0),
-    (2, 60, 1, 22.5, '59.3099, 18.0752', 'inactive', 1),
-    (3, 90, 3, 28.0, '55.6044, 13.0038', 'active', 0),
-    (4, 70, 4, 20.0, '59.8586, 17.6389', 'active', 0),
-    (5, 75, 5, 18.5, '58.4108, 15.6214', 'inactive', 1);
+    (1, 80, 1, 25.0, '59.3293, 18.0686', 'occupied'),
+    (2, 60, 1, 0.00, '59.3099, 18.0752', 'disabled'),
+    (3, 90, 3, 28.0, '55.6044, 13.0038', 'occupied'),
+    (4, 70, 4, 20.0, '59.8586, 17.6389', 'occupied'),
+    (5, 75, 5, 0.00, '58.4108, 15.6214', 'available');
 
 -- Inserting data into the Booking Table
 INSERT INTO booking (id, bike_id, user_id, start_time, start_location, stop_time, stop_location, price)
