@@ -61,10 +61,10 @@ const city = {
             }
 
             const newCity = await City.create({
-                id,
+                id: parseInt(id),
                 name,
                 bounds,
-                radius
+                radius: parseInt(radius)
             });
 
             res.status(200).json({ message: "City created successfully", city: newCity });
@@ -100,7 +100,7 @@ const city = {
             await existingCity.update({
                 name,
                 bounds,
-                radius
+                radius: parseInt(radius)
             });
 
             res.status(200).json({ message: "City updated successfully" });
