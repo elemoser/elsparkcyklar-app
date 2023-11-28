@@ -9,11 +9,11 @@
     onMount(async () => {
         if(browser) {
             const L = await import('leaflet');
-            const response = await fetch('/data/test.json');
+            const response = await fetch('/data/stockholm.json');
 
             if (response.ok) {
                 jsonData = await response.json();
-                console.log(jsonData[0].geojson.coordinates[0])
+                // console.log(jsonData)
             } else {
                 console.error('Failed to fetch JSON data');
             }
