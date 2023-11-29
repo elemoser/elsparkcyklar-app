@@ -1,7 +1,14 @@
 import adapter from '@sveltejs/adapter-static';
+import preprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
+	preprocess: preprocess({
+		scss: {
+			includePaths: ['./src/lib/styles'],
+			prependData: `@import 'global.scss';`
+		}
+	}),
 	kit: {
 		// The default "adapter-auto" only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.

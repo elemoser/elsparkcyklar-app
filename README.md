@@ -6,7 +6,8 @@ All the background material for this project can be accessed at the course's web
 - [elsparkcyklar-app](#elsparkcyklar-app)
   - [Clone this repository](#clone-this-repository)
   - [Workflow](#workflow)
-    - [Collection of useful git commands](#collection-of-useful-git-commands)
+    - [Important](#important)
+    - [Collection of other useful git commands](#collection-of-other-useful-git-commands)
   - [Run application](#run-application)
   - [Database](#database)
 
@@ -70,7 +71,23 @@ In order to create a development branch for your particular task follow these st
 
 > **_NOTE:_** The default branch is *main*. When setting up your PR, make sure to merge your *feature* branch into the *develop* branch!
 
-### Collection of useful git commands
+### IMPORTANT
+Before pushing your changes in a feature branch to GitHub, make sure that your branch holds the latest updates from the *develop* branch.
+By always running the following commands before making a new upload we can avoid publishing outdated code.
+```
+# Make sure you stand in the branch you want to publish
+git checkout bugfix
+
+# Get the latest version of *develop*
+git pull origin develop --rebase
+
+# This might cause code conflicts. It's kind of the point. Solve them manually...
+
+# After solving the conflicts you can complete the upload as usual
+git push -u origin bugfix
+```
+
+### Collection of other useful git commands
 ```
 # Creates a new branch called bugfix
 git branch bugfix
