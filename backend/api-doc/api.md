@@ -354,3 +354,169 @@ Result:
     ]
 }
 ```
+
+### Skapa en cykel
+
+```
+POST /v1/bikes
+```
+Required parameters:
+```
+id
+battery
+city_id
+position
+```
+
+Optional parameters:
+```
+speed
+state
+```
+Result:
+```
+status(200) - 'Bike created successfully'
+```
+Possible errors (if 'id' already exists):
+```
+status(500) 'Validation error'
+```
+...or
+```
+status(400) 'position' is not formatted correctly'
+status(400) 'state' must be one of: "occupied", "available", "disabled"'
+```
+
+### Uppdatera en cykel
+
+```
+PUT /v1/bikes/id/[bike_id]
+```
+
+Please note that "id" can't be updated.
+Required parameters:
+```
+battery
+city_id
+position
+```
+
+Optional parameters:
+```
+speed
+state
+```
+Result:
+```
+status(200) - 'Bike updated successfully'
+```
+Possible errors (if 'id' already exists):
+```
+status(500) 'Validation error'
+```
+...or
+```
+status(400) 'position' is not formatted correctly'
+status(400) 'state' must be one of: "occupied", "available", "disabled"'
+```
+
+### Hämta EN cykel via id
+
+```
+GET /v1/bikes/id/[bike_id]
+```
+
+Result for "4":
+```
+{
+    "bike": {
+        "id": 4,
+        "battery": 70,
+        "city_id": 4,
+        "speed": 20,
+        "position": "59.8586, 17.6389",
+        "state": "occupied"
+    }
+}
+```
+
+### Hämta alla tillgängliga cyklar
+
+```
+GET /v1/bikes/available
+```
+
+```
+{
+    "bikes": [
+        {
+            "id": 5,
+            "battery": 75,
+            "city_id": 5,
+            "speed": 0,
+            "position": "58.4108, 15.6214",
+            "state": "available"
+        }
+    ]
+}
+```
+
+### Hämta alla cyklar i en stad via sökning på stadens namn
+
+```
+GET /v1/bikes/search/[name]
+```
+
+Result for "s":
+```
+{
+    "bikes": [
+        {
+            "id": 1,
+            "battery": 80,
+            "city_id": 1,
+            "speed": 25,
+            "position": "59.3293, 18.0686",
+            "state": "occupied",
+            "city": "Stockholm"
+        },
+        {
+            "id": 2,
+            "battery": 60,
+            "city_id": 1,
+            "speed": 0,
+            "position": "59.3099, 18.0752",
+            "state": "disabled",
+            "city": "Stockholm"
+        },
+        {
+            "id": 4,
+            "battery": 70,
+            "city_id": 4,
+            "speed": 20,
+            "position": "59.8586, 17.6389",
+            "state": "occupied",
+            "city": "Uppsala"
+        }
+    ]
+}
+```
+
+### Radera en cykel
+
+```
+DELETE /v1/bikes/id/[bike_id]
+```
+
+Required parameters:
+```
+id
+```
+Result:
+```
+status(200) 'Bike successfully deleted'
+```
+Possible errors (besides from db-errors):
+```
+status(404) 'Bike doesn't exist'
+```

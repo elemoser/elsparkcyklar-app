@@ -1,7 +1,12 @@
 
 const { Op } = require("sequelize");
-const Bike = require("../orm/model-router.js")("bike"); // Import bike db-model
-const City = require("../orm/model-router.js")("city"); // Import bike db-model
+
+const City = require("../orm/model-router.js")("city");
+const Bike = require("../orm/model-router.js")("bike");
+
+// Define the association between City and Bike
+City.hasMany(Bike, { foreignKey: 'city_id' });
+Bike.belongsTo(City, { foreignKey: 'city_id' });
 
 function upperFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -239,7 +244,7 @@ const bike = {
                         [Op.like]: `%${upperFirst(city_name)}%`,
                     },
                 },
-                attributes: ['id'], // Behöver bara id från city
+                attributes: ['id', 'name'],
             });
 
             if (matchingCities.length === 0) {
@@ -253,13 +258,30 @@ const bike = {
                         [Op.in]: matchingCities.map(city => city.id),
                     },
                 },
+                include: [
+                    {
+                        model: City,
+                        attributes: ['name'],
+                    },
+                ],
             });
 
             if (matchingBikes.length === 0) {
                 return res.status(404).json({ error: "No bikes found" });
             }
 
-            return res.json({ bikes: matchingBikes });
+            const formattedResult = matchingBikes.map(bike => ({
+                id: bike.id,
+                battery: bike.battery,
+                city_id: bike.city_id,
+                speed: bike.speed,
+                position: bike.position,
+                state: bike.state,
+                city: bike.city.name
+            }));
+    
+            return res.json({ bikes: formattedResult });
+
         } catch (err) {
             console.error("Error in getBikesInCity:", err);
             return res.status(500).json({ error: err.message });

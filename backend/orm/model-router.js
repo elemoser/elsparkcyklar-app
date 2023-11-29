@@ -1,3 +1,6 @@
+
+const path = require('path');
+
 /**
  * @module module-router
  * @description The purpose of this module is to keep the code in backend/models/*.js DRY. This module removes the
@@ -8,7 +11,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize({
     dialect: "sqlite",
-    storage: "../../db/bikr.db",
+    storage: path.resolve(__dirname, "../../db/bikr.db")
 });
 
 /**

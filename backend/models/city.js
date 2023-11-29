@@ -1,6 +1,6 @@
 
 //const { Op } = require("sequelize");
-const City = require("../orm/model-router.js")("city"); // Import city db-model
+const City = require("../orm/model-router.js")("city");
 
 const city = {
     /**

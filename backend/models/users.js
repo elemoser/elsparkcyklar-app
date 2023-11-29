@@ -1,5 +1,5 @@
 
-const User = require("../orm/model-router.js")("user"); // Import user db-model
+const User = require("../orm/model-router.js")("user");
 
 const { Op } = require("sequelize");
 
