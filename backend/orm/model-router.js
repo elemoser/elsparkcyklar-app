@@ -6,9 +6,10 @@
  * To get the db-models user module.
  */
 const { Sequelize, DataTypes } = require("sequelize");
+const path = require("path");
 const sequelize = new Sequelize({
     dialect: "sqlite",
-    storage: "../../db/bikr.db",
+    storage: path.resolve(__dirname, "../../db/bikr.db")
 });
 
 /**
