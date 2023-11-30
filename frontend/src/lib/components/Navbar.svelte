@@ -4,7 +4,7 @@
 	const navLinks = [
 		{ name: 'Home', url: '/' },
 		{ name: 'About', url: '/about' },
-		{ name: 'Login', url: '/login' },
+		{ name: 'Login', url: '/login' }
 	];
 </script>
 
