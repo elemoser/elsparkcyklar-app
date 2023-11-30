@@ -11,22 +11,14 @@ CREATE TABLE user (
     balance FLOAT NOT NULL DEFAULT 0.00, 
     subscriber INTEGER DEFAULT 0
 );
--- Generate mock data
-INSERT INTO user (id, first_name, last_name, phone, mail, balance, subscriber)
-VALUES 
-    (202311230001, 'John', 'Doe', '555-1234', 'john.doe@example.com', 100.50, 1),
-    (202311230002, 'Jane', 'Smith', '555-5678', 'jane.smith@example.com', 50.25, 0),
-    (202311240003, 'alice', 'Johnson', '666-9876', 'alice.johnson@example.com', 75.75, 1),
-    (202311240004, 'pelle', 'namnsson', '555-9846', 'pelle.johnson@example.com', 75.75, 1)
-;
-select * from user;
 
 -- City Table
 DROP TABLE IF EXISTS city;
 CREATE TABLE city (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    bounds TEXT
+    bounds TEXT,
+    radius INTEGER DEFAULT 5000
 );
 
 -- Bike Table
@@ -35,10 +27,9 @@ CREATE TABLE bike (
     id INTEGER NOT NULL PRIMARY KEY,
     battery INTEGER,
     city_id INTEGER,
-    speed REAL,
+    speed REAL DEFAULT 0.00,
     position TEXT,
-    state TEXT,
-    disabled INTEGER,
+    state TEXT DEFAULT "available",
 
     FOREIGN KEY (city_id) REFERENCES city(id)
 );
@@ -125,4 +116,13 @@ CREATE TABLE log (
     timestamp TEXT,
 
     FOREIGN KEY (booking_id) REFERENCES booking(id)
+);
+
+DROP TABLE IF EXISTS price;
+CREATE TABLE price (
+    id INTEGER PRIMARY KEY,
+    start_fee FLOAT DEFAULT 20.00,
+    cost_per_minute FLOAT DEFAULT 3.00,
+    free_parking_fee FLOAT DEFAULT 20.00,
+    start_free_park_discount FLOAT DEFAULT 0.5
 );
