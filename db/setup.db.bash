@@ -10,6 +10,7 @@ fi
 
 # Create and populate a new database named bikr.db
 touch $DBFILE
+chmod 777 $DBFILE
 sqlite3 $DBFILE < sql/create-tables.sql
 sqlite3 $DBFILE < sql/mock-data.sql
 
