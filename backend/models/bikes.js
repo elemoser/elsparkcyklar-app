@@ -5,8 +5,8 @@ const City = require("../orm/model-router.js")("city");
 const Bike = require("../orm/model-router.js")("bike");
 
 // Define the association between City and Bike
-City.hasMany(Bike, { foreignKey: 'city_id' });
-Bike.belongsTo(City, { foreignKey: 'city_id' });
+// City.hasMany(Bike, { foreignKey: 'city_id' });
+// Bike.belongsTo(City, { foreignKey: 'city_id' });
 
 function upperFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
