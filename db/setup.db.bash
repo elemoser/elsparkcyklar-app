@@ -12,6 +12,7 @@ IDS=(R398021 R935611 R10663667 R305455 R935467)
 
 # Create and populate a new database named bikr.db
 touch $DBFILE
+chmod 777 $DBFILE
 sqlite3 $DBFILE < sql/create-tables.sql
 
 # Create city table with nominatim data
