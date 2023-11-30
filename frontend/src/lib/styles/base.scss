@@ -1,0 +1,18 @@
+/*
+    Styling that is reoccuring for same element should be placed here.
+*/
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-size: 100%;
+	box-sizing: border-box;
+	background-color: $light-color;
+}
+
+.wrapper {
+	margin: 0 $calculated-line-height;
+}
