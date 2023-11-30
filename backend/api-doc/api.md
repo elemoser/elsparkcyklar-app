@@ -440,12 +440,13 @@ Result for "4":
 }
 ```
 
-### Hämta alla tillgängliga cyklar
+### Hämta alla *tillgängliga* cyklar i en specifik stad via stadens id
 
 ```
-GET /v1/bikes/available
+GET /v1/bikes/available/[city_id]
 ```
 
+Result for "5":
 ```
 {
     "bikes": [
