@@ -1,191 +1,108 @@
 
+const Booking = require("../orm/model-router.js")("booking");
+const Bike = require("../orm/model-router.js")("bike");
 const User = require("../orm/model-router.js")("user");
 
-const { Op } = require("sequelize");
+//const { Op } = require("sequelize");
 
-function upperFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-const users = {
+const booking = {
     /**
-     * @description Getting all users from sqlite db
+     * @description Getting all bookings from sqlite db
      */
-    getUsers: async function getUsers(req, res) {
+    getBookings: async function getBookings(req, res) {
         try {
-            const users = await User.findAll();
+            const booking = await Booking.findAll();
 
-            return res.json({ users: users });
+            return res.json({ booking: booking });
         } catch (err) {
-            console.error("Error in getUsers:", err);
+            console.error("Error in getBookings:", err);
             return res.status(500).json({ err: err.message });
         }
     },
 
     /**
-     * @description Get specific user based on ID
+     * @description Create new booking
      *
      */
-    getSpecificUser: async function getSpecificUser(req, res, user_id) {
-        try {
-            const specUser = await User.findOne({
-                where: { id: user_id },
-            });
-
-            if (!specUser) {
-                return res.status(404).json({ error: "No matching id" });
-            }
-
-            return res.json({ user: specUser });
-        } catch (err) {
-            console.error("Error in getSpecificUser:", err);
-            return res.status(500).json({ err: err.message });
-        }
-    },
-
-    /**
-     * @description Get all users whose first_name or last_name match the provided name
-     *
-     */
-    getMatchingUser: async function getMatchingUser(req, res, name) {
-        try {
-            const matchingUsers = await User.findAll({
-                where: {
-                    [Op.or]: [
-                        { first_name: { [Op.like]: `%${upperFirst(name)}%` } },
-                        { last_name: { [Op.like]: `%${upperFirst(name)}%` } },
-                    ],
-                },
-            });
-
-            if (matchingUsers.length === 0) {
-                return res.status(404).json({ error: "No matching names" });
-            }
-
-            return res.json({ users: matchingUsers });
-        } catch (err) {
-            console.error("Error in getMatchingUser:", err);
-            return res.status(500).json({ error: err.message });
-        }
-    },
-
-    /**
-     * @description Skapa en ny användare
-     *
-     */
-    createUser: async function createUser(req, res) {
+    createBooking: async function createBooking(req, res) {
         try {
             /* Hämta attribut från req.body */
             let {
                 id,
-                role,
-                first_name,
-                last_name,
-                phone,
-                mail,
-                balance,
-                subscriber,
+                bike_id,
+                user_id,
             } = req.body;
 
-            if (!id || !first_name || !last_name || !mail || !phone) {
+            if (!id || !bike_id || !user_id) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
-            if (!role) {
-                role = "customer";
+            const checkUser = await User.findOne({
+                where: {
+                    id: user_id,
+                }
+            });
+
+            if (!checkUser) {
+                return res.status(400).json({ error: "User doesn't exist" });
+            } else if (checkUser.balance === 0) {
+                return res.status(400).json({ error: "Balance is too low" });
             }
 
-            if (!balance) {
-                balance = 0.0;
+            //Hämta alla bokingar och kolla om användaren redan har en bokning
+            const bookings = await Booking.findAll();
+
+            const hasBooking = bookings.some(booking => booking.user_id === checkUser.id);
+
+            if (hasBooking) {
+                return res.status(400).json({ error: "User already has an active booking" });
             }
 
-            if (!subscriber) {
-                subscriber = 0;
+            const checkBike = await Bike.findOne({
+                where: {
+                    id: bike_id,
+                }
+            });
+
+            if (!checkBike) {
+                return res.status(400).json({ error: "Bike doesn't exist" });
+            } else if (checkBike.state !== 'available') {
+                return res.status(400).json({ error: "Bike is not available" });
             }
 
-            const newUser = await User.create({
+            const currentTimestamp = Date.now(); //Skapa ett datum
+            const currentDate = new Date(currentTimestamp);
+
+            //Fånga år, måndag, dag, tid
+            const year = currentDate.getFullYear();
+            const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = currentDate.getDate().toString().padStart(2, '0');
+            const hours = currentDate.getHours().toString().padStart(2, '0');
+            const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+            const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+            const startTimeStamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; //Formatera tidsstämpeln
+
+            //Sätt startpriset till 0 kronor om det är en subscriber, annars 10 kronor
+            let price = checkUser.subscriber === 1 ? 0 : 10;
+
+            const newBooking = await Booking.create({
                 id: parseInt(id),
-                role,
-                first_name,
-                last_name,
-                phone,
-                mail,
-                balance: parseFloat(balance),
-                subscriber: parseInt(subscriber),
+                bike_id: parseInt(bike_id),
+                user_id: parseInt(user_id),
+                start_time: startTimeStamp,
+                start_location: checkBike.position,
+                stop_time: "",
+                stop_location: "",
+                price: parseFloat(price)
             });
 
-            res.status(200).json({ message: "User created successfully", user: newUser });
+            res.status(200).json({ message: "Booking created successfully", booking: newBooking });
         } catch (err) {
-            console.error("Error in createUser:", err);
+            console.error("Error in createBooking:", err);
             res.status(500).json({ error: err.message });
         }
     },
+}
 
-    /**
-     * @description Uppdatera användare
-     *
-     */
-    updateUser: async function updateUser(req, res, user_id) {
-        try {
-            /* Kontrollera om användaren finns via primary key (PK) */
-            const existingUser = await User.findByPk(user_id);
-
-            if (!existingUser) {
-                return res.status(404).json({ error: "User doesn't exist" });
-            }
-
-            let {
-                role,
-                first_name,
-                last_name,
-                phone,
-                mail,
-                balance,
-                subscriber,
-            } = req.body;
-
-            if (!role || !first_name || !last_name || !mail || !phone || !balance || !subscriber) {
-                return res.status(400).json({ error: "Missing required fields" });
-            }
-
-            await existingUser.update({
-                role,
-                first_name,
-                last_name,
-                phone,
-                mail,
-                balance: parseFloat(balance),
-                subscriber: parseInt(subscriber),
-            });
-
-            res.status(200).json({ message: "User updated successfully" });
-        } catch (err) {
-            console.error("Error in updateUser:", err);
-            res.status(500).json({ error: err.message });
-        }
-    },
-
-    /**
-     * @description Radera användare
-     *
-     */
-    deleteUser: async function deleteUser(req, res, user_id) {
-        try {
-            /* Kontrollera om användaren finns */
-            const existingUser = await User.findByPk(user_id);
-
-            if (!existingUser) {
-                return res.status(404).json({ error: "User doesn't exist" });
-            }
-
-            await existingUser.destroy();
-
-            res.status(200).json({ message: "User successfully deleted" });
-        } catch (err) {
-            console.error("Error in deleteUser:", err);
-            res.status(500).json({ error: err.message });
-        }
-    },
-};
-
-module.exports = users;
+module.exports = booking;

@@ -313,7 +313,7 @@ status(404) 'City doesn't exist'
 
 En cykel har följande attribut:
 ```
-id INTEGER NOT NULL PRIMARY KEY,
+id,
 battery
 city_id
 speed
@@ -520,4 +520,85 @@ status(200) 'Bike successfully deleted'
 Possible errors (besides from db-errors):
 ```
 status(404) 'Bike doesn't exist'
+```
+
+## BOOKING
+
+En bokning har följande attribut:
+```
+id
+bike_id
+user_id
+start_time
+start_location
+stop_time
+stop_location
+price FLOAT
+```
+
+### Hämta alla aktiva bokningar
+
+```
+GET /v1/booking
+```
+
+Result:
+```
+{
+    "booking": [
+        {
+            "id": 1,
+            "bike_id": 1,
+            "user_id": 2101010001,
+            "start_time": "2023-11-20 08:00:00",
+            "start_location": "59.3293, 18.0686",
+            "stop_time": "2023-11-20 09:30:00",
+            "stop_location": "59.3293, 18.0686",
+            "price": 10
+        },
+        {
+            "id": 2,
+            "bike_id": 3,
+            "user_id": 2101030003,
+            "start_time": "2023-11-20 10:45:00",
+            "start_location": "55.6044, 13.0038",
+            "stop_time": "2023-11-20 12:15:00",
+            "stop_location": "55.6044, 13.0038",
+            "price": 15.5
+        },
+    ...
+    ]
+}
+```
+
+### Skapa en bokning
+
+```
+POST /v1/booking
+```
+Required parameters:
+```
+id,
+bike_id,
+user_id,
+```
+
+Result:
+```
+status(200) - 'Booking created successfully'
+```
+Possible errors (if 'id' already exists):
+```
+status(500) 'Validation error'
+```
+...or
+```
+User-related:
+    status(400) 'User doesn't exist'
+    status(400) 'Balance is too low'
+    status(400) 'User already has an active booking'
+
+Bike-related:
+    status(400) 'Bike doesn't exist'
+    status(400) 'Bike is not available'
 ```
