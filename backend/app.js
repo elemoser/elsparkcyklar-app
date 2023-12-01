@@ -9,6 +9,7 @@ const port = 1338;
 const users = require('./routes/users.js');
 const city = require('./routes/city.js');
 const bikes = require('./routes/bikes.js');
+const booking = require('./routes/booking.js');
 
 app.use(cors());
 app.options('*', cors());
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 app.use("/v1/users", users);
 app.use("/v1/city", city);
 app.use("/v1/bikes", bikes);
+app.use("/v1/booking", booking);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)

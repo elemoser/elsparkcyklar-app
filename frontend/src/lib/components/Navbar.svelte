@@ -5,7 +5,8 @@
 		{ name: 'Home', url: '/' },
 		{ name: 'About', url: '/about' },
 		{ name: 'Login', url: '/login' },
-		{ name: 'Profile', url: '/profile' }
+		{ name: 'Profile', url: '/profile' },
+		{ name: 'Rent', url: '/rent' }
 	];
 </script>
 

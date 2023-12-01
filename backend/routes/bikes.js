@@ -8,7 +8,10 @@ const bikes = require("../models/bikes.js");
 router.get('/', (req, res) => bikes.getBikes(req, res));
 
 //Get all available bikes
-router.get('/available', (req, res) => bikes.getAvailableBikes(req, res));
+router.get('/available/:city_id', (req, res) => {
+    let city_id = req.params.city_id;
+    bikes.getAvailableBikes(req, res, city_id)
+});
 
 //Get specific bike
 router.get('/id/:bike_id', (req, res) => {
