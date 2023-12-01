@@ -144,9 +144,14 @@ const users = {
                 subscriber,
             } = req.body;
 
-            if (!role || !first_name || !last_name || !mail || !phone || !balance || !subscriber) {
-                return res.status(400).json({ error: "Missing required fields" });
-            }
+            //Sätt optionella värden till nya eller ursprungliga värden
+            role = role || existingUser.role;
+            first_name = first_name || existingUser.first_name;
+            last_name = last_name || existingUser.last_name;
+            phone = phone || existingUser.phone;
+            mail = mail || existingUser.mail;
+            balance = balance || existingUser.balance;
+            subscriber = subscriber || existingUser.subscriber;
 
             await existingUser.update({
                 role,

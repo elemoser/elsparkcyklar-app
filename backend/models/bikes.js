@@ -115,8 +115,17 @@ const bike = {
                 state
             } = req.body;
 
-            if (!battery || !city_id || !position) {
-                return res.status(400).json({ error: "Missing required fields" });
+            //Sätt optionella värden till nya eller ursprungliga värden
+            battery = battery || existingBike.battery;
+            city_id = city_id || existingBike.city_id;
+            speed = speed || existingBike.speed;
+            position = position || existingBike.position;
+            state = state || existingBike.state;
+
+            const existingCity = await City.findByPk(city_id);
+
+            if (!existingCity) {
+                return res.status(404).json({ error: "City doesn't exist" });
             }
 
             //Default för cyklar utan state
@@ -132,7 +141,7 @@ const bike = {
                 });
             }
 
-            // Om en cykel är disabled kan den inte ha hastighet
+            // Om en cykel är ledig/trasig kan den inte ha hastighet
             if (!speed || state != "occupied") {
                 speed = 0.00;
             }
