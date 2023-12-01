@@ -4,10 +4,6 @@ const { Op } = require("sequelize");
 const City = require("../orm/model-router.js")("city");
 const Bike = require("../orm/model-router.js")("bike");
 
-// Define the association between City and Bike
-// City.hasMany(Bike, { foreignKey: 'city_id' });
-// Bike.belongsTo(City, { foreignKey: 'city_id' });
-
 function upperFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -190,16 +186,19 @@ const bike = {
     },
 
         /**
-     * @description Get specific city based on ID
+     * @description Get all available bikes in a specific city based on ID
      *
      */
-    getAvailableBikes: async function getAvailableBikes(req, res) {
+    getAvailableBikes: async function getAvailableBikes(req, res, city_id) {
         try {
             const availableBikes = await Bike.findAll({
-                where: { state: 'available' },
+                where: [
+                    { state: 'available' },
+                    { city_id: city_id },
+                ],
             });
 
-            if (!availableBikes) {
+            if (availableBikes.length == 0) {
                 return res.status(404).json({ error: "No bikes available" });
             }
 
@@ -261,6 +260,7 @@ const bike = {
                 include: [
                     {
                         model: City,
+                        as: "city",
                         attributes: ['name'],
                     },
                 ],
