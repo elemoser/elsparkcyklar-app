@@ -6,8 +6,10 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 
 ### Innehåll
 
-- Users
-- City
+- [Users](#users)
+- [City](#city)
+- [Bikes](#bikes)
+- [Booking](#booking)
 
 ## USERS
 
@@ -148,7 +150,8 @@ PUT /v1/users/id/[user_id]
 ```
 
 Please note that "id" can't be updated.
-Required parameters:
+
+Optional parameters:
 ```
 role
 first_name
@@ -269,6 +272,7 @@ status(200) - 'City created successfully'
 Possible errors (if 'id' already exists):
 ```
 status(500) 'Validation error'
+status(400) ''bounds' is not formatted correctly'
 ```
 
 ### Uppdatera en stad
@@ -277,7 +281,7 @@ PUT /v1/city/id/[city_id]
 ```
 
 Please note that "id" can't be updated.
-Required parameters:
+Optional parameters:
 ```
 name
 bounds
@@ -290,6 +294,7 @@ status(200) - 'City updated successfully'
 Possible errors (besides from db-errors):
 ```
 status(404) 'City doesn't exist'
+status(400) ''bounds' is not formatted correctly'
 ```
 
 ### Ta bort en stad
@@ -394,15 +399,12 @@ PUT /v1/bikes/id/[bike_id]
 ```
 
 Please note that "id" can't be updated.
-Required parameters:
+
+Optional parameters:
 ```
 battery
 city_id
 position
-```
-
-Optional parameters:
-```
 speed
 state
 ```
