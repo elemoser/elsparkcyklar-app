@@ -49,13 +49,11 @@
 	});
 </script>
 
-<main>
-	<div bind:this={mapElement} />
-</main>
+<div bind:this={mapElement} />
 
 <style>
 	@import 'leaflet/dist/leaflet.css';
-	main div {
-		height: 800px;
+	div {
+		height: 500px;
 	}
 </style>
