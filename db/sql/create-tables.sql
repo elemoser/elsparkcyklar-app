@@ -17,8 +17,7 @@ DROP TABLE IF EXISTS city;
 CREATE TABLE city (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    bounds TEXT,
-    radius INTEGER DEFAULT 5000
+    bounds TEXT
 );
 
 -- Bike Table

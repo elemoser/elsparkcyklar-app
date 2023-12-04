@@ -10,13 +10,13 @@ VALUES
     (2101050005, 'admin', 'Admin', 'User', '999000111', 'admin@example.com', 100.00, 1);
 
 -- Inserting data into the City Table
-INSERT INTO city (id, name, bounds)
-VALUES
-    (1, 'Stockholm', '59.3293, 18.0686'),
-    (2, 'Gothenburg', '57.7089, 11.9746'),
-    (3, 'Malmö', '55.6044, 13.0038'),
-    (4, 'Uppsala', '59.8586, 17.6389'),
-    (5, 'Linköping', '58.4108, 15.6214');
+-- INSERT INTO city (id, name, bounds)
+-- VALUES
+--     (1, 'Stockholm', '59.3293, 18.0686'),
+--     (2, 'Gothenburg', '57.7089, 11.9746'),
+--     (3, 'Malmö', '55.6044, 13.0038'),
+--     (4, 'Uppsala', '59.8586, 17.6389'),
+--     (5, 'Linköping', '58.4108, 15.6214');
 
 -- Inserting data into the Bike Table
 INSERT INTO bike (id, battery, city_id, speed, position, state)
