@@ -17,8 +17,7 @@ DROP TABLE IF EXISTS city;
 CREATE TABLE city (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    bounds TEXT,
-    radius INTEGER DEFAULT 5000
+    bounds TEXT
 );
 
 -- Bike Table
@@ -59,6 +58,7 @@ CREATE TABLE invoice (
     log_id INTEGER,
     user_id INTEGER,
     total_price REAL,
+    status TEXT,
 
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (log_id) REFERENCES booking(id)
@@ -101,22 +101,22 @@ CREATE TABLE charger (
     status TEXT
 );
 
--- Log Table
-DROP TABLE IF EXISTS log;
-CREATE TABLE log (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    booking_id INTEGER,
-    bike_id INTEGER,
-    user_id INTEGER,
-    start_time TEXT,
-    start_location TEXT,
-    stop_time TEXT,
-    stop_location TEXT,
-    price REAL,
-    timestamp TEXT,
+-- -- Log Table
+-- DROP TABLE IF EXISTS log;
+-- CREATE TABLE log (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     booking_id INTEGER,
+--     bike_id INTEGER,
+--     user_id INTEGER,
+--     start_time TEXT,
+--     start_location TEXT,
+--     stop_time TEXT,
+--     stop_location TEXT,
+--     price REAL,
+--     timestamp TEXT,
 
-    FOREIGN KEY (booking_id) REFERENCES booking(id)
-);
+--     FOREIGN KEY (booking_id) REFERENCES booking(id)
+-- );
 
 DROP TABLE IF EXISTS price;
 CREATE TABLE price (
