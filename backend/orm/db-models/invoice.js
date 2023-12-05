@@ -26,6 +26,10 @@ module.exports = function(sequelize, DataTypes) {
     total_price: {
       type: DataTypes.REAL,
       allowNull: true
+    },
+    status: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,
