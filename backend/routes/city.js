@@ -7,7 +7,7 @@ const city = require("../models/city.js");
 //Get all cities
 router.get('/', (req, res) => city.getCities(req, res));
 
-//Create user
+//Create city
 router.post('/', (req, res) => city.createCity(req, res));
 
 //Get specific city
