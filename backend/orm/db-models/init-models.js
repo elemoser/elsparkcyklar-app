@@ -4,6 +4,7 @@ var _booking = require("./booking");
 var _charger = require("./charger");
 var _city = require("./city");
 var _invoice = require("./invoice");
+var _log = require("./log");
 var _parked_bikes = require("./parked_bikes");
 var _parking = require("./parking");
 var _price = require("./price");
@@ -15,6 +16,7 @@ function initModels(sequelize) {
   var charger = _charger(sequelize, DataTypes);
   var city = _city(sequelize, DataTypes);
   var invoice = _invoice(sequelize, DataTypes);
+  var log = _log(sequelize, DataTypes);
   var parked_bikes = _parked_bikes(sequelize, DataTypes);
   var parking = _parking(sequelize, DataTypes);
   var price = _price(sequelize, DataTypes);
@@ -26,6 +28,8 @@ function initModels(sequelize) {
   bike.hasMany(parked_bikes, { as: "parked_bikes", foreignKey: "bike_id"});
   invoice.belongsTo(booking, { as: "log", foreignKey: "log_id"});
   booking.hasMany(invoice, { as: "invoices", foreignKey: "log_id"});
+  log.belongsTo(booking, { as: "booking", foreignKey: "booking_id"});
+  booking.hasMany(log, { as: "logs", foreignKey: "booking_id"});
   bike.belongsTo(city, { as: "city", foreignKey: "city_id"});
   city.hasMany(bike, { as: "bikes", foreignKey: "city_id"});
   parking.belongsTo(city, { as: "city", foreignKey: "city_id"});
@@ -43,6 +47,7 @@ function initModels(sequelize) {
     charger,
     city,
     invoice,
+    log,
     parked_bikes,
     parking,
     price,
