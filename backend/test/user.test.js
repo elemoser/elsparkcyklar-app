@@ -3,7 +3,6 @@ const chaiHttp = require('chai-http');
 const app = require('../app.js'); // Replace with the path to your main app file
 chai.use(chaiHttp);
 const expect = chai.expect;
-const sinon = require("sinon")
 
 describe('Api test suite', () => {
     let userDataToAdd;
