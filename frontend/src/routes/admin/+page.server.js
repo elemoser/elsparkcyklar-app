@@ -1,1 +1,0 @@
-// Get all cities from the API
