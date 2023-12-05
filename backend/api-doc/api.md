@@ -11,6 +11,7 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 - [Bikes](#bikes)
 - [Booking](#booking)
 - [Invoice](#invoice)
+- [Price](#price)
 
 ## USERS
 
@@ -774,4 +775,122 @@ status(200) 'Invoice successfully deleted'
 Possible errors (besides from db-errors):
 ```
 status(404) 'Invoice doesn't exist'
+```
+
+## PRICE
+
+En prisgrupp har följande attribut:
+```
+id,
+start_fee,
+cost_per_minute,
+free_parking_fee,
+start_free_park_discount
+```
+
+### Hämta alla prisgrupper
+
+```
+GET /v1/price
+```
+
+Result:
+```
+{
+    "price": [
+        {
+            "id": 1,
+            "start_fee": 20,
+            "cost_per_minute": 3,
+            "free_parking_fee": 20,
+            "start_free_park_discount": 0.5
+        }
+    ]
+}
+```
+
+### Hämta specifik prisgrupp (id)
+
+```
+GET /v1/price/id/[price_id]
+```
+
+Result for "1":
+```
+{
+    "price": {
+        "id": 1,
+        "start_fee": 20,
+        "cost_per_minute": 3,
+        "free_parking_fee": 20,
+        "start_free_park_discount": 0.5
+    }
+}
+```
+
+### Skapa en ny prisgrupp
+
+```
+POST v1/price
+```
+
+Required parameters:
+```
+start_fee,
+cost_per_minute,
+free_parking_fee,
+start_free_park_discount
+```
+
+Result:
+```
+status(200) "Price created successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "Missing required fields"
+status(400) "Values must be floats"
+```
+
+### Uppdatera en prisgrupp
+
+```
+PUT v1/price/id/[price_id]
+```
+
+Optional parameters:
+```
+start_fee,
+cost_per_minute,
+free_parking_fee,
+start_free_park_discount
+```
+
+Result:
+```
+status(200) "Price updated successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(404) "PriceType doesn't exist"
+status(400) "Values must be floats"
+```
+
+### Radera en prisgrupp
+
+```
+DELETE /v1/price/id/[price_id]
+```
+
+Required parameters:
+```
+id
+```
+Result:
+```
+status(200) 'Price successfully deleted'
+```
+Possible errors (besides from db-errors):
+```
+status(404) 'Price doesn't exist'
 ```
