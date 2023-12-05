@@ -48,7 +48,7 @@ const invoice = {
                 return res.status(404).json({ error: "Invoice doesn't exist" });
             }
 
-            let price = req.body.total_price || existingInvoice.price;
+            let price = req.body.total_price || existingInvoice.total_price;
             let status = req.body.status || existingInvoice.status;
 
             const validStatus = ["pending", "payed"];
@@ -57,6 +57,10 @@ const invoice = {
                 return res.status(400).json({
                     error: `'status' must be one of: ${validStatus.join(', ')}`
                 });
+            }
+
+            if (isNaN(price) || price === null || price === undefined) {
+                return res.status(400).json({ error: "Price must be a number" });
             }
 
             await existingInvoice.update({
