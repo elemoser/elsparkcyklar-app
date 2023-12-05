@@ -34,7 +34,7 @@ router.put('/id/:bike_id', (req, res) => {
     bikes.updateBike(req, res, bike_id);
 });
 
-//Delete user
+//Delete bike
 router.delete('/id/:bike_id', (req, res) => {
     let bike_id = req.params.bike_id;
     bikes.deleteBike(req, res, bike_id);

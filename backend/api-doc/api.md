@@ -10,6 +10,7 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 - [City](#city)
 - [Bikes](#bikes)
 - [Booking](#booking)
+- [Invoice](#invoice)
 
 ## USERS
 
@@ -66,7 +67,7 @@ Result:
 GET /v1/users/id/[user_id]
 ```
 
-Result for "202311230001":
+Result for "2101010001":
 ```
 {
     "user": {
@@ -78,6 +79,47 @@ Result for "202311230001":
         "mail": "john.doe@example.com",
         "balance": 50,
         "subscriber": 1
+    }
+}
+```
+
+### Hämta en kunds bokningshistorik
+
+```
+GET /v1/users/history/[user_id]
+```
+
+Result for "2101010001":
+```
+{
+    "user": {
+        "id": 1,
+        "bike_id": 1,
+        "user_id": 2101010001,
+        "start_time": "2023-11-20 08:00:00",
+        "start_location": "59.3293, 18.0686",
+        "stop_time": "2023-11-20 09:30:00",
+        "stop_location": "59.3293, 18.0686",
+        "price": 10
+    }
+}
+```
+
+### Hämta en kunds fakturor
+
+```
+GET /v1/users/invoice/[user_id]
+```
+
+Result for "2101010001":
+```
+{
+    "user": {
+        "id": 1,
+        "log_id": 1,
+        "user_id": 2101010001,
+        "total_price": 10,
+        "status": "pending"
     }
 }
 ```
@@ -194,7 +236,6 @@ En stad har följande attribut:
 id
 name
 bounds
-radius
 ```
 
 ### Hämta alla städer
@@ -210,21 +251,8 @@ Result:
         {
             "id": 1,
             "name": "Stockholm",
-            "bounds": "59.3293, 18.0686",
-            "radius": 5000
-        },
-        {
-            "id": 2,
-            "name": "Gothenburg",
-            "bounds": "57.7089, 11.9746",
-            "radius": 5000
-        },
-        {
-            "id": 3,
-            "name": "Malmö",
-            "bounds": "55.6044, 13.0038",
-            "radius": 5000
-        },
+            "bounds": "[[17.7606917,59.3917673],[17.762308,59.3887845],[17.7750968,59.3835394]...]
+        }
     ...
     ]
 }
@@ -241,9 +269,8 @@ Result for "2":
 {
     "city": {
         "id": 2,
-        "name": "Gothenburg",
-        "bounds": "57.7089, 11.9746",
-        "radius": 5000
+        "name": "Göteborg",
+        "bounds": "[[11.231564,57.6546144],[11.2405782,57.6483777],[11.2595653,57.6352304]...]
     }
 }
 ```
@@ -260,11 +287,6 @@ name
 bounds
 ```
 
-Optional parameters:
-```
-radius
-```
-
 Result:
 ```
 status(200) - 'City created successfully'
@@ -272,7 +294,6 @@ status(200) - 'City created successfully'
 Possible errors (if 'id' already exists):
 ```
 status(500) 'Validation error'
-status(400) ''bounds' is not formatted correctly'
 ```
 
 ### Uppdatera en stad
@@ -285,7 +306,6 @@ Optional parameters:
 ```
 name
 bounds
-radius
 ```
 Result:
 ```
@@ -294,7 +314,6 @@ status(200) - 'City updated successfully'
 Possible errors (besides from db-errors):
 ```
 status(404) 'City doesn't exist'
-status(400) ''bounds' is not formatted correctly'
 ```
 
 ### Ta bort en stad
@@ -538,7 +557,7 @@ stop_location
 price FLOAT
 ```
 
-### Hämta alla aktiva bokningar
+### Hämta alla bokningar
 
 ```
 GET /v1/booking
@@ -573,6 +592,29 @@ Result:
 }
 ```
 
+### Hämta alla pågående resor
+```
+GET /v1/booking/ongoing
+```
+
+Result:
+```
+{
+    "booking": [
+        {
+            "id": 3,
+            "bike_id": 5,
+            "user_id": 2101050005,
+            "start_time": "2023-11-20 14:30:00",
+            "start_location": "58.4108, 15.6214",
+            "stop_time": "",
+            "stop_location": "",
+            "price": 20
+        }
+    ]
+}
+```
+
 ### Skapa en bokning
 
 ```
@@ -603,4 +645,133 @@ User-related:
 Bike-related:
     status(400) 'Bike doesn't exist'
     status(400) 'Bike is not available'
+```
+
+### Uppdatera bokning - (markera resa som avslutad)
+
+```
+PUT /v1/booking/id[booking_id]
+```
+
+Please be aware that this method can only
+mark a trip as finished. All bookings will be saved
+to keep track of all trips and rent-outs. To edit a
+booking, please turn to "Invoice" instead.
+
+No parameters are required.
+
+Result:
+```
+status(200) - "Booking successfully updated. Trip is now stopped"
+```
+Possible errors:
+```
+status(404) "Booking doesn't exist"
+status(400) "Trip is already stopped"
+```
+
+## INVOICE
+
+En faktura har följande attribut:
+```
+id,
+log_id,
+user_id,
+total_price,
+status,
+```
+
+...och skapas automatiskt varje gång
+en ny bokning görs.
+
+### Hämta alla fakturor
+
+```
+GET /v1/invoice
+```
+
+Result:
+```
+{
+    "invoice": [
+        {
+            "id": 1,
+            "log_id": 1,
+            "user_id": 2101010001,
+            "total_price": 10,
+            "status": "pending"
+        },
+        {
+            "id": 2,
+            "log_id": 2,
+            "user_id": 2101030003,
+            "total_price": 15.5,
+            "status": "payed"
+        },
+    ...
+    ]
+}
+```
+
+### Hämta en specifik faktura (faktura-id)
+
+```
+GET v1/invoice/id/[invoice_id]
+```
+
+Result for "1":
+```
+{
+    "invoice": {
+        "id": 1,
+        "log_id": 1,
+        "user_id": 2101010001,
+        "total_price": 10,
+        "status": "pending"
+    }
+}
+```
+
+### Uppdatera en faktura
+
+```
+PUT v1/invoice/id/[invoice_id]
+```
+
+Optional parameters:
+```
+total_price
+status
+```
+
+Please note that you can only set the 'status'
+to either 'pending' or 'payed'.
+
+Result:
+```
+status(200) - "Invoice updated successfully"
+```
+Possible errors:
+```
+status(404) "Invoice doesn't exist"
+status(400) "'status' must be one of: payed, pending"
+```
+
+### Radera en faktura
+
+```
+DELETE /v1/invoice/id/[invoice_id]
+```
+
+Required parameters:
+```
+id
+```
+Result:
+```
+status(200) 'Invoice successfully deleted'
+```
+Possible errors (besides from db-errors):
+```
+status(404) 'Invoice doesn't exist'
 ```
