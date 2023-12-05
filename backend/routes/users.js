@@ -16,6 +16,18 @@ router.get('/id/:user_id', (req, res) => {
     users.getSpecificUser(req, res, user_id)
 });
 
+//Get history for specific user
+router.get('/history/:user_id', (req, res) => {
+    let user_id = req.params.user_id;
+    users.getUserHistory(req, res, user_id)
+});
+
+//Get invoices for specific user
+router.get('/invoice/:user_id', (req, res) => {
+    let user_id = req.params.user_id;
+    users.getUserInvoice(req, res, user_id)
+});
+
 //Update user
 router.put('/id/:user_id', (req, res) => {
     let user_id = req.params.user_id;

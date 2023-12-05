@@ -2,16 +2,43 @@
 const Booking = require("../orm/model-router.js")("booking");
 const Bike = require("../orm/model-router.js")("bike");
 const User = require("../orm/model-router.js")("user");
+const Invoice = require("../orm/model-router.js")("invoice");
 
-//const { Op } = require("sequelize");
+const { Op } = require("sequelize");
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 const booking = {
     /**
      * @description Getting all bookings from sqlite db
      */
-    getBookings: async function getBookings(req, res) {
+    getAllBookings: async function getAllBookings(req, res) {
         try {
             const booking = await Booking.findAll();
+
+            return res.json({ booking: booking });
+        } catch (err) {
+            console.error("Error in getBookings:", err);
+            return res.status(500).json({ err: err.message });
+        }
+    },
+
+    /**
+     * @description Getting all LIVE bookings
+     */
+    getOngoing: async function getOngoing(req, res) {
+        try {
+            const booking = await Booking.findAll({
+                where: {
+                    stop_time: {
+                        [Op.eq]: ""
+                    }
+                }
+            });
 
             return res.json({ booking: booking });
         } catch (err) {
@@ -101,6 +128,90 @@ const booking = {
         } catch (err) {
             console.error("Error in createBooking:", err);
             res.status(500).json({ error: err.message });
+        }
+    },
+
+    /**
+     * @description Update booking - (end a trip)
+     *
+     */
+    endTrip: async function endTrip(req, res, booking_id) {
+        try {
+            /* Kontrollera om bokningen finns och inte redan är avslutad*/
+            const existingBooking = await Booking.findOne({
+                where: {
+                    id: booking_id,
+                },
+                include: [
+                    {
+                        model: Bike,
+                        as: "bike",
+                        attributes: ['position'],
+                    },
+                ],
+            });
+
+            if (!existingBooking) {
+                return res.status(404).json({ error: "Booking doesn't exist" });
+            } else if (existingBooking.stop_time != "") {
+                return res.status(400).json({ error: "Trip is already stopped" });
+            }
+
+            const currentTimestamp = Date.now(); //Skapa ett datum
+            const currentDate = new Date(currentTimestamp);
+
+            //Fånga år, måndag, dag, tid
+            const year = currentDate.getFullYear();
+            const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = currentDate.getDate().toString().padStart(2, '0');
+            const hours = currentDate.getHours().toString().padStart(2, '0');
+            const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+            const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+            const stopTimeStamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; //Formatera tidsstämpeln
+
+            const bikeId = existingBooking.bike_id;
+            const userId = existingBooking.user_id;
+
+            const startTime = existingBooking.start_time;
+            const startLocation = existingBooking.start_location;
+            const stopLocation = existingBooking.bike.position;
+            const price = existingBooking.price;
+
+            //hämta aktuell cykel samt justera batteri-nivån och tillgänglighet
+            const existingBike = await Bike.findByPk(bikeId);
+            const batteryLevel = existingBike.battery - getRandomInt(5, 20);
+
+            await existingBike.update({
+                state: "Available",
+                battery: batteryLevel
+            });
+
+            //skapa faktura för aktuell användare
+            await Invoice.create({
+                log_id: parseInt(booking_id),
+                user_id: parseInt(userId),
+                total_price: parseFloat(price)
+            });
+
+            await existingBooking.update({
+                booking_id: parseInt(booking_id),
+                bike_id: parseInt(bikeId),
+                user_id: parseInt(userId),
+                start_time: startTime,
+                start_location: startLocation,
+                stop_time: stopTimeStamp,
+                stop_location: stopLocation,
+                price: parseFloat(price),
+            });
+
+            res.status(200).json({
+                message: "Booking successfully updated. Trip is now stopped"
+            });
+
+            } catch (err) {
+                console.error("Error in deleteBooking:", err);
+                res.status(500).json({ error: err.message });
         }
     },
 }
