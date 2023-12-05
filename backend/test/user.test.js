@@ -3,21 +3,30 @@ const chaiHttp = require('chai-http');
 const app = require('../app.js'); // Replace with the path to your main app file
 chai.use(chaiHttp);
 const expect = chai.expect;
+const sinon = require("sinon")
 
 describe('Api test suite', () => {
     let userDataToAdd;
     let userDataToDelete;
     let userDataToChange;
     let userDataIsChanged;
+    let failedUserDataToAdd;
     before( async () => {
         try {
+            failedUserDataToAdd = {
+                id: '9494949494',
+                last_name: 'l_name_anybody',
+                phone: '666',
+                mail: "test@mail.se",
+                balance: 40,
+                subscriber: 0
+            };
             userDataToAdd = {
                 id: '9494949494',
                 first_name: 'f_name_somebody',
                 last_name: 'l_name_anybody',
                 phone: '666',
                 mail: "test@mail.se",
-                role: "customer",
                 balance: 40,
                 subscriber: 0
             };
@@ -80,6 +89,16 @@ describe('Api test suite', () => {
         })
     });
 
+    it('DELETE /v1/users/id/[user_id] - Remove user that doesnt exist, should fail', (done) => {
+        // First request to create the user
+        chai.request(app)
+        .delete(`/v1/users/id/pppppppppppppppppppppppppp`)
+        .end((err, res) => {
+            expect(res).to.have.status(404);
+            done();
+        })
+    });
+
     it('POST /v1/users - Create User and check if it was created', async () => {
         try {
             const res = await chai.request(app)
@@ -100,27 +119,14 @@ describe('Api test suite', () => {
         }
     });
 
-    /**
-     * Please note that "id" can't be updated.
-        Required parameters:
-        ```
-        role
-        first_name
-        last_name
-        phone
-        mail
-        balance
-        subscriber
-        ```
-        Result:
-        ```
-        status(200) - 'User updated successfully'
-        ```
-        Possible errors (besides from db-errors):
-        ```
-        status(404) 'User doesn't exist'
-        ```
-     */
+    it('POST /v1/users - Create User with missing params. should fail', async () => {
+            const resFail = await chai.request(app)
+                .post(`/v1/users`)
+                .send(failedUserDataToAdd);
+            expect(resFail).to.have.status(400);
+            expect(resFail.body.error).to.equal("Missing required fields");
+    });
+
     it('PUT /v1/users/id/:user_id - Update a users data', async () => {
         try {
             /**
@@ -134,14 +140,9 @@ describe('Api test suite', () => {
             /**
              * Expect to succeed
             */
-            
-            const updatedUser = await chai.request(app).get(`/v1/users/id/9696969696`)
-            // expect(updatedUser).
-            console.log("🚀 ~ file: user.test.js:146 ~ it ~ updatedUser:", updatedUser.body)
             const updateExistingUser = await chai.request(app)
                 .put(`/v1/users/id/9696969696`)
                 .send(userDataIsChanged);
-            console.log("🚀 ~ file: user.test.js:142 ~ it ~ userDataToChange.id:", userDataToChange.id)
             expect(updateExistingUser).to.have.status(200) 
             
         } catch (error) {
@@ -163,6 +164,42 @@ describe('Api test suite', () => {
             done();
         });
     });
+
+    it('GET /v1/users - Test to retrieve non existing user based on ID', (done) => {
+        chai.request(app)
+        .get('/v1/users/id/pppppppppp')
+        .end((err, res) => {
+            expect(res).to.have.status(404)
+            expect(res.body.error).to.not.be.empty
+            done();
+        });
+    });
+
+    it('GET /v1/users/name:name - Test to find a user named John (in first AND last name', (done) => {
+        const nameSearch = "John"
+        const nameCompare = "john"
+        chai.request(app)
+        .get(`/v1/users/name/${nameSearch}`)
+        .end((err, res) => {
+            expect(res).to.have.status(200)
+            expect(res.body).to.be.an('object');
+            expect(res.body.users).to.be.an('array');
+            let findJohnFName = res.body.users.find(user => user.first_name.toLowerCase().includes(nameCompare))
+            let findJohnLName = res.body.users.find(user => user.last_name.toLowerCase().includes(nameCompare))
+            expect(findJohnFName || findJohnLName).to.not.be.empty
+            done();
+        });
+    });
+
+    it('GET /v1/users/name:name - Test to find a non existent user namne', (done) => {
+        const name = "ASDASDASD"
+        chai.request(app)
+        .get(`/v1/users/name/${name}`)
+        .end((err, res) => {
+            expect(res).to.have.status(404)
+            done();
+        });
+    });
     
     
     it('Test the hello world route "/"', (done) => {
@@ -175,13 +212,3 @@ describe('Api test suite', () => {
         });
     });
 });
-
-    // it('POST /v1/users - Create User',(done) => {
-    //     chai.request(app)
-    //     .post(`/v1/users`)
-    //     .send(userDataToAdd)
-    //     .end((err, res) => {
-    //         expect(res).to.have.status(200);
-    //         done();
-    //     })
-    // });
