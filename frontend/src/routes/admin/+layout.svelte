@@ -1,4 +1,5 @@
 <script>
+	import '$lib/styles/main.scss';
 	import { app_name } from '$lib/index.js';
 </script>
 
