@@ -236,7 +236,6 @@ En stad har följande attribut:
 id
 name
 bounds
-radius
 ```
 
 ### Hämta alla städer
@@ -252,21 +251,8 @@ Result:
         {
             "id": 1,
             "name": "Stockholm",
-            "bounds": "59.3293, 18.0686",
-            "radius": 5000
-        },
-        {
-            "id": 2,
-            "name": "Gothenburg",
-            "bounds": "57.7089, 11.9746",
-            "radius": 5000
-        },
-        {
-            "id": 3,
-            "name": "Malmö",
-            "bounds": "55.6044, 13.0038",
-            "radius": 5000
-        },
+            "bounds": "[[17.7606917,59.3917673],[17.762308,59.3887845],[17.7750968,59.3835394]...]
+        }
     ...
     ]
 }
@@ -283,9 +269,8 @@ Result for "2":
 {
     "city": {
         "id": 2,
-        "name": "Gothenburg",
-        "bounds": "57.7089, 11.9746",
-        "radius": 5000
+        "name": "Göteborg",
+        "bounds": "[[11.231564,57.6546144],[11.2405782,57.6483777],[11.2595653,57.6352304]...]
     }
 }
 ```
@@ -302,11 +287,6 @@ name
 bounds
 ```
 
-Optional parameters:
-```
-radius
-```
-
 Result:
 ```
 status(200) - 'City created successfully'
@@ -314,7 +294,6 @@ status(200) - 'City created successfully'
 Possible errors (if 'id' already exists):
 ```
 status(500) 'Validation error'
-status(400) ''bounds' is not formatted correctly'
 ```
 
 ### Uppdatera en stad
@@ -327,7 +306,6 @@ Optional parameters:
 ```
 name
 bounds
-radius
 ```
 Result:
 ```
@@ -336,7 +314,6 @@ status(200) - 'City updated successfully'
 Possible errors (besides from db-errors):
 ```
 status(404) 'City doesn't exist'
-status(400) ''bounds' is not formatted correctly'
 ```
 
 ### Ta bort en stad

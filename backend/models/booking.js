@@ -77,9 +77,13 @@ const booking = {
             }
 
             //Hämta alla bokingar och kolla om användaren redan har en bokning
-            const bookings = await Booking.findAll();
+            const bookings = await Booking.findAll({
+                where: {
+                    user_id: checkUser.id
+                }
+            });
 
-            const hasBooking = bookings.some(booking => booking.user_id === checkUser.id);
+            const hasBooking = bookings.some(booking => (booking.stop_time === ""));
 
             if (hasBooking) {
                 return res.status(400).json({ error: "User already has an active booking" });
@@ -123,6 +127,14 @@ const booking = {
                 stop_location: "",
                 price: parseFloat(price)
             });
+
+            let bikeSpeed = getRandomInt(5, 25);
+
+            //Uppdatera status och hastighet för den uthyrda cykeln
+            checkBike.update({
+                state: 'occupied',
+                speed: parseFloat(bikeSpeed)
+            })
 
             res.status(200).json({ message: "Booking created successfully", booking: newBooking });
         } catch (err) {
@@ -191,7 +203,8 @@ const booking = {
             await Invoice.create({
                 log_id: parseInt(booking_id),
                 user_id: parseInt(userId),
-                total_price: parseFloat(price)
+                total_price: parseFloat(price),
+                status: "pending"
             });
 
             await existingBooking.update({
