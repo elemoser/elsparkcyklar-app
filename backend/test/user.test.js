@@ -5,6 +5,8 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 
 describe('Api test suite', () => {
+    const NEVER_EXISTING_SSN = "pppppppppppppp"
+    const ALWAYS_EXISTING_SSN = "2101010001"
     let userDataToAdd;
     let userDataToDelete;
     let userDataToChange;
@@ -91,7 +93,7 @@ describe('Api test suite', () => {
     it('DELETE /v1/users/id/[user_id] - Remove user that doesnt exist, should fail', (done) => {
         // First request to create the user
         chai.request(app)
-        .delete(`/v1/users/id/pppppppppppppppppppppppppp`)
+        .delete(`/v1/users/id/${NEVER_EXISTING_SSN}`)
         .end((err, res) => {
             expect(res).to.have.status(404);
             done();
@@ -143,6 +145,54 @@ describe('Api test suite', () => {
                 .put(`/v1/users/id/9696969696`)
                 .send(userDataIsChanged);
             expect(updateExistingUser).to.have.status(200) 
+            
+        } catch (error) {
+            console.error('Error in test:', error);
+            throw error; // Re-throw the error to fail the test
+        }
+    });
+    it('GET /history/:user_id - GET users history from booking', async () => {
+        try {
+            /**
+             * Expect to fail as the user doesnt exist
+             */
+            const getNoneExistingHistory = await chai.request(app)
+                .get(`/v1/users/history/${NEVER_EXISTING_SSN}`)
+
+            expect(getNoneExistingHistory).to.have.status(404, "Expect to fail as the user doesnt exist") 
+            expect(getNoneExistingHistory.body.error).to.equal("No matching id") 
+            
+            /**
+             * Expect to succeed
+            */
+            const getHistory = await chai.request(app)
+                .get(`/v1/users/history/${ALWAYS_EXISTING_SSN}`)
+                expect(getHistory).to.have.status(200, "should succeed as the user exists") 
+                expect(getHistory.body.user).to.not.be.empty;
+            
+        } catch (error) {
+            console.error('Error in test:', error);
+            throw error; // Re-throw the error to fail the test
+        }
+    });
+
+    it('GET /invoice/:user_id - GET users invoices', async () => {
+        try {
+            /**
+             * Expect to fail as the user doesnt exist
+             */
+            const getNoneExistingInvoice = await chai.request(app)
+                .get(`/v1/users/invoice/${NEVER_EXISTING_SSN}`)
+            expect(getNoneExistingInvoice).to.have.status(404, "Expect to fail as the user doesnt exist") 
+            expect(getNoneExistingInvoice.body.error).to.equal("No matching id") 
+            
+            /**
+             * Expect to succeed
+            */
+            const getInvoice = await chai.request(app)
+                .get(`/v1/users/invoice/${ALWAYS_EXISTING_SSN}`)
+                expect(getInvoice).to.have.status(200, "should succeed as the user exists") 
+                expect(getInvoice.body.user).to.not.be.empty;
             
         } catch (error) {
             console.error('Error in test:', error);
