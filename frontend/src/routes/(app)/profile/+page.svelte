@@ -32,17 +32,14 @@
 		</div>
 		<div class="options-div">
 			<h2><a href="/profile/travels">Travels</a></h2>
-			<!-- TODO update href -->
 			<h2><a href="/profile/invoice">Invoice</a></h2>
-			<!-- TODO update href -->
 			<h2><a href="/profile">Payment</a></h2>
 			<!-- TODO update href -->
 		</div>
 	</div>
 </div>
 <footer>
-	<h4 id="api"><a href="#api">API</a></h4>
-	<!-- TODO Add route to API documentation -->
+	<h4><a href="https://github.com/elemoser/elsparkcyklar-app/wiki" target="_blank">API</a></h4>
 </footer>
 
 <style lang="scss">
@@ -90,6 +87,7 @@
 		a {
 			color: $text-color;
 			background-color: $contrast-color;
+			border: 1px solid $con-border-col;
 			text-decoration: none;
 			padding: 0.2em 0.5em;
 			border-radius: 0.5rem;
