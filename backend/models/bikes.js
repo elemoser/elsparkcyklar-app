@@ -3,10 +3,7 @@ const { Op } = require("sequelize");
 
 const City = require("../orm/model-router.js")("city");
 const Bike = require("../orm/model-router.js")("bike");
-
-function upperFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+const { upperFirst } = require("./utils.js")
 
 const bike = {
     /**
