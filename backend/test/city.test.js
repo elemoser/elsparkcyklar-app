@@ -6,7 +6,7 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 const baseRoute = "/v1/city"
 
-describe('Api test suite', () => {
+describe('Api test suite for the city/ routes', () => {
     const NEVER_EXISTING_NUMBER = "9999999999999999"
     const ALWAYS_EXISTING_NUMBER = "1"
     const testIdForUpdate = 667
@@ -48,20 +48,6 @@ describe('Api test suite', () => {
         }
     });
 
-//     DELETE /v1/city/id/[city_id]
-// ```
-// Required parameters:
-// ```
-// id
-// ```
-// Result:
-// ```
-// status(200) 'City successfully deleted'
-// ```
-// Possible errors (besides from db-errors):
-// ```
-// status(404) 'City doesn't exist'
-// ```
     it('DELETE /v1/users/id/[user_id] - Remove invoice', async () => {
         try {
             const removeNoneExisting = await chai.request(app)
@@ -92,7 +78,6 @@ describe('Api test suite', () => {
                 expect(getCities).to.have.status(200, "should succeed as the user exists") 
                 expect(getCities.body.city).to.not.be.empty;
                 expect(getCities.body.city).to.be.an("array")
-                console.log(getCities.body.city);
         } catch (error) {
             console.error('Error in test:', error);
             throw error; // Re-throw the error to fail the test
@@ -120,24 +105,6 @@ describe('Api test suite', () => {
             throw error; // Re-throw the error to fail the test
         }
     });
-
-//     POST /v1/city
-    // ```
-    // Required parameters:
-    // ```
-    // id
-    // name
-    // bounds
-    // ```
-
-    // Result:
-    // ```
-    // status(200) - 'City created successfully'
-    // ```
-    // Possible errors (if 'id' already exists):
-    // ```
-    // status(500) 'Validation error'
-    // ```
 
     it('POST /v1/city - Creating cities', async () => {
         const mockCityId = "666"
@@ -183,7 +150,7 @@ describe('Api test suite', () => {
             name: "Some City",
             bounds: "[5.666666,2.666666]"
         }
-        const updateCityBroken = {
+        const updateCityBoundsNotString = {
             name: "Some City",
             bounds: [5.666666,2.666666]
         }
@@ -196,19 +163,29 @@ describe('Api test suite', () => {
                 .send();
             expect(updateNonExistingCity, "It shouldnt exist").to.have.status(404)
 
+            /**
+             * Try updating City 1 with empty updates, check that it DID NOT change
+             */
+            const getCity1 = await chai.request(app).get(`${baseRoute}/id/1`)
             const updateExistingCityNoVal = await chai.request(app)
                 .put(`${baseRoute}/id/1`)
                 .send();
             expect(updateExistingCityNoVal, "It shouldnt change anything since its empty, but it should succeed").to.have.status(200)
-
+            const getCity1AfterEmptyUpdate = await chai.request(app).get(`${baseRoute}/id/1`)
+            expect(getCity1.body.city.name, "Should be equal, the update was empty so city 1 should still be named 'Stockholm'")
+                .to.be.equal(getCity1AfterEmptyUpdate.body.city.name)
             
+            /**
+             * Test updating a city: bounds column with non stringified data. Should fail
+             */
             const updateExistingCityBrokenVal = await chai.request(app)
             .put(`${baseRoute}/id/1`)
-            .send(updateCityBroken);
+            .send(updateCityBoundsNotString);
             expect(updateExistingCityBrokenVal, "Should fail bc the provided bounds are not strings").to.have.status(500)
+            
             /**
              * Expect to succeed
-            // */
+             */
             const updateExistingCity = await chai.request(app)
                 .put(`${baseRoute}/id/${testIdForUpdate}`)
                 .send(updateCity);
