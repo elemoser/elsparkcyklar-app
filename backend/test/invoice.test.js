@@ -24,18 +24,21 @@ describe('Api test suite', () => {
             total_price: 18.75,
             status: "pending"
         });
-        console.log("🚀 ~ file: invoice.test.js:27 ~ after ~ newUser:", newUser)
-
     });
 
-    it('DELETE /v1/users/id/[user_id] - Remove added user', (done) => {
-        // First request to create the user
-        chai.request(app)
-        .delete(`${baseRoute}/id/5`)
-        .end((err, res) => {
-            expect(res).to.have.status(200);
-            done();
-        })
+    it('DELETE /v1/invoice/id/[user_id] - Remove invoice', async () => {
+        try {
+            const removeNoneExisting = await chai.request(app)
+            .delete(`${baseRoute}/id/${NEVER_EXISTING_NUMBER}`)
+            expect(removeNoneExisting, `Should fail as there is no invoice with id = ${NEVER_EXISTING_NUMBER}`).to.have.status(404);
+            const removed = await chai.request(app)
+            .delete(`${baseRoute}/id/5`)
+            expect(removed, "Should succeed. Invoice id 5 should exist").to.have.status(200);
+        } catch (error) {
+            // Handle errors
+            console.error(error);
+            throw error;
+        }
     });
 
 
@@ -46,7 +49,7 @@ describe('Api test suite', () => {
             */
             const getInvoice = await chai.request(app)
                 .get(`${baseRoute}`)
-                expect(getInvoice).to.have.status(200, "should succeed as the user exists") 
+                expect(getInvoice).to.have.status(200, "should succeed") 
                 expect(getInvoice.body.invoice).to.not.be.empty;
                 expect(getInvoice.body.invoice).to.be.an("array")
             
@@ -63,14 +66,14 @@ describe('Api test suite', () => {
             */
             const getInvoice = await chai.request(app)
                 .get(`${baseRoute}/id/${ALWAYS_EXISTING_NUMBER}`)
-                expect(getInvoice).to.have.status(200, "should succeed as the user exists") 
+                expect(getInvoice).to.have.status(200, "should succeed as the invoice exists") 
                 expect(getInvoice.body.invoice).to.not.be.empty;
                 expect(getInvoice.body.invoice).to.be.an("object")
                 expect(getInvoice.body.invoice.id.toString()).to.equal("1")
             
             const getNoneExistingInvoice = await chai.request(app)
                 .get(`${baseRoute}/id/${NEVER_EXISTING_NUMBER}`)
-                expect(getNoneExistingInvoice).to.have.status(404, "should succeed as the user exists") 
+                expect(getNoneExistingInvoice).to.have.status(404, "should succeed as the Invoice exists") 
             
         } catch (error) {
             console.error('Error in test:', error);
@@ -78,17 +81,16 @@ describe('Api test suite', () => {
         }
     });
 
-    it('PUT /v1/users/id/:invoice_id - Update a invoice', async () => {
+    it('PUT /v1/invoice/id/:invoice_id - Update a invoice', async () => {
         const invoiceUpdateData = {
             status: "payed",
             total_price: 40
         }
-        const invoiceUpdateBrokenData = {
-            status: "Not_allowed_string",
-            total_price: -21
+        const invoiceUpdateBrokenDataPriceOnly = {
+            total_price: "aDS"
         }
         const invoiceUpdateBrokenDataStatusOnly = {
-            status: "Not allowed stat",
+            status: "Not allowed stat"
         }
         try {
             /**
@@ -116,12 +118,20 @@ describe('Api test suite', () => {
             expect(updateNothing, "Should be 200 but nothing is updated").to.have.status(200) 
             
             /**
-             * Make an empty update
+             * Make illegal status update
              */
             const updateWithBrokenData = await chai.request(app)
                 .put(`${baseRoute}/id/${ALWAYS_EXISTING_NUMBER}`)
-                .send(invoiceUpdateBrokenData);
-            expect(updateWithBrokenData, 'Expecting 401 for update with broken data').to.have.status(400) 
+                .send(invoiceUpdateBrokenDataStatusOnly);
+            expect(updateWithBrokenData, 'Expecting 401 for update with broken status data').to.have.status(400) 
+            
+            /**
+             * Make illegal total_price update
+             */
+            const updateWithBrokenDataPrice = await chai.request(app)
+                .put(`${baseRoute}/id/${ALWAYS_EXISTING_NUMBER}`)
+                .send(invoiceUpdateBrokenDataPriceOnly);
+            expect(updateWithBrokenDataPrice, 'Expecting 401 for update with broken Price data').to.have.status(400) 
             
         } catch (error) {
             console.error('Error in test:', error);
