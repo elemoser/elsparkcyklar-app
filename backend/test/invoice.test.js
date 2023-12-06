@@ -1,83 +1,43 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../app.js'); // Replace with the path to your main app file
+const Invoice = require("../orm/model-router.js")("invoice");
 chai.use(chaiHttp);
 const expect = chai.expect;
 const baseRoute = "/v1/invoice"
+
 describe('Api test suite', () => {
     const NEVER_EXISTING_NUMBER = "9999999999999999"
     const ALWAYS_EXISTING_NUMBER = "1"
-    let userDataToAdd;
-    let userDataToDelete;
-    let userDataToChange;
-    let userDataIsChanged;
-    let failedUserDataToAdd;
     before( async () => {
-        try {
-            failedUserDataToAdd = {
-                id: '9494949494',
-                last_name: 'l_name_anybody',
-                phone: '666',
-                mail: "test@mail.se",
-                balance: 40,
-                subscriber: 0
-            };
-            userDataToAdd = {
-                id: '9494949494',
-                first_name: 'f_name_somebody',
-                last_name: 'l_name_anybody',
-                phone: '666',
-                mail: "test@mail.se",
-                balance: 40,
-                subscriber: 0
-            };
-            userDataToDelete = {
-                id: '9595959595',
-                first_name: 'f_name_somebody_else',
-                last_name: 'l_name_anybody_else',
-                phone: '999',
-                mail: "test2@mail.se",
-                role: "customer",
-                balance: 30,
-                subscriber: 0
-            };
-            userDataToChange = {
-                id: '9696969696',
-                first_name: 'my_name',
-                last_name: 'my_lastname',
-                phone: '999',
-                mail: "test3@mail.se",
-                role: "customer",
-                balance: 0,
-                subscriber: 0
-            };
-            userDataIsChanged = {
-                first_name: 'not_my_name',
-                last_name: 'my_lastname',
-                phone: '999',
-                mail: "test3@mail.se",
-                role: "customer",
-                balance: 1,
-                subscriber: 1
-            };
-            /**
-             * Add the data to be removed.
-             */
-            await chai.request(app).post(`/v1/users`).send(userDataToDelete)
-            await chai.request(app).post(`/v1/users`).send(userDataToChange)
-        } catch (error) {
-        console.error('Error during before hook:', error);
-        throw error; // Rethrow the error to make Mocha aware of it
-    }
+        //
     })
 
     after( async () => {
         /**
          * Remove the data that was added
          */
-        await chai.request(app).delete(`/v1/users/id/${userDataToAdd.id}`)
-        await chai.request(app).delete(`/v1/users/id/${userDataToChange.id}`)
+        const newUser = await Invoice.create({
+            id: 5,
+            log_id: 5,
+            user_id: 2101040004,
+            total_price: 18.75,
+            status: "pending"
+        });
+        console.log("🚀 ~ file: invoice.test.js:27 ~ after ~ newUser:", newUser)
+
     });
+
+    it('DELETE /v1/users/id/[user_id] - Remove added user', (done) => {
+        // First request to create the user
+        chai.request(app)
+        .delete(`${baseRoute}/id/5`)
+        .end((err, res) => {
+            expect(res).to.have.status(200);
+            done();
+        })
+    });
+
 
     it('GET /invoice - GET all invoices', async () => {
         try {
@@ -111,6 +71,57 @@ describe('Api test suite', () => {
             const getNoneExistingInvoice = await chai.request(app)
                 .get(`${baseRoute}/id/${NEVER_EXISTING_NUMBER}`)
                 expect(getNoneExistingInvoice).to.have.status(404, "should succeed as the user exists") 
+            
+        } catch (error) {
+            console.error('Error in test:', error);
+            throw error; // Re-throw the error to fail the test
+        }
+    });
+
+    it('PUT /v1/users/id/:invoice_id - Update a invoice', async () => {
+        const invoiceUpdateData = {
+            status: "payed",
+            total_price: 40
+        }
+        const invoiceUpdateBrokenData = {
+            status: "Not_allowed_string",
+            total_price: -21
+        }
+        const invoiceUpdateBrokenDataStatusOnly = {
+            status: "Not allowed stat",
+        }
+        try {
+            /**
+             * Expect to fail
+             */
+            const updateNonExistingInvoice = await chai.request(app)
+                .put(`${baseRoute}/id/${NEVER_EXISTING_NUMBER}`)
+                .send();
+            expect(updateNonExistingInvoice).to.have.status(404) 
+            
+            /**
+             * Expect to succeed
+            */
+            const updateExistingUser = await chai.request(app)
+                .put(`${baseRoute}/id/${ALWAYS_EXISTING_NUMBER}`)
+                .send(invoiceUpdateData);
+            expect(updateExistingUser).to.have.status(200) 
+            
+            /**
+             * Make an empty update
+             */
+            const updateNothing = await chai.request(app)
+                .put(`${baseRoute}/id/${ALWAYS_EXISTING_NUMBER}`)
+                .send();
+            expect(updateNothing, "Should be 200 but nothing is updated").to.have.status(200) 
+            
+            /**
+             * Make an empty update
+             */
+            const updateWithBrokenData = await chai.request(app)
+                .put(`${baseRoute}/id/${ALWAYS_EXISTING_NUMBER}`)
+                .send(invoiceUpdateBrokenData);
+            expect(updateWithBrokenData, 'Expecting 401 for update with broken data').to.have.status(400) 
             
         } catch (error) {
             console.error('Error in test:', error);
