@@ -1,5 +1,4 @@
-import { error } from '@sveltejs/kit';
-
+// Load function for bike view
 export async function load({ fetch }) {
     let data = {};
     try {
