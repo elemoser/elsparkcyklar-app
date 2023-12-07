@@ -16,6 +16,7 @@
 	<div class="admin-nav">
 		<div><a href="/admin/users">Kunder</a></div>
 		<div><a href="/admin/bikes">Cyklar</a></div>
+		<div><a href="/admin/cities">Städer</a></div>
 		<div><a href="/admin/map">Karta</a></div>
 		<div><a href="/admin/pricing">Priser</a></div>
 	</div>
