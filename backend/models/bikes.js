@@ -3,8 +3,7 @@ const { Op } = require("sequelize");
 
 const City = require("../orm/model-router.js")("city");
 const Bike = require("../orm/model-router.js")("bike");
-const { upperFirst } = require("./utils.js")
-
+const { upperFirst, isValidCoordinates } = require("./utils.js")
 const bike = {
     /**
      * @description Getting all bikes from sqlite db
@@ -64,11 +63,11 @@ const bike = {
             }
 
             //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+            // const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
+            // function isValidCoordinates(coordinates) {
+            //     return coordinatesPattern.test(coordinates);
+            // }
 
             if (isValidCoordinates(position) && position.length === 16) {
                 const newBike = await Bike.create({
@@ -144,11 +143,11 @@ const bike = {
             }
 
             //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+            // const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
+            // function isValidCoordinates(coordinates) {
+            //     return coordinatesPattern.test(coordinates);
+            // }
 
             if (isValidCoordinates(position) && position.length === 16) {
                 await existingBike.update({
