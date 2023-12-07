@@ -25,7 +25,7 @@
                 content.splice(2, 0, name);
             }
             body[row] = content;
-            links[row] = [`/admin/c${bikeData[row].id}`,"view"];
+            links[row] = [`/admin/bikes/${bikeData[row].id}`,"view"];
         }
         bikes['body'] = body;
         bikes['links'] = links;
@@ -52,5 +52,6 @@
         <input type="text">
         <input type="submit" value='Sök'>
     </form>
+    <button><a href="/admin/bikes/new">+</a></button>
     <Table data={ bikes }/>
 {/if}
