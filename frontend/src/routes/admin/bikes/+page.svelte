@@ -4,26 +4,54 @@
     export let data;
     let bikes = {};
 
-    if (data && data.props.data.bike) {
+    if (data.props.data.bike) {
         let bikeData = data.props.data.bike;
         let body = {};
+        let links = {};
+        let content = [];
+        let city_id;
+        let name;
 
         // Create table headers
-        bikes['header']  = Object.keys(bikeData[0]);
+        content = Object.keys(bikeData[0]);
+        content.splice(2, 1, 'city'); // replace city_id header
+        bikes['header']  = content;
         // Create table content
         for (const row in bikeData) {
-            body[row] = Object.values(bikeData[row]);
+            content = Object.values(bikeData[row]);
+            // Replace city id with name
+            if (data.props.data.city) {
+                city_id = content.splice(2, 1);
+                name = getCityName(data.props.data.city, city_id);
+                content.splice(2, 0, name);
+            }
+            body[row] = content;
+            links[row] = [`/admin/c${bikeData[row].id}`,"view"];
         }
         bikes['body'] = body;
-        bikes['links'] = {}
+        bikes['links'] = links;
+    }
+
+    // Function to retrieve the city name
+    function getCityName(object, id) {
+        let name = '';
+
+        for (let item in object) {
+            if (object[item].id == id) {
+                name = object[item].name;
+            }
+        }
+
+        return name;
     }
 </script>
 
-<form>
-    <input type="text">
-    <input type="submit" value='Sök'>
-</form>
-
-{#if bikes }
+{#if data.props.data.error }
+    <p>{ data.props.data.error }</p>
+{:else}
+    <form>
+        <input type="text">
+        <input type="submit" value='Sök'>
+    </form>
     <Table data={ bikes }/>
 {/if}

@@ -1,7 +1,31 @@
+import { error } from '@sveltejs/kit';
 
 export async function load({ fetch }) {
-    // Get all users from the API
-    const response = await fetch(`http://server:1338/v1/bikes`);
-    const data = await response.json();
-    return { props: { data } };
+    let data = {};
+    try {
+        const responseBikes = await fetch(`http://server:1338/v1/bikes`);
+    
+        if (responseBikes.status == '200') {
+            const bike = await responseBikes.json();
+            data['bike'] = bike.bike;
+        } else {
+            data['error'] = responseBikes.statusText;
+        }
+
+        const responseCities = await fetch(`http://server:1338/v1/city`);
+    
+        if (responseCities.status == '200') {
+            const city = await responseCities.json();
+            data['city'] = city.city;
+        } else {
+            data['error'] = responseCities.statusText;
+        }
+
+        return { props: { data } };
+    } catch (error) {
+        console.error('Fetch error:', error.message);
+        data['error'] = error.message;
+
+        return { props: { data } };
+    }
 }
