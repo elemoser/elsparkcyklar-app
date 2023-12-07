@@ -1,27 +1,15 @@
 <script>
 	import LeafletMap from '$lib/components/LeafletMap.svelte';
-	//TODO fetch user log data.
+	export let data;
+
+	let { history } = data;
+
+	//Ugly fix to handle case when only 1 exists (non-iterable).
+	if (!Array.isArray(history)) {
+		history = [history];
+	}
+
 	//TODO make responsive.
-	const logPrototype = [
-		{
-			id: 123123,
-			startTime: '14:00',
-			startLoc: [17.8960319, 59.3331329],
-			endTime: '14:50',
-			endLoc: [18.141117, 59.2402445],
-			price: 123,
-			date: '2023-12-01'
-		},
-		{
-			id: 123456,
-			startTime: '15:00',
-			startLoc: [18.0014922, 59.341205],
-			endTime: '16:50',
-			endLoc: [17.893114, 59.409783],
-			price: 353,
-			date: '2023-12-01'
-		}
-	];
 
 	let rowTracker = null;
 
@@ -36,14 +24,14 @@
 
 <div class="log-wrapper">
 	<h1>Travel history</h1>
-	{#each logPrototype as log}
+	{#each history as log}
 		<div class="row-box">
 			<div class="log-row">
 				<div class="row-date">
-					<p>{log.date}</p>
-					<p>{log.startTime}</p>
+					<p>{log.start_time.slice(0, 11)}</p>
+					<p>{log.start_time.slice(11,16)}</p>
 					<p>-</p>
-					<p>{log.endTime}</p>
+					<p>{log.stop_time.slice(11,16)}</p>
 				</div>
 				<button on:click={() => showDetails(log.id)}
 					>{rowTracker === log.id ? 'Hide details' : 'View details'}</button
@@ -55,11 +43,11 @@
 					<!-- TODO Add so you can pass coords to map to generate markers? -->
 					<div class="info-dump">
 						<h5>ID: {log.id}</h5>
-						<h5>Time: {log.startTime}-{log.endTime}</h5>
-						<h5>Date: {log.date}</h5>
+						<h5>Time: {log.start_time.slice(11,16)}-{log.stop_time.slice(11,16)}</h5>
+						<h5>Date: {log.start_time.slice(0, 11)}</h5>
 						<h5>Price: {log.price}</h5>
-						<h5>From: {log.startLoc}</h5>
-						<h5>To: {log.endLoc}</h5>
+						<h5>From: {log.start_location}</h5>
+						<h5>To: {log.stop_location}</h5>
 					</div>
 				</div>
 			{/if}

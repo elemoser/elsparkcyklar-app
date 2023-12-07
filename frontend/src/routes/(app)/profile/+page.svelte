@@ -1,21 +1,15 @@
 <script>
-	//TODO Get signed in user with their user id through the API.
-	const user = {
-		ssn: 123123123,
-		name: 'Pelle',
-		surname: 'Skrutt',
-		phone: '07012312340',
-		mail: 'Pelle.skrutt@vmail.com',
-		balance: 1337,
-		subscriber: true
-	};
+	export let data;
+
+	const { user } = data;
 </script>
 
 <div class="profile-container">
 	<div class="user-div">
-		<h1>{user.name} {user.surname}</h1>
+		<h1>{user.first_name} {user.last_name}</h1>
 		<h4>Mail: {user.mail}</h4>
 		<h4>Phone: {user.phone}</h4>
+		<h5>Role: {user.role}</h5>
 		{#if user.subscriber}
 			<h5>Active subscription</h5>
 		{:else}
@@ -33,8 +27,7 @@
 		<div class="options-div">
 			<h2><a href="/profile/travels">Travels</a></h2>
 			<h2><a href="/profile/invoice">Invoice</a></h2>
-			<h2><a href="/profile">Payment</a></h2>
-			<!-- TODO update href -->
+			<h2><a href="/profile">Payment</a></h2> <!-- TODO Implement payment and update href -->
 		</div>
 	</div>
 </div>
