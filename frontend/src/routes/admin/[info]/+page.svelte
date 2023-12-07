@@ -4,12 +4,14 @@
 	export let data;
 	let type = '';
 
-	if (data.props.target.charAt(0) == 'k') {
-		type = 'user';
-	}
+    if (data.props.target.charAt(0) == 'k') {
+        type = 'kund';
+    } else if ( data.props.target.charAt(0) == 'c' ) {
+        type = 'cyckel';
+    }
 </script>
 
 {#if data}
-	<h1>Details for {type} {data.props.target.slice(1)}</h1>
-	<Form data={data.props.data} />
+    <h2>Detaljer för { type } { data.props.target.slice(1) }</h2>
+    <Form data={ data.props.data } />
 {/if}
