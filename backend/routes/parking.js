@@ -16,4 +16,16 @@ router.get('/id/:parking_id', (req, res) => {
     parking.getSpecificParking(req, res, parking_id)
 });
 
+//Update parking
+router.put('/id/:parking_id', (req, res) => {
+    let parking_id = req.params.parking_id;
+    parking.updateParking(req, res, parking_id);
+});
+
+//Delete parking
+router.delete('/id/:parking_id', (req, res) => {
+    let parking_id = req.params.parking_id;
+    parking.deleteParking(req, res, parking_id);
+});
+
 module.exports = router;
