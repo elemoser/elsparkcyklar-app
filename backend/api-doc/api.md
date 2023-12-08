@@ -1023,3 +1023,124 @@ Possible errors (besides from db-errors):
 ```
 status(404) 'Parking doesn't exist'
 ```
+
+## CHARGER
+
+En laddare har följande attribut:
+```
+id,
+parking_id,
+bike_id,
+status
+```
+
+### Hämta alla laddare
+
+```
+GET /v1/charger
+```
+
+Result:
+```
+{
+    "chargers": [
+        {
+            "id": 1,
+            "parking_id": 1,
+            "bike_id": 0,
+            "status": "available"
+        },
+        {
+            "id": 2,
+            "parking_id": 2,
+            "bike_id": 2,
+            "status": "occupied"
+        },
+    ...
+    ]
+}
+```
+
+### Hämta specifik laddare (id)
+
+```
+GET /v1/charger/id/[charger_id]
+```
+
+Result for "1":
+```
+{
+    "charger": {
+        "id": 1,
+        "parking_id": 1,
+        "bike_id": 0,
+        "status": "available"
+    }
+}
+```
+
+### Skapa en ny laddare
+
+```
+POST v1/charger
+```
+
+Required parameters:
+```
+id,
+parking_id
+```
+
+Result:
+```
+status(200) "Charger created successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "Id and parking_id must be numbers"
+status(400) "Parking_id must be one of: *available ids*"
+```
+
+### Uppdatera en laddare
+
+```
+PUT v1/charger/id/[charger_id]
+```
+
+Optional parameters:
+```
+parking_id,
+bike_id,
+status,
+```
+
+Result:
+```
+status(200) "Charger updated successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(404) "Charger doesn't exist"
+status(404) "Bike doesn't exist"
+status(400) "'status' must be one of: available, occupied"
+status(400) "Parking_id must be one of: *available ids*"
+```
+
+### Radera en laddare
+
+```
+DELETE /v1/charger/id/[charger_id]
+```
+
+Required parameters:
+```
+id
+```
+Result:
+```
+status(200) 'Charger successfully deleted'
+```
+Possible errors (besides from db-errors):
+```
+status(404) 'Charger doesn't exist'
+```
