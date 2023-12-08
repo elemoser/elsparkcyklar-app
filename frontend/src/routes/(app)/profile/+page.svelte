@@ -18,7 +18,7 @@
 		<h5 class="api-key">API KEY: uiseHgt789y4587234ynas32asde21x</h5>
 		<!-- TODO Show actual user API KEY in the future -->
 
-		<!-- TODO Add a button that leads to a form that allows the user to update their info. -->
+		<a href="/profile/update">Update profile</a>
 	</div>
 	<div class="menu-div">
 		<div>
@@ -54,6 +54,15 @@
 
 		h5 {
 			font-family: $text-font;
+
+			&:last-of-type {
+				margin-bottom: $calculated-line-height;
+			}
+		}
+
+		a {
+			font-weight: 700;
+			font-family: $header-font;
 		}
 
 		.api-key {
@@ -64,6 +73,23 @@
 	.menu-div {
 		display: flex;
 		flex-direction: column;
+	}
+
+	.user-div,
+	.options-div {
+		a {
+			color: $text-color;
+			background-color: $contrast-color;
+			border: 1px solid $con-border-col;
+			text-decoration: none;
+			padding: 0.2em 0.5em;
+			border-radius: 0.5rem;
+			transition: all 0.3s ease;
+
+			&:hover {
+				background-color: darken($contrast-color, 10%);
+			}
+		}
 	}
 
 	.options-div {
@@ -77,20 +103,6 @@
 
 			a {
 				flex-grow: 1;
-			}
-		}
-
-		a {
-			color: $text-color;
-			background-color: $contrast-color;
-			border: 1px solid $con-border-col;
-			text-decoration: none;
-			padding: 0.2em 0.5em;
-			border-radius: 0.5rem;
-			transition: all 0.3s ease;
-
-			&:hover {
-				background-color: darken($contrast-color, 10%);
 			}
 		}
 
