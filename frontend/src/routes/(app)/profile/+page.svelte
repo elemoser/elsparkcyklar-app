@@ -28,6 +28,9 @@
 			<h2><a href="/profile/travels">Travels</a></h2>
 			<h2><a href="/profile/invoice">Invoice</a></h2>
 			<h2><a href="/profile">Payment</a></h2> <!-- TODO Implement payment and update href -->
+			<form method="POST" action="?/logout">
+				<button type="submit">Logout</button>
+			</form>
 		</div>
 	</div>
 </div>
@@ -88,6 +91,25 @@
 
 			&:hover {
 				background-color: darken($contrast-color, 10%);
+			}
+		}
+
+		form {
+			margin: 0 auto;
+		}
+
+		button {
+			color: $text-color;
+			background-color: $contrast-color;
+			border: 1px solid $con-border-col;
+			padding: 0.2em 0.5em;
+			border-radius: 0.5rem;
+			transition: all 0.3s ease;
+
+			&:hover {
+				background-color: #f37474;
+				border: 1px solid darken(#f37474, 20%);
+				cursor: pointer;
 			}
 		}
 	}

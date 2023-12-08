@@ -5,7 +5,7 @@
 	let { history } = data;
 
 	//Ugly fix to handle case when only 1 exists (non-iterable).
-	if (!Array.isArray(history)) {
+	if (!Array.isArray(history) && history != undefined) {
 		history = [history];
 	}
 
@@ -24,35 +24,41 @@
 
 <div class="log-wrapper">
 	<h1>Travel history</h1>
-	{#each history as log}
-		<div class="row-box">
-			<div class="log-row">
-				<div class="row-date">
-					<p>{log.start_time.slice(0, 11)}</p>
-					<p>{log.start_time.slice(11,16)}</p>
-					<p>-</p>
-					<p>{log.stop_time.slice(11,16)}</p>
-				</div>
-				<button on:click={() => showDetails(log.id)}
-					>{rowTracker === log.id ? 'Hide details' : 'View details'}</button
-				>
-			</div>
-			{#if rowTracker === log.id}
-				<div class="details-box">
-					<LeafletMap />
-					<!-- TODO Add so you can pass coords to map to generate markers? -->
-					<div class="info-dump">
-						<h5>ID: {log.id}</h5>
-						<h5>Time: {log.start_time.slice(11,16)}-{log.stop_time.slice(11,16)}</h5>
-						<h5>Date: {log.start_time.slice(0, 11)}</h5>
-						<h5>Price: {log.price}</h5>
-						<h5>From: {log.start_location}</h5>
-						<h5>To: {log.stop_location}</h5>
+	{#if history}
+		{#each history as log}
+			<div class="row-box">
+				<div class="log-row">
+					<div class="row-date">
+						<p>{log.start_time.slice(0, 11)}</p>
+						<p>{log.start_time.slice(11,16)}</p>
+						<p>-</p>
+						<p>{log.stop_time.slice(11,16)}</p>
 					</div>
+					<button on:click={() => showDetails(log.id)}
+						>{rowTracker === log.id ? 'Hide details' : 'View details'}</button
+					>
 				</div>
-			{/if}
-		</div>
-	{/each}
+				{#if rowTracker === log.id}
+					<div class="details-box">
+						<LeafletMap />
+						<!-- TODO Add so you can pass coords to map to generate markers? -->
+						<div class="info-dump">
+							<h5>ID: {log.id}</h5>
+							<h5>Time: {log.start_time.slice(11,16)}-{log.stop_time.slice(11,16)}</h5>
+							<h5>Date: {log.start_time.slice(0, 11)}</h5>
+							<h5>Price: {log.price}</h5>
+							<h5>From: {log.start_location}</h5>
+							<h5>To: {log.stop_location}</h5>
+						</div>
+					</div>
+				{/if}
+			</div>
+		{/each}
+		<a href="/profile">back</a>
+	{:else}
+		<p>You have not been traveling with our service :&#40;</p>
+		<a href="/profile">back</a>
+	{/if}
 </div>
 
 <style lang="scss">

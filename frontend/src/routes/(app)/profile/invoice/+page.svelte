@@ -3,12 +3,11 @@
 
 	let { invoices } = data;
 
-	//Ugly fix to handle case when only 1 invoice exists (non-iterable).
-	if (!Array.isArray(invoices)) {
+	//Ugly fix to handle case when only 1 exists (non-iterable).
+	if (!Array.isArray(invoices) && invoices != undefined) {
 		invoices = [invoices];
 	}
 
-	//TODO fetch user invoices.
 	//TODO Make pretty.
 	//TODO make responsive.
 </script>
@@ -34,8 +33,10 @@
 				{/if}
 			</div>
 		{/each}
+		<a href="/profile">back</a>
 	{:else}
 		<p>You have no invoices.</p>
+		<a href="/profile">back</a>
 	{/if}
 </div>
 
