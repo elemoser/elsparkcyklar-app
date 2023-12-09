@@ -107,13 +107,32 @@ Result for "2101010001":
 }
 ```
 
-### Hämta en kunds fakturor
+### Hämta ALLA fakturor för en specifik kund
 
 ```
 GET /v1/users/invoice/[user_id]
 ```
 
 Result for "2101010001":
+```
+{
+    "user": {
+        "id": 1,
+        "log_id": 1,
+        "user_id": 2101010001,
+        "total_price": 10,
+        "status": "pending"
+    }
+}
+```
+
+### Hämta EN specifik faktura för en specifik kund
+
+```
+GET /v1/users/invoice/[user_id]/[invoice_id]
+```
+
+Result for "2101010001/1":
 ```
 {
     "user": {
@@ -284,7 +303,6 @@ POST /v1/city
 ```
 Required parameters:
 ```
-id
 name
 bounds
 ```
@@ -292,10 +310,6 @@ bounds
 Result:
 ```
 status(200) - 'City created successfully'
-```
-Possible errors (if 'id' already exists):
-```
-status(500) 'Validation error'
 ```
 
 ### Uppdatera en stad
@@ -388,7 +402,6 @@ POST /v1/bikes
 ```
 Required parameters:
 ```
-id
 battery
 city_id
 position
@@ -403,11 +416,7 @@ Result:
 ```
 status(200) - 'Bike created successfully'
 ```
-Possible errors (if 'id' already exists):
-```
-status(500) 'Validation error'
-```
-...or
+Possible errors:
 ```
 status(400) 'position' is not formatted correctly'
 status(400) 'state' must be one of: "occupied", "available", "disabled"'
@@ -624,7 +633,6 @@ POST /v1/booking
 ```
 Required parameters:
 ```
-id,
 bike_id,
 user_id,
 ```
@@ -633,11 +641,7 @@ Result:
 ```
 status(200) - 'Booking created successfully'
 ```
-Possible errors (if 'id' already exists):
-```
-status(500) 'Validation error'
-```
-...or
+Possible errors:
 ```
 User-related:
     status(400) 'User doesn't exist'
@@ -963,8 +967,7 @@ POST v1/parking
 
 Required parameters:
 ```
-id,
-city_id
+city_id,
 name,
 bounds,
 number_of_chargers
@@ -976,7 +979,7 @@ status(200) "Parking created successfully"
 ```
 Possible errors (besides from db-errors):
 ```
-status(400) "Id, city_id and number_of_chargers must be numbers"
+status(400) "City_id and number_of_chargers must be numbers"
 status(400) "Invalid coordinates format"
 status(400) "City doesn't exist!"
 ```
@@ -1022,4 +1025,125 @@ status(200) 'Parking successfully deleted'
 Possible errors (besides from db-errors):
 ```
 status(404) 'Parking doesn't exist'
+```
+
+## CHARGER
+
+En laddare har följande attribut:
+```
+id,
+parking_id,
+bike_id,
+status
+```
+
+### Hämta alla laddare
+
+```
+GET /v1/charger
+```
+
+Result:
+```
+{
+    "chargers": [
+        {
+            "id": 1,
+            "parking_id": 1,
+            "bike_id": 0,
+            "status": "available"
+        },
+        {
+            "id": 2,
+            "parking_id": 2,
+            "bike_id": 2,
+            "status": "occupied"
+        },
+    ...
+    ]
+}
+```
+
+### Hämta specifik laddare (id)
+
+```
+GET /v1/charger/id/[charger_id]
+```
+
+Result for "1":
+```
+{
+    "charger": {
+        "id": 1,
+        "parking_id": 1,
+        "bike_id": 0,
+        "status": "available"
+    }
+}
+```
+
+### Skapa en ny laddare
+
+```
+POST v1/charger
+```
+
+Required parameters:
+```
+parking_id
+```
+
+Result:
+```
+status(200) "Charger created successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "Parking_id must be numbers"
+status(400) "Parking_id must be one of: *available ids*"
+```
+
+### Uppdatera en laddare
+
+```
+PUT v1/charger/id/[charger_id]
+```
+
+Optional parameters:
+```
+parking_id,
+bike_id,
+status,
+```
+
+Result:
+```
+status(200) "Charger updated successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(404) "Charger doesn't exist"
+status(404) "Bike doesn't exist"
+status(400) "'status' must be one of: available, occupied"
+status(400) "If no bike is using the charger, status should be 'available'"
+status(400) "Parking_id must be one of: *available ids*"
+```
+
+### Radera en laddare
+
+```
+DELETE /v1/charger/id/[charger_id]
+```
+
+Required parameters:
+```
+id
+```
+Result:
+```
+status(200) 'Charger successfully deleted'
+```
+Possible errors (besides from db-errors):
+```
+status(404) 'Charger doesn't exist'
 ```

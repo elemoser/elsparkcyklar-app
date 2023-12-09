@@ -57,11 +57,11 @@ VALUES
 -- Inserting data into the Charger Table
 INSERT INTO charger (id, parking_id, bike_id, status)
 VALUES
-    (1, 1, 1, 'available'),
+    (1, 1, 0, 'available'),
     (2, 2, 2, 'occupied'),
-    (3, 3, 3, 'available'),
+    (3, 3, 0, 'available'),
     (4, 4, 4, 'occupied'),
-    (5, 5, 5, 'available');
+    (5, 5, 0, 'available');
 
 -- -- Inserting data into the Log Table
 -- INSERT INTO log (id, booking_id, bike_id, user_id, start_time, start_location, stop_time, stop_location, price, timestamp)
