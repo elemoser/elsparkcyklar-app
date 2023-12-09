@@ -13,13 +13,12 @@
 		<div class="bike-container">
 			<a href="{cityId}/{bike.id}">
 				<div class="bike-data">
-				<h2>Bike {bike.id}</h2>
-				<h5>Battery: {bike.battery}%</h5>
-				<h5>{bike.state}</h5>
+					<h2>Bike {bike.id}</h2>
+					<h5>Battery: {bike.battery}%</h5>
+					<h5>{bike.state}</h5>
 				</div>
 			</a>
 		</div>
-		
 	{/each}
 {/if}
 
@@ -32,6 +31,14 @@
 		background-color: $contrast-color;
 		max-width: 250px;
 		margin-bottom: $calculated-line-height;
+
+		&:hover {
+			background-color: darken($contrast-color, 10%);
+		}
+
+		a {
+			text-decoration: none;
+		}
 	}
 
 	.bike-data {
@@ -43,19 +50,11 @@
 		h5 {
 			margin-bottom: calc($calculated-line-height / 4);
 			text-decoration: none;
-			color: lighten($text-color, 5%)
+			color: lighten($text-color, 5%);
 		}
 	}
 
 	h2 {
 		margin-bottom: calc($calculated-line-height / 3);
-		a {
-			font-size: calc($base-font-size) * 1.25;
-			color: $text-color;
-			&:hover {
-				cursor: pointer;
-				text-decoration: none;
-			}
-		}
 	}
 </style>

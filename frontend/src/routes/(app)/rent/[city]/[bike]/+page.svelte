@@ -9,8 +9,9 @@
 <p>Battery: {bike.battery}%</p>
 <p>Status: {bike.state}</p>
 
-<form method="POST" action="?/rent"> <!-- TODO add action to rent bike. -->
-	<button class="button" type="submit" value="{bike.id}">Rent</button>
+<form method="POST" action="?/rent">
+	<!-- TODO add action to rent bike. -->
+	<button class="button" type="submit" value={bike.id}>Rent</button>
 </form>
 <!--
 	is user subscriber? else pay upfront to rent

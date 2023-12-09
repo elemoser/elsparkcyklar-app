@@ -23,7 +23,7 @@
 		{#if register}
 			<form method="POST" action="?/register">
 				<label for="id">SSN</label>
-				<input id="id" name="id" type="number" required>
+				<input id="id" name="id" type="number" required />
 
 				<label for="fname">Förnamn</label>
 				<input id="fname" name="fname" type="text" required />
@@ -40,7 +40,7 @@
 				<label for="pw">Lösenord</label>
 				<input id="pw" name="pw" type="password" required />
 
-				<input type="submit" value="Registrera"/>
+				<input type="submit" value="Registrera" />
 			</form>
 		{:else}
 			<form method="POST" action="?/login">
@@ -52,7 +52,7 @@
 				<label for="pw">Lösenord</label>
 				<input id="pw" name="pw" type="password" required />
 				-->
-				<input type="submit" value="Logga in"/>
+				<input type="submit" value="Logga in" />
 			</form>
 		{/if}
 		<div class="text-div">

@@ -1,40 +1,40 @@
 <script>
-    export let data;
-    const { user } = data;
+	export let data;
+	const { user } = data;
 </script>
 
 <div class="update-container">
-    <h1>Update user</h1>
-    <form method="POST" action="?/update">
-        <input id="id" name="id" type="hidden" value="{user.id}" required>
+	<h1>Update user</h1>
+	<form method="POST" action="?/update">
+		<input id="id" name="id" type="hidden" value={user.id} required />
 
-        <label for="fname">Förnamn</label>
-        <input id="fname" name="fname" type="text" placeholder="{user.first_name}"/>
-    
-        <label for="lname">Efternamn</label>
-        <input id="lname" name="lname" type="text" placeholder="{user.last_name}"/>
-    
-        <label for="phone">Telefonnummer</label>
-        <input id="phone" name="phone" type="tel" placeholder="{user.phone}"/>
-    
-        <label for="email">E-post</label>
-        <input id="email" name="email" type="email" placeholder="{user.mail}" />
-    
-        <label for="pw">Lösenord</label>
-        <input id="pw" name="pw" type="password" placeholder="**************"/>
-    
-        <input type="submit" value="Update"/>
-    </form>
+		<label for="fname">Förnamn</label>
+		<input id="fname" name="fname" type="text" placeholder={user.first_name} />
+
+		<label for="lname">Efternamn</label>
+		<input id="lname" name="lname" type="text" placeholder={user.last_name} />
+
+		<label for="phone">Telefonnummer</label>
+		<input id="phone" name="phone" type="tel" placeholder={user.phone} />
+
+		<label for="email">E-post</label>
+		<input id="email" name="email" type="email" placeholder={user.mail} />
+
+		<label for="pw">Lösenord</label>
+		<input id="pw" name="pw" type="password" placeholder="**************" />
+
+		<input type="submit" value="Update" />
+	</form>
 </div>
 
 <style lang="scss">
-    .update-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+	.update-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 
-    label {
+	label {
 		font-size: $base-font-size;
 		font-family: $text-font;
 		font-weight: 600;

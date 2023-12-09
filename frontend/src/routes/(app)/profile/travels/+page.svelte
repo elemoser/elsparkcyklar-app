@@ -30,9 +30,9 @@
 				<div class="log-row">
 					<div class="row-date">
 						<p>{log.start_time.slice(0, 11)}</p>
-						<p>{log.start_time.slice(11,16)}</p>
+						<p>{log.start_time.slice(11, 16)}</p>
 						<p>-</p>
-						<p>{log.stop_time.slice(11,16)}</p>
+						<p>{log.stop_time.slice(11, 16)}</p>
 					</div>
 					<button on:click={() => showDetails(log.id)}
 						>{rowTracker === log.id ? 'Hide details' : 'View details'}</button
@@ -44,7 +44,7 @@
 						<!-- TODO Add so you can pass coords to map to generate markers? -->
 						<div class="info-dump">
 							<h5>ID: {log.id}</h5>
-							<h5>Time: {log.start_time.slice(11,16)}-{log.stop_time.slice(11,16)}</h5>
+							<h5>Time: {log.start_time.slice(11, 16)}-{log.stop_time.slice(11, 16)}</h5>
 							<h5>Date: {log.start_time.slice(0, 11)}</h5>
 							<h5>Price: {log.price}</h5>
 							<h5>From: {log.start_location}</h5>

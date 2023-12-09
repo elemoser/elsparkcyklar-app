@@ -26,7 +26,7 @@
 				</div>
 				-->
 				<p>Price: {invoice.total_price}</p>
-				{#if invoice.status === "payed"}
+				{#if invoice.status === 'payed'}
 					<p class="paid">Paid</p>
 				{:else}
 					<a class="button" href="/profile/invoice/{invoice.id}">Pay</a>

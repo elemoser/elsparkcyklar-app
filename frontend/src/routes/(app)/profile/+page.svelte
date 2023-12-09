@@ -27,7 +27,8 @@
 		<div class="options-div">
 			<h2><a class="button" href="/profile/travels">Travels</a></h2>
 			<h2><a class="button" href="/profile/invoice">Invoice</a></h2>
-			<h2><a class="button" href="/profile">Payment</a></h2> <!-- TODO Implement payment and update href -->
+			<h2><a class="button" href="/profile">Payment</a></h2>
+			<!-- TODO Implement payment and update href -->
 			<form method="POST" action="?/logout">
 				<button class="button" type="submit">Logout</button>
 			</form>
