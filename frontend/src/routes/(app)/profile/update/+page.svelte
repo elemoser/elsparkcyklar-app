@@ -21,7 +21,7 @@
         <input id="email" name="email" type="email" placeholder="{user.mail}" />
     
         <label for="pw">Lösenord</label>
-        <input id="pw" name="pw" type="password" placeholder="**************" required />
+        <input id="pw" name="pw" type="password" placeholder="**************"/>
     
         <input type="submit" value="Update"/>
     </form>
