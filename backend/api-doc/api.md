@@ -12,6 +12,7 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 - [Booking](#booking)
 - [Invoice](#invoice)
 - [Price](#price)
+- [Parking](#parking)
 
 ## USERS
 
@@ -893,4 +894,132 @@ status(200) 'Price successfully deleted'
 Possible errors (besides from db-errors):
 ```
 status(404) 'Price doesn't exist'
+```
+
+## PARKING
+
+En parkering har följande attribut:
+```
+id,
+city_id
+name,
+bounds,
+number_of_chargers
+```
+
+### Hämta alla parkeringar
+
+```
+GET /v1/parking
+```
+
+Result:
+```
+{
+    "parking": [
+        {
+            "id": 2,
+            "city_id": 1,
+            "name": "Område 2",
+            "bounds": "59.332, 17.937, 59.312, 17.957",
+            "number_of_chargers": 8
+        },
+        {
+            "id": 3,
+            "city_id": 1,
+            "name": "Område 3",
+            "bounds": "59.398, 17.902, 59.378, 17.922",
+            "number_of_chargers": 12
+        },
+    ...
+    ]
+}
+```
+
+### Hämta specifik parkering (id)
+
+```
+GET /v1/parking/id/[parking_id]
+```
+
+Result for "2":
+```
+{
+    "parking": {
+        "id": 2,
+        "city_id": 1,
+        "name": "Område 2",
+        "bounds": "59.332, 17.937, 59.312, 17.957",
+        "number_of_chargers": 8
+    }
+}
+```
+
+### Skapa en ny parkering
+
+```
+POST v1/parking
+```
+
+Required parameters:
+```
+id,
+city_id
+name,
+bounds,
+number_of_chargers
+```
+
+Result:
+```
+status(200) "Parking created successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "Id, city_id and number_of_chargers must be numbers"
+status(400) "Invalid coordinates format"
+status(400) "City doesn't exist!"
+```
+
+### Uppdatera en parkering
+
+```
+PUT v1/parking/id/[parking_id]
+```
+
+Optional parameters:
+```
+name,
+bounds,
+number_of_chargers,
+```
+
+Result:
+```
+status(200) "Parking updated successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "Parking doesn't exist!"
+status(400) "'number_of_chargers' must be a number"
+status(400) "Invalid coordinates format"
+```
+
+### Radera en parkering
+
+```
+DELETE /v1/parking/id/[parking_id]
+```
+
+Required parameters:
+```
+id
+```
+Result:
+```
+status(200) 'Parking successfully deleted'
+```
+Possible errors (besides from db-errors):
+```
+status(404) 'Parking doesn't exist'
 ```

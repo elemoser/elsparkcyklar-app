@@ -48,11 +48,11 @@ VALUES
 -- Inserting data into the Parking Table
 INSERT INTO parking (id, city_id, name, bounds, number_of_chargers)
 VALUES
-    (1, 1, 'Central Parking', '59.3293, 18.0686', 10),
-    (2, 2, 'Harbor Parking', '57.7089, 11.9746', 8),
-    (3, 3, 'Downtown Parking', '55.6044, 13.0038', 12),
-    (4, 4, 'City Center Parking', '59.8586, 17.6389', 15),
-    (5, 5, 'Green Park', '58.4108, 15.6214', 5);
+    (1, 1, 'Område 1', '59.370, 17.966, 59.350, 17.986', 10),
+    (2, 1, 'Område 2', '59.332, 17.937, 59.312, 17.957', 8),
+    (3, 1, 'Område 3', '59.398, 17.902, 59.378, 17.922', 12),
+    (4, 1, 'Område 4', '59.358, 17.873, 59.338, 17.893', 15),
+    (5, 1, 'Område 5', '59.418, 17.834, 59.398, 17.854', 5);
 
 -- Inserting data into the Charger Table
 INSERT INTO charger (id, parking_id, bike_id, status)
