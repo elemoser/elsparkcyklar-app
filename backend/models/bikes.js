@@ -31,7 +31,6 @@ const bike = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 battery,
                 city_id,
                 speed,
@@ -40,7 +39,6 @@ const bike = {
             } = req.body;
 
             if (
-                !id ||
                 !battery ||
                 !city_id ||
                 !position
@@ -75,7 +73,6 @@ const bike = {
 
             if (isValidCoordinates(position) && position.length === 16) {
                 const newBike = await Bike.create({
-                    id: parseInt(id),
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
                     speed: parseFloat(speed),

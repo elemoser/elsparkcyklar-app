@@ -76,18 +76,17 @@ const charger = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 parking_id
             } = req.body;
 
-            if (!id || !parking_id) {
+            if (!parking_id) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
             let bike_id = 0;
             let status = "available";
 
-            if (isNaN(id) || isNaN (parking_id)) {
+            if (isNaN(parking_id)) {
                 return res.status(400).json({ error: "Id and parking_id must be numbers" });
             }
 
@@ -99,10 +98,15 @@ const charger = {
             }
 
             const newCharger = await Charger.create({
-                id: parseInt(id),
                 parking_id: parseInt(parking_id),
                 bike_id: parseInt(bike_id),
                 status: status
+            });
+
+            const updateParking = await Parking.findByPk(parking_id);
+
+            await updateParking.update({
+                number_of_chargers: updateParking.number_of_chargers + 1
             });
 
             res.status(200).json({ message: "Charger created successfully", charger: newCharger });
@@ -144,16 +148,22 @@ const charger = {
                 return res.status(400).json({ error: `Parking_id must be one of: ${parkingIds}` });
             }
 
-            const existingBike = await Bike.findByPk(bike_id);
+            if (bike_id != 0) {
+                const existingBike = await Bike.findByPk(bike_id);
 
-            if (!existingBike) {
-                return res.status(404).json({ error: "Bike doesn't exist" });
+                if (!existingBike) {
+                    return res.status(404).json({ error: "Bike doesn't exist" });
+                }
             }
 
             const acceptedStatus = ["available", "occupied"];
 
             if(!acceptedStatus.includes(status)) {
                 return res.status(400).json({ error: `'status' must be one of: ${acceptedStatus}` });
+            }
+
+            if(bike_id == 0 && status != "available") {
+                return res.status(400).json({ error: "If no bike is using the charger, status should be 'available'" });
             }
 
             await existingCharger.update({
@@ -182,6 +192,12 @@ const charger = {
             if (!existingCharger) {
                 return res.status(404).json({ error: "Charger doesn't exist" });
             }
+
+            const updateParking = await Parking.findByPk(existingCharger.parking_id);
+
+            await updateParking.update({
+                number_of_chargers: updateParking.number_of_chargers - 1
+            });
 
             await existingCharger.destroy();
 

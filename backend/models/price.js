@@ -42,16 +42,11 @@ const price = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 start_fee,
                 cost_per_minute,
                 free_parking_fee,
                 start_free_park_discount
             } = req.body;
-
-            if (!id) {
-                return res.status(400).json({ error: "Missing required fields" });
-            }
 
             start_fee = start_fee || 20.00
             cost_per_minute = cost_per_minute || 3.00
@@ -72,7 +67,6 @@ const price = {
             }
 
             const newPrice = await Price.create({
-                id: parseInt(id),
                 start_fee: parseFloat(start_fee),
                 cost_per_minute: parseFloat(cost_per_minute),
                 free_parking_fee: parseFloat(free_parking_fee),

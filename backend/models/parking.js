@@ -47,15 +47,13 @@ const parking = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 city_id,
                 name,
                 bounds,
                 number_of_chargers,
             } = req.body;
 
-            if (!id ||
-                !city_id ||
+            if (!city_id ||
                 !name ||
                 !bounds
                 ) {
@@ -64,7 +62,7 @@ const parking = {
 
             number_of_chargers = number_of_chargers || 0;
 
-            if (isNaN(id) || isNaN(city_id) || isNaN(number_of_chargers)) {
+            if (isNaN(city_id) || isNaN(number_of_chargers)) {
                 return res.status(400).json({ error: "Id, city_id and number_of_chargers must be numbers" });
             }
 
@@ -82,7 +80,6 @@ const parking = {
 
             if (isValidCoordinates(bounds) && bounds.length === 30) {
                 const newParking = await Parking.create({
-                    id: parseInt(id),
                     city_id: parseInt(city_id),
                     name: name,
                     bounds: bounds,

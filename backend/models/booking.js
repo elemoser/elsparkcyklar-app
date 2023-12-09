@@ -55,12 +55,11 @@ const booking = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 bike_id,
                 user_id,
             } = req.body;
 
-            if (!id || !bike_id || !user_id) {
+            if (!bike_id || !user_id) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
@@ -118,7 +117,6 @@ const booking = {
             let price = checkUser.subscriber === 1 ? 0 : 10;
 
             const newBooking = await Booking.create({
-                id: parseInt(id),
                 bike_id: parseInt(bike_id),
                 user_id: parseInt(user_id),
                 start_time: startTimeStamp,

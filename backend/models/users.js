@@ -70,7 +70,7 @@ const users = {
      * @description Get invoices based on id
      *
      */
-        getUserInvoice: async function getUserInvoice(req, res, user_id) {
+        getUserInvoices: async function getUserInvoices(req, res, user_id) {
             try {
                 const userInvoice = await Invoice.findOne({
                     where: { user_id: user_id },
@@ -86,6 +86,30 @@ const users = {
                 return res.status(500).json({ err: err.message });
             }
         },
+
+    /**
+ * @description Get ONE invoice based on its id for a specific user
+ *
+ */
+    getSpecificUserInvoice: async function getSpecificUserInvoice(req, res, user_id, invoice_id) {
+        try {
+            const userInvoice = await Invoice.findOne({
+                where: { 
+                    user_id: user_id,
+                    id: invoice_id
+                },
+            });
+
+            if (!userInvoice) {
+                return res.status(404).json({ error: "No matching id" });
+            }
+
+            return res.json({ user: userInvoice });
+        } catch (err) {
+            console.error("Error in getSpecificUser:", err);
+            return res.status(500).json({ err: err.message });
+        }
+    },
 
     /**
      * @description Get all users whose first_name or last_name match the provided name
