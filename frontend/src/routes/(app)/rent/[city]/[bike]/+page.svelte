@@ -8,10 +8,9 @@
 <!-- TODO importera kartan och rita ut var cykeln befinner sig med hjälp av cykelns coords. -->
 <p>Battery: {bike.battery}%</p>
 <p>Status: {bike.state}</p>
-<!-- TODO En hyrknapp som låter användaren hyra cykeln -->
 
-<form action=""> <!-- TODO add action to rent bike. -->
-	<button class="button" type="submit">Rent</button>
+<form method="POST" action="?/rent"> <!-- TODO add action to rent bike. -->
+	<button class="button" type="submit" value="{bike.id}">Rent</button>
 </form>
 <!--
 	is user subscriber? else pay upfront to rent

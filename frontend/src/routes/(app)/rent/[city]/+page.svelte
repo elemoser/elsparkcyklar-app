@@ -58,12 +58,4 @@
 			}
 		}
 	}
-
-	a {
-		color: $text-color;
-		&:hover {
-			cursor: pointer;
-			text-decoration: none;
-		}
-	}
 </style>
