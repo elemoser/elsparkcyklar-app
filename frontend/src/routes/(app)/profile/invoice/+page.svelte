@@ -29,7 +29,7 @@
 				{#if invoice.status === "payed"}
 					<p class="paid">Paid</p>
 				{:else}
-					<a href="/profile/invoice/{invoice.id}">Pay</a>
+					<a class="button" href="/profile/invoice/{invoice.id}">Pay</a>
 				{/if}
 			</div>
 		{/each}
@@ -64,19 +64,9 @@
 		}
 
 		a {
-			color: $text-color;
-			background-color: $contrast-color;
-			font-family: $header-font;
-			font-weight: 700;
 			font-size: $base-font-size;
-			text-decoration: none;
-			border-radius: 0.25rem;
 			border: 1px solid $con-border-col;
 			padding: 0.2em 0.7em;
-
-			&:hover {
-				background-color: darken($contrast-color, 5%);
-			}
 		}
 	}
 

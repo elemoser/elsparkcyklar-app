@@ -16,7 +16,7 @@
 	</div>
 	<ul>
 		{#each navLinks as link}
-			<li><a href={link.url}>{link.name}</a></li>
+			<li><a class="button" href={link.url}>{link.name}</a></li>
 		{/each}
 	</ul>
 </nav>
@@ -50,21 +50,6 @@
 	li {
 		list-style-type: none;
 		padding-right: 1.5em;
-	}
-
-	a {
-		text-decoration: none;
-		color: $text-color;
-		font-family: $header-font;
-		font-weight: 700;
-		background-color: $contrast-color;
-		border-radius: 0.2rem;
-		padding: 0.5em 1em;
-		transition: all 0.3s ease;
-
-		&:hover {
-			background-color: darken($contrast-color, 10%);
-		}
 	}
 
 	@media screen and (max-width: 400px) {
