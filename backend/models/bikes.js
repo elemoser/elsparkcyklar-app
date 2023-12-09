@@ -61,14 +61,7 @@ const bike = {
                     error: `'state' must be one of: ${validStates.join(', ')}`
                 });
             }
-
-            //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            // const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
-
-            // function isValidCoordinates(coordinates) {
-            //     return coordinatesPattern.test(coordinates);
-            // }
-
+            
             if (isValidCoordinates(position) && position.length === 16) {
                 const newBike = await Bike.create({
                     id: parseInt(id),
