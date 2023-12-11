@@ -71,13 +71,20 @@ const bike = {
                 return coordinatesPattern.test(coordinates);
             }
 
+            let low_battery = false;
+
+            if (battery < 20) {
+                low_battery = true;
+            }
+
             if (isValidCoordinates(position) && position.length === 16) {
                 const newBike = await Bike.create({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
                     speed: parseFloat(speed),
                     position,
-                    state
+                    state,
+                    low_battery
                 });
 
                 res.status(200).json({ message: "Bike created successfully", bike: newBike });
@@ -118,6 +125,7 @@ const bike = {
             speed = speed || existingBike.speed;
             position = position || existingBike.position;
             state = state || existingBike.state;
+            let low_battery = existingBike.low_battery;
 
             const existingCity = await City.findByPk(city_id);
 
@@ -150,13 +158,18 @@ const bike = {
                 return coordinatesPattern.test(coordinates);
             }
 
+            if (battery < 20) {
+                low_battery = true;
+            }
+
             if (isValidCoordinates(position) && position.length === 16) {
                 await existingBike.update({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
                     speed: parseFloat(speed),
                     position,
-                    state
+                    state,
+                    low_battery
                 });
 
                 res.status(200).json({ message: "Bike updated successfully" });

@@ -150,9 +150,7 @@ const users = {
                 first_name,
                 last_name,
                 phone,
-                mail,
-                balance,
-                subscriber,
+                mail
             } = req.body;
 
             if (!id || !first_name || !last_name || !mail || !phone) {
@@ -163,23 +161,13 @@ const users = {
                 role = "customer";
             }
 
-            if (!balance) {
-                balance = 0.0;
-            }
-
-            if (!subscriber) {
-                subscriber = 0;
-            }
-
             const newUser = await User.create({
                 id: parseInt(id),
                 role,
                 first_name,
                 last_name,
                 phone,
-                mail,
-                balance: parseFloat(balance),
-                subscriber: parseInt(subscriber),
+                mail
             });
 
             res.status(200).json({ message: "User created successfully", user: newUser });
@@ -207,9 +195,7 @@ const users = {
                 first_name,
                 last_name,
                 phone,
-                mail,
-                balance,
-                subscriber,
+                mail
             } = req.body;
 
             //Sätt optionella värden till nya eller ursprungliga värden
@@ -218,8 +204,6 @@ const users = {
             last_name = last_name || existingUser.last_name;
             phone = phone || existingUser.phone;
             mail = mail || existingUser.mail;
-            balance = balance || existingUser.balance;
-            subscriber = subscriber || existingUser.subscriber;
 
             await existingUser.update({
                 role,
@@ -227,8 +211,6 @@ const users = {
                 last_name,
                 phone,
                 mail,
-                balance: parseFloat(balance),
-                subscriber: parseInt(subscriber),
             });
 
             res.status(200).json({ message: "User updated successfully" });

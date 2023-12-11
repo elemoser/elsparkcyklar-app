@@ -24,8 +24,6 @@ first_name
 last_name
 phone
 mail
-balance
-subscriber
 ```
 
 ### Hämta alla kunder
@@ -44,9 +42,7 @@ Result:
             "first_name": "John",
             "last_name": "Doe",
             "phone": "123456789",
-            "mail": "john.doe@example.com",
-            "balance": 50,
-            "subscriber": 1
+            "mail": "john.doe@example.com"
         },
         {
             "id": 2101020002,
@@ -54,9 +50,7 @@ Result:
             "first_name": "Jane",
             "last_name": "Smith",
             "phone": "987654321",
-            "mail": "jane.smith@example.com",
-            "balance": 30,
-            "subscriber": 0
+            "mail": "jane.smith@example.com"
         },
     ...
     ]
@@ -78,9 +72,7 @@ Result for "2101010001":
         "first_name": "John",
         "last_name": "Doe",
         "phone": "123456789",
-        "mail": "john.doe@example.com",
-        "balance": 50,
-        "subscriber": 1
+        "mail": "john.doe@example.com"
     }
 }
 ```
@@ -161,9 +153,7 @@ Result for "john":
             "first_name": "John",
             "last_name": "Doe",
             "phone": "123456789",
-            "mail": "john.doe@example.com",
-            "balance": 50,
-            "subscriber": 1
+            "mail": "john.doe@example.com"
         },
         {
             "id": 2101030003,
@@ -171,9 +161,7 @@ Result for "john":
             "first_name": "Alice",
             "last_name": "Johnson",
             "phone": "555111222",
-            "mail": "alice.johnson@example.com",
-            "balance": 20,
-            "subscriber": 1
+            "mail": "alice.johnson@example.com"
         }
     ]
 }
@@ -195,8 +183,6 @@ mail
 Optional parameters:
 ```
 role
-balance
-subscriber
 ```
 Result:
 ```
@@ -221,8 +207,6 @@ first_name
 last_name
 phone
 mail
-balance
-subscriber
 ```
 Result:
 ```
@@ -359,7 +343,7 @@ city_id
 speed
 position
 state
-disabled
+low_battery
 ```
 
 ### Hämta alla cyklar
@@ -378,17 +362,17 @@ Result:
             "city_id": 1,
             "speed": 25,
             "position": "59.3293, 18.0686",
-            "state": "active",
-            "disabled": 0
+            "state": "occupied",
+            "low_battery": false
         },
         {
             "id": 2,
             "battery": 60,
-            "city_id": 2,
-            "speed": 22.5,
+            "city_id": 1,
+            "speed": 0,
             "position": "59.3099, 18.0752",
-            "state": "inactive",
-            "disabled": 1
+            "state": "disabled",
+            "low_battery": false
         },
     ...
     ]
@@ -467,7 +451,8 @@ Result for "4":
         "city_id": 4,
         "speed": 20,
         "position": "59.8586, 17.6389",
-        "state": "occupied"
+        "state": "occupied",
+        "low_battery": false
     }
 }
 ```
@@ -488,7 +473,8 @@ Result for "5":
             "city_id": 5,
             "speed": 0,
             "position": "58.4108, 15.6214",
-            "state": "available"
+            "state": "available",
+            "low_battery": false
         }
     ]
 }
@@ -565,7 +551,7 @@ start_time
 start_location
 stop_time
 stop_location
-price FLOAT
+price
 ```
 
 ### Hämta alla bokningar
@@ -645,7 +631,6 @@ Possible errors:
 ```
 User-related:
     status(400) 'User doesn't exist'
-    status(400) 'Balance is too low'
     status(400) 'User already has an active booking'
 
 Bike-related:
@@ -793,7 +778,7 @@ free_parking_fee,
 start_free_park_discount
 ```
 
-### Hämta alla prisgrupper
+### Hämta priser
 
 ```
 GET /v1/price
@@ -814,53 +799,10 @@ Result:
 }
 ```
 
-### Hämta specifik prisgrupp (id)
+### Uppdatera priser
 
 ```
-GET /v1/price/id/[price_id]
-```
-
-Result for "1":
-```
-{
-    "price": {
-        "id": 1,
-        "start_fee": 20,
-        "cost_per_minute": 3,
-        "free_parking_fee": 20,
-        "start_free_park_discount": 0.5
-    }
-}
-```
-
-### Skapa en ny prisgrupp
-
-```
-POST v1/price
-```
-
-Required parameters:
-```
-start_fee,
-cost_per_minute,
-free_parking_fee,
-start_free_park_discount
-```
-
-Result:
-```
-status(200) "Price created successfully"
-```
-Possible errors (besides from db-errors):
-```
-status(400) "Missing required fields"
-status(400) "Values must be floats"
-```
-
-### Uppdatera en prisgrupp
-
-```
-PUT v1/price/id/[price_id]
+PUT v1/price/
 ```
 
 Optional parameters:
@@ -881,24 +823,6 @@ status(404) "PriceType doesn't exist"
 status(400) "Values must be floats"
 ```
 
-### Radera en prisgrupp
-
-```
-DELETE /v1/price/id/[price_id]
-```
-
-Required parameters:
-```
-id
-```
-Result:
-```
-status(200) 'Price successfully deleted'
-```
-Possible errors (besides from db-errors):
-```
-status(404) 'Price doesn't exist'
-```
 
 ## PARKING
 
