@@ -16,3 +16,19 @@ html {
 .wrapper {
 	margin: 0 $calculated-line-height;
 }
+
+.button {
+	text-decoration: none;
+	color: $text-color;
+	font-family: $header-font;
+	font-weight: 700;
+	background-color: $contrast-color;
+	border-radius: 0.2rem;
+	padding: 0.5em 1em;
+	transition: all 0.3s ease;
+
+	&:hover {
+		cursor: pointer;
+		background-color: darken($contrast-color, 10%);
+	}
+}

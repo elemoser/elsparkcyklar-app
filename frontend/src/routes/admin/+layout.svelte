@@ -71,36 +71,37 @@
 	}
 
 	.admin-nav {
-        display: flex;
-        flex-direction: row;
-        position: relative;
-        top: 0.5rem;
-        
-        div {
-            background-color: $dark-color;
-            border-radius: 5px;
-            margin: 1rem 1rem 0rem 0rem;
-        }
+		display: flex;
+		flex-direction: row;
+		position: relative;
+		top: 0.5rem;
 
-        div a {
-            color: white;
-            text-decoration: none;
-        }
+		div {
+			background-color: $dark-color;
+			border-radius: 5px;
+			margin: 1rem 1rem 0rem 0rem;
+		}
 
-        div, div a {
-            padding: 0.4rem 0.6rem 1rem;
-        }
-    }
+		div a {
+			color: white;
+			text-decoration: none;
+		}
 
-    .admin-main {
-        background-color: $dark-color;
-        color: white;
-        border-radius: 5px;
-        padding: 3rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+		div,
+		div a {
+			padding: 0.4rem 0.6rem 1rem;
+		}
+	}
+
+	.admin-main {
+		background-color: $dark-color;
+		color: white;
+		border-radius: 5px;
+		padding: 3rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
 
 	@media screen and (max-width: 400px) {
 		nav {

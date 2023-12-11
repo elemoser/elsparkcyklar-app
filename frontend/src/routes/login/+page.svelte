@@ -1,8 +1,9 @@
 <script>
 	import { app_name } from '$lib/index.js';
+	export let form;
 
-	//TODO Add functionality for creating a user and for logging in a user. form action = X if login or Y if register.
-	//TODO Add Phone nr to register form?
+	//TODO Remove "ID" has to exist because ID is forced in order to create user.
+	//TODO Change login to not be ID.
 
 	let register = false;
 	let btnValue = 'Registrera';
@@ -20,24 +21,38 @@
 		<h1>{app_name}</h1>
 
 		{#if register}
-			<form method="POST" action="">
+			<form method="POST" action="?/register">
+				<label for="id">SSN</label>
+				<input id="id" name="id" type="number" required />
+
 				<label for="fname">Förnamn</label>
-				<input id="fname" type="text" required />
+				<input id="fname" name="fname" type="text" required />
+
 				<label for="lname">Efternamn</label>
-				<input id="lname" type="text" required />
+				<input id="lname" name="lname" type="text" required />
+
+				<label for="phone">Telefonnummer</label>
+				<input id="phone" name="phone" type="tel" required />
+
 				<label for="email">E-post</label>
-				<input id="email" type="email" required />
+				<input id="email" name="email" type="email" required />
+
 				<label for="pw">Lösenord</label>
-				<input id="pw" type="password" required />
-				<input type="button" value="Registrera" />
+				<input id="pw" name="pw" type="password" required />
+
+				<input type="submit" value="Registrera" />
 			</form>
 		{:else}
-			<form method="POST" action="">
+			<form method="POST" action="?/login">
+				<label for="id">SSN</label>
+				<input id="id" name="id" type="number" required />
+				<!--
 				<label for="email">E-post</label>
-				<input id="email" type="email" required />
+				<input id="email" name="email" type="email" required />
 				<label for="pw">Lösenord</label>
-				<input id="pw" type="password" required />
-				<input type="button" value="Logga in" />
+				<input id="pw" name="pw" type="password" required />
+				-->
+				<input type="submit" value="Logga in" />
 			</form>
 		{/if}
 		<div class="text-div">
@@ -46,6 +61,11 @@
 				<input type="button" value={btnValue} on:click={toggleRegister} />
 			</label>
 		</div>
+		{#if form?.error}
+			<div class="error">
+				<h5>{form.error}</h5>
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -70,7 +90,7 @@
 		border-radius: 0.25em;
 		border: 1px solid #333;
 
-		&[type='button']:hover {
+		&[type='submit']:hover {
 			cursor: pointer;
 		}
 	}
@@ -114,6 +134,7 @@
 	.text-div {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 
 		p {
 			margin-bottom: unset;
@@ -126,6 +147,22 @@
 			&:hover {
 				text-decoration: none;
 			}
+		}
+	}
+
+	.error {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 0.5em;
+		margin: 0.5em;
+		background-color: $contrast-color;
+		border-radius: 0.25rem;
+		border: 1px solid $con-border-col;
+
+		h5 {
+			margin-bottom: unset;
 		}
 	}
 </style>

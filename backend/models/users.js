@@ -72,7 +72,7 @@ const users = {
      */
         getUserInvoices: async function getUserInvoices(req, res, user_id) {
             try {
-                const userInvoice = await Invoice.findOne({
+                const userInvoice = await Invoice.findAll({
                     where: { user_id: user_id },
                 });
 

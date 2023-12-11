@@ -193,7 +193,7 @@ const booking = {
             const batteryLevel = existingBike.battery - getRandomInt(5, 20);
 
             await existingBike.update({
-                state: "Available",
+                state: "available",
                 battery: batteryLevel
             });
 
