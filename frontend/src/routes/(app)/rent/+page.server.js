@@ -1,12 +1,11 @@
-import { cities, bikes } from './data'; //TODO data är tillfällig och skall tas bort när calls för API:et är klara.
-
-export function load() {
-	return {
-		res: cities.map((city) => ({
-			slug: city.id,
-			name: city.name,
-			bounds: city.bounds
-		})),
-		bikes: bikes
+export const load = async () => {
+	const allCities = async () => {
+		const citiesRes = await fetch('http://server:1338/v1/city');
+		const cities = await citiesRes.json();
+		return cities;
 	};
-}
+
+	return {
+		cities: allCities()
+	};
+};

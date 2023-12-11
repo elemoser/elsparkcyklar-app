@@ -1,43 +1,43 @@
 <script>
-	//TODO fetch user invoices.
+	export let data;
+
+	let { invoices } = data;
+
+	//Ugly fix to handle case when only 1 exists (non-iterable).
+	if (!Array.isArray(invoices) && invoices != undefined) {
+		invoices = [invoices];
+	}
+
+	//TODO Make pretty.
 	//TODO make responsive.
-	const invPrototype = [
-		{
-			id: 123123,
-			price: 123,
-			created: '2023-12-01',
-			due: '2023-12-31',
-			paid: false
-		},
-		{
-			id: 123456,
-			price: 353,
-			created: '2023-12-01',
-			due: '2023-12-31',
-			paid: true
-		}
-	];
 </script>
 
 <div class="invoice-wrapper">
 	<h1>Invoices</h1>
-	{#each invPrototype as invoice}
-		<div class="invoice-row">
-			<p>{invoice.id}</p>
-			<div class="date-div">
-				<p>{invoice.created}</p>
-				<p>-</p>
-				<p>{invoice.due}</p>
+	{#if invoices}
+		{#each invoices as invoice}
+			<div class="invoice-row">
+				<p>{invoice.id}</p>
+				<!--
+				<div class="date-div">
+					<p>{invoice.created}</p>
+					<p>-</p>
+					<p>{invoice.due}</p>
+				</div>
+				-->
+				<p>Price: {invoice.total_price}</p>
+				{#if invoice.status === 'payed'}
+					<p class="paid">Paid</p>
+				{:else}
+					<a class="button" href="/profile/invoice/{invoice.id}">Pay</a>
+				{/if}
 			</div>
-			<p>{invoice.price}</p>
-			{#if invoice.paid}
-				<p class="paid">Paid</p>
-			{:else}
-				<a href="/profile/invoice/{invoice.id}">Pay</a>
-				<!-- TODO Add a route to pay specific invoice -->
-			{/if}
-		</div>
-	{/each}
+		{/each}
+		<a href="/profile">back</a>
+	{:else}
+		<p>You have no invoices.</p>
+		<a href="/profile">back</a>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -64,18 +64,9 @@
 		}
 
 		a {
-			color: $text-color;
-			background-color: $contrast-color;
-			font-family: $header-font;
-			font-weight: 700;
 			font-size: $base-font-size;
-			text-decoration: none;
-			border-radius: 0.25rem;
+			border: 1px solid $con-border-col;
 			padding: 0.2em 0.7em;
-
-			&:hover {
-				background-color: darken($contrast-color, 5%);
-			}
 		}
 	}
 

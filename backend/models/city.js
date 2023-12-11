@@ -46,39 +46,20 @@ const city = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 name,
-                bounds,
-                radius
+                bounds
             } = req.body;
 
-            if (!id || !name || !bounds) {
+            if (!name || !bounds) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
-            if (!radius) {
-                radius = 5000;
-            }
+            const newCity = await City.create({
+                name,
+                bounds
+            });
 
-            //regex för att kontrollera formatet på stadens koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
-
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
-
-            if (isValidCoordinates(bounds) && bounds.length === 16) {
-                const newCity = await City.create({
-                    id: parseInt(id),
-                    name,
-                    bounds,
-                    radius: parseInt(radius)
-                });
-
-                res.status(200).json({ message: "City created successfully", city: newCity });
-            } else {
-                return res.status(400).json({ error: "'bounds' is not formatted correctly" });
-            }
+            res.status(200).json({ message: "City created successfully", city: newCity });
 
         } catch (err) {
             console.error("Error in createUser:", err);
@@ -101,33 +82,19 @@ const city = {
 
             let {
                 name,
-                bounds,
-                radius
+                bounds
             } = req.body;
 
             //Sätt optionella värden till nya eller ursprungliga värden
             name = name || existingCity.name;
             bounds = bounds || existingCity.bounds;
-            radius = radius || existingCity.radius;
 
-            //regex för att kontrollera formatet på stadens koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+            await existingCity.update({
+                name,
+                bounds
+            });
 
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
-
-            if (isValidCoordinates(bounds) && bounds.length === 16) {
-                await existingCity.update({
-                    name,
-                    bounds,
-                    radius: parseInt(radius)
-                });
-
-                res.status(200).json({ message: "City updated successfully" });
-            } else {
-                return res.status(400).json({ error: "bounds' is not formatted correctly" });
-            }
+            res.status(200).json({ message: "City updated successfully" });
 
         } catch (err) {
             console.error("Error in updateUser:", err);

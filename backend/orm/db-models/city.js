@@ -14,11 +14,6 @@ module.exports = function(sequelize, DataTypes) {
     bounds: {
       type: DataTypes.TEXT,
       allowNull: true
-    },
-    radius: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: 5000
     }
   }, {
     sequelize,

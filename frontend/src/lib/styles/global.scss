@@ -16,6 +16,8 @@ $base-line-height: 1.4;
 $base-font-size: 1.25rem;
 $calculated-line-height: $base-line-height * $base-font-size;
 
+$con-border-col: darken($contrast-color, 20%);
+
 /* FUNCTIONS */
 /*
 @function calculateLineHeight($base-line-height, $base-font-size) {

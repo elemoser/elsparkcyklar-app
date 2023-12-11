@@ -1,21 +1,15 @@
 <script>
-	//TODO Get signed in user with their user id through the API.
-	const user = {
-		ssn: 123123123,
-		name: 'Pelle',
-		surname: 'Skrutt',
-		phone: '07012312340',
-		mail: 'Pelle.skrutt@vmail.com',
-		balance: 1337,
-		subscriber: true
-	};
+	export let data;
+
+	const { user } = data;
 </script>
 
 <div class="profile-container">
 	<div class="user-div">
-		<h1>{user.name} {user.surname}</h1>
+		<h1>{user.first_name} {user.last_name}</h1>
 		<h4>Mail: {user.mail}</h4>
 		<h4>Phone: {user.phone}</h4>
+		<h5>Role: {user.role}</h5>
 		{#if user.subscriber}
 			<h5>Active subscription</h5>
 		{:else}
@@ -24,25 +18,25 @@
 		<h5 class="api-key">API KEY: uiseHgt789y4587234ynas32asde21x</h5>
 		<!-- TODO Show actual user API KEY in the future -->
 
-		<!-- TODO Add a button that leads to a form that allows the user to update their info. -->
+		<a class="button" href="/profile/update">Update profile</a>
 	</div>
 	<div class="menu-div">
 		<div>
 			<h3>Balance: {user.balance}$</h3>
 		</div>
 		<div class="options-div">
-			<h2><a href="/profile/travels">Travels</a></h2>
-			<!-- TODO update href -->
-			<h2><a href="/profile/invoice">Invoice</a></h2>
-			<!-- TODO update href -->
-			<h2><a href="/profile">Payment</a></h2>
-			<!-- TODO update href -->
+			<h2><a class="button" href="/profile/travels">Travels</a></h2>
+			<h2><a class="button" href="/profile/invoice">Invoice</a></h2>
+			<h2><a class="button" href="/profile">Payment</a></h2>
+			<!-- TODO Implement payment and update href -->
+			<form method="POST" action="?/logout">
+				<button class="button" type="submit">Logout</button>
+			</form>
 		</div>
 	</div>
 </div>
 <footer>
-	<h4 id="api"><a href="#api">API</a></h4>
-	<!-- TODO Add route to API documentation -->
+	<h4><a href="https://github.com/elemoser/elsparkcyklar-app/wiki" target="_blank">API</a></h4>
 </footer>
 
 <style lang="scss">
@@ -61,6 +55,15 @@
 
 		h5 {
 			font-family: $text-font;
+
+			&:last-of-type {
+				margin-bottom: $calculated-line-height;
+			}
+		}
+
+		a {
+			font-weight: 700;
+			font-family: $header-font;
 		}
 
 		.api-key {
@@ -71,6 +74,20 @@
 	.menu-div {
 		display: flex;
 		flex-direction: column;
+	}
+
+	.user-div,
+	.options-div {
+		a {
+			background-color: $contrast-color;
+			border: 1px solid $con-border-col;
+			padding: 0.2em 0.5em;
+			border-radius: 0.5rem;
+
+			&:hover {
+				background-color: darken($contrast-color, 10%);
+			}
+		}
 	}
 
 	.options-div {
@@ -87,16 +104,16 @@
 			}
 		}
 
-		a {
-			color: $text-color;
-			background-color: $contrast-color;
-			text-decoration: none;
-			padding: 0.2em 0.5em;
-			border-radius: 0.5rem;
-			transition: all 0.3s ease;
+		form {
+			margin: 0 auto;
+		}
+
+		button {
+			border: 1px solid $con-border-col;
 
 			&:hover {
-				background-color: darken($contrast-color, 10%);
+				background-color: #f37474;
+				border: 1px solid darken(#f37474, 20%);
 			}
 		}
 	}

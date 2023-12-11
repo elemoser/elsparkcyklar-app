@@ -1,5 +1,7 @@
 
 const User = require("../orm/model-router.js")("user");
+const Booking = require("../orm/model-router.js")("booking");
+const Invoice = require("../orm/model-router.js")("invoice");
 
 const { Op } = require("sequelize");
 
@@ -37,6 +39,72 @@ const users = {
             }
 
             return res.json({ user: specUser });
+        } catch (err) {
+            console.error("Error in getSpecificUser:", err);
+            return res.status(500).json({ err: err.message });
+        }
+    },
+
+    /**
+     * @description Get booking-history based on id
+     *
+     */
+        getUserHistory: async function getUserHistory(req, res, user_id) {
+            try {
+                const userHistory = await Booking.findOne({
+                    where: { user_id: user_id },
+                });
+    
+                if (!userHistory) {
+                    return res.status(404).json({ error: "No matching id" });
+                }
+    
+                return res.json({ user: userHistory });
+            } catch (err) {
+                console.error("Error in getSpecificUser:", err);
+                return res.status(500).json({ err: err.message });
+            }
+        },
+
+    /**
+     * @description Get invoices based on id
+     *
+     */
+        getUserInvoices: async function getUserInvoices(req, res, user_id) {
+            try {
+                const userInvoice = await Invoice.findAll({
+                    where: { user_id: user_id },
+                });
+
+                if (!userInvoice) {
+                    return res.status(404).json({ error: "No matching id" });
+                }
+
+                return res.json({ user: userInvoice });
+            } catch (err) {
+                console.error("Error in getSpecificUser:", err);
+                return res.status(500).json({ err: err.message });
+            }
+        },
+
+    /**
+ * @description Get ONE invoice based on its id for a specific user
+ *
+ */
+    getSpecificUserInvoice: async function getSpecificUserInvoice(req, res, user_id, invoice_id) {
+        try {
+            const userInvoice = await Invoice.findOne({
+                where: { 
+                    user_id: user_id,
+                    id: invoice_id
+                },
+            });
+
+            if (!userInvoice) {
+                return res.status(404).json({ error: "No matching id" });
+            }
+
+            return res.json({ user: userInvoice });
         } catch (err) {
             console.error("Error in getSpecificUser:", err);
             return res.status(500).json({ err: err.message });

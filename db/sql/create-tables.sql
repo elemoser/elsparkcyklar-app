@@ -15,16 +15,15 @@ CREATE TABLE user (
 -- City Table
 DROP TABLE IF EXISTS city;
 CREATE TABLE city (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    bounds TEXT,
-    radius INTEGER DEFAULT 5000
+    bounds TEXT
 );
 
 -- Bike Table
 DROP TABLE IF EXISTS bike;
 CREATE TABLE bike (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     battery INTEGER,
     city_id INTEGER,
     speed REAL DEFAULT 0.00,
@@ -59,6 +58,7 @@ CREATE TABLE invoice (
     log_id INTEGER,
     user_id INTEGER,
     total_price REAL,
+    status TEXT,
 
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (log_id) REFERENCES booking(id)
@@ -83,7 +83,7 @@ CREATE TABLE parked_bikes (
 -- Parking Table
 DROP TABLE IF EXISTS parking;
 CREATE TABLE parking (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     city_id INTEGER,
     name TEXT,
     bounds TEXT,
@@ -95,32 +95,32 @@ CREATE TABLE parking (
 -- Charger Table
 DROP TABLE IF EXISTS charger;
 CREATE TABLE charger (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     parking_id INTEGER,
     bike_id INTEGER,
     status TEXT
 );
 
--- Log Table
-DROP TABLE IF EXISTS log;
-CREATE TABLE log (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    booking_id INTEGER,
-    bike_id INTEGER,
-    user_id INTEGER,
-    start_time TEXT,
-    start_location TEXT,
-    stop_time TEXT,
-    stop_location TEXT,
-    price REAL,
-    timestamp TEXT,
+-- -- Log Table
+-- DROP TABLE IF EXISTS log;
+-- CREATE TABLE log (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     booking_id INTEGER,
+--     bike_id INTEGER,
+--     user_id INTEGER,
+--     start_time TEXT,
+--     start_location TEXT,
+--     stop_time TEXT,
+--     stop_location TEXT,
+--     price REAL,
+--     timestamp TEXT,
 
-    FOREIGN KEY (booking_id) REFERENCES booking(id)
-);
+--     FOREIGN KEY (booking_id) REFERENCES booking(id)
+-- );
 
 DROP TABLE IF EXISTS price;
 CREATE TABLE price (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     start_fee FLOAT DEFAULT 20.00,
     cost_per_minute FLOAT DEFAULT 3.00,
     free_parking_fee FLOAT DEFAULT 20.00,
