@@ -1,6 +1,9 @@
 
 const express = require("express");
 const cors = require('cors');
+const session = require('express-session');
+
+const passport = require('./models/oauth.js');
 
 const app = express();
 const bodyParser = require('body-parser');
@@ -23,9 +26,34 @@ app.disable('x-powered-by');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+app.use(session({ secret: 'hemligt', resave: false, saveUninitialized: false }));
+
+// Använd passport för autentisering
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Logga in med GitHub
+app.get('/login', passport.authenticate('github'));
+
+// GitHub callback efter autentisering
+app.get('/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/' }),
+    (req, res) => {
+    // Vid framgångsrik autentisering, omdirigera användaren eller utför ytterligare åtgärder
+        res.redirect('http://localhost:5173');
+    }
+);
+
+// Logga ut
+app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+});
+
+
 app.get("/", (req, res) => {
     res.send('Hello World!')
-})
+});
 
 app.use("/v1/users", users);
 app.use("/v1/city", city);
@@ -40,4 +68,4 @@ app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
 })
 
-module.exports= app;
+module.exports = app;

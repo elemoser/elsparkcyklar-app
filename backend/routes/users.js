@@ -3,6 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 const users = require("../models/users.js");
+const isAuthenticated = require("../utils.js");
+
+// Middleware för att skydda alla underliggande rutter
+router.use(isAuthenticated);
 
 //Get all users
 router.get('/', (req, res) => users.getUsers(req, res));
