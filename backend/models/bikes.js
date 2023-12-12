@@ -4,7 +4,10 @@ const { Op } = require("sequelize");
 const City = require("../orm/model-router.js")("city");
 const Bike = require("../orm/model-router.js")("bike");
 const { upperFirst, isValidCoordinates } = require("./utils.js")
+const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 const bike = {
+    //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
+
     /**
      * @description Getting all bikes from sqlite db
      */
@@ -60,20 +63,13 @@ const bike = {
                 });
             }
 
-            //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
-
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
-
             let low_battery = false;
 
             if (battery < 20) {
                 low_battery = true;
             }
 
-            if (isValidCoordinates(position) && position.length === 16) {
+            if (isValidCoordinates(position, coordinatesPattern) && position.length === 16) {
                 const newBike = await Bike.create({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
@@ -147,18 +143,14 @@ const bike = {
                 speed = 0.00;
             }
 
-            //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            // const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
-
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
+            // regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
+            
 
             if (battery < 20) {
                 low_battery = true;
             }
 
-            if (isValidCoordinates(position) && position.length === 16) {
+            if (isValidCoordinates(position, coordinatesPattern) && position.length === 16) {
                 await existingBike.update({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),

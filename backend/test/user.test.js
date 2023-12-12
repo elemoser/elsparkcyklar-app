@@ -5,7 +5,7 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 
 describe('Api test suite', () => {
-    const NEVER_EXISTING_SSN = "pppppppppppppp"
+    const NEVER_EXISTING_SSN = "999999999999999"
     const ALWAYS_EXISTING_SSN = "2101010001"
     let userDataToAdd;
     let userDataToDelete;
@@ -183,7 +183,7 @@ describe('Api test suite', () => {
              */
             const getNoneExistingInvoice = await chai.request(app)
                 .get(`/v1/users/invoice/${NEVER_EXISTING_SSN}`)
-            expect(getNoneExistingInvoice).to.have.status(404, "Expect to fail as the user doesnt exist") 
+            expect(getNoneExistingInvoice, `Expect to fail as the user: ${NEVER_EXISTING_SSN} doesnt exist`).to.have.status(404) // Ger alltid minst [] även om användaren inte finns? 
             expect(getNoneExistingInvoice.body.error).to.equal("No matching id") 
             
             /**

@@ -1,9 +1,13 @@
+// const { coordinatesPattern } = require("./bikes.js");
 
 //const { Op } = require("sequelize");
 const Parking = require("../orm/model-router.js")("parking");
 const City = require("../orm/model-router.js")("city");
+const { isValidCoordinates } = require("./utils.js")
+const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)(,\s*[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?))*$/;
 
 const parking = {
+    
     /**
      * @description Getting all parkings from sqlite db
      */
@@ -71,14 +75,7 @@ const parking = {
             if (!findCity) {
                 return res.status(400).json({ error: "City doesn't exist!" });
             }
-
-            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)(,\s*[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?))*$/;
-
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
-
-            if (isValidCoordinates(bounds) && bounds.length === 30) {
+            if (isValidCoordinates(bounds, coordinatesPattern) && bounds.length === 30) {
                 const newParking = await Parking.create({
                     city_id: parseInt(city_id),
                     name: name,
@@ -125,14 +122,7 @@ const parking = {
             if (isNaN(number_of_chargers)) {
                 return res.status(400).json({ error: "'number_of_chargers' must be a number" });
             }
-
-            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)(,\s*[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?))*$/;
-
-            function isValidCoordinates(coordinates) {
-                return coordinatesPattern.test(coordinates);
-            }
-
-            if (isValidCoordinates(bounds) && bounds.length === 30) {
+            if (isValidCoordinates(bounds, coordinatesPattern) && bounds.length === 30) {
                 const updateParking = await existingParking.update({
                     name: name,
                     bounds: bounds,
