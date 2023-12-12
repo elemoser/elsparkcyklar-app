@@ -4,7 +4,7 @@ const router = express.Router();
 
 const charger = require("../models/charger.js");
 
-const isAuthenticated = require("../utils.js");
+const isAuthenticated = require("../auth-utils.js");
 
 // Middleware för att skydda alla underliggande rutter
 router.use(isAuthenticated);
