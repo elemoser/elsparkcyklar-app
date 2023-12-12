@@ -9,8 +9,20 @@
     let edit = false;
 
     // Delete given row from db
-    async function revoveCity(id) {
-        //TODO create function to remove city
+    async function removeCity(id) {
+        // TODO fix this once this is resolved in the backend
+        // // Note that localhost instead of server needs to be used here 
+        // const response = await fetch(`http://localhost:1338/v1/city/id/${id}`, {
+        //     method: "DELETE"
+        // });
+
+        // if (response.status === 200) {
+        //     // redirect
+        //     goto('/admin/cities');
+        // }  else {
+        //     console.log(`Failed to delete city ${id}:`, response.statusText);
+        //     //TODO error handling
+        // }
     }
 
     if (data.props.data.bounds) {
@@ -33,6 +45,9 @@
             <input id="name" name="name" type="text" value={ data.props.data.name } readonly={!edit}/>
         </label>
         {#if edit}
+            <label for="osm">Stadens gräns (osmtype + osmid från <a href="https://nominatim.openstreetmap.org/ui/search.html">nominatim</a>)
+                <input id="osm" name="osm" type="text" value="" readonly={!edit}/>
+            </label>
             <input type="submit" value="Spara"/>
         {/if}
     </form>
