@@ -1,18 +1,28 @@
 <script>
+    import { goto } from '$app/navigation';
+
     /** @type {import('./$types').PageData} */
     export let data;
     let check = false;
     let edit = false;
+    // All statuses allowed
     const statusOptions = ['available','occupied','disabled']
+    // TODO add control for valid position within city
 
+    // Delete given row from db
     async function removeBike(id) {
-        console.log(id)
-        // const res = await fetch(`http://server:1338/v1/bikes/id/${id}`, {
-        //     method: 'DELETE'
-        // }).then((res) => {
-        //     console.log(res.json());
-        //     goto('/admin/bikes');
-        // });
+        // Note that localhost instead of server needs to be used here 
+        const response = await fetch(`http://localhost:1338/v1/bikes/id/${id}`, {
+            method: "DELETE"
+        });
+
+        if (response.status === 200) {
+            // redirect
+            goto('/admin/bikes');
+        }  else {
+            console.log(`Failed to delete bike ${id}:`, response.statusText);
+            //TODO error handling
+        }
     }
 </script>
 
@@ -22,25 +32,25 @@
     <h2>Detaljer för cykeln { data.props.target }</h2>
     <form method="POST">
         <label for="id">Cykel id
-            <input id="id" type="text" value={ data.props.data.id } readonly/>
+            <input id="id" name="id" type="text" value={ data.props.data.id } readonly/>
         </label>
         <label for="battery">Batteri
-            <input id="battery" type="number" value={ data.props.data.battery } readonly={!edit} max="100" min="0"/>
+            <input id="battery" name="battery" type="number" value={ data.props.data.battery } readonly={!edit} max="100" min="0"/>
         </label>
         <label for="city_id">Stad id
-            <input id="city_id" type="text" value={ data.props.data.city_id } readonly={!edit}/>
+            <input id="city_id" name="city_id" type="text" value={ data.props.data.city_id  } readonly={!edit}/>
         </label>
         <label for="speed">Hastighet
-            <input id="speed" type="number" value={ data.props.data.speed } readonly={!edit} max="60" min="0"/>
+            <input id="speed" name="speed" type="number" value={ data.props.data.speed } readonly={!edit} max="60" min="0"/>
         </label>
         <label for="lat">Latitud
-            <input id="lat" type="number" value={ data.props.data.position.split(', ')[0] } readonly={!edit} step="0.0001"/>
+            <input id="lat" name="lat" type="number" value={ data.props.data.position.split(', ')[0] } readonly={!edit} step="0.0001"/>
         </label>
         <label for="lon">Longitud
-            <input id="lon" type="number" value={ data.props.data.position.split(', ')[1] } readonly={!edit} step="0.0001"/>
+            <input id="lon" name="lon" type="number" value={ data.props.data.position.split(', ')[1] } readonly={!edit} step="0.0001"/>
         </label>
         <label for="state">Status
-            <input id="state" type="text" value={ data.props.data.state } readonly/>
+            <input id="state" name="state" type="text" value={ data.props.data.state } readonly/>
         </label>
         {#if edit}
             <label for="new_state">

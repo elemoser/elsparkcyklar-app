@@ -6,6 +6,7 @@ export const prerender = false;
 
 /** @type {import('./$types').Actions} */
 export const actions = {
+    // Create a new row in the db
 	default: async ({request}) => {
         // Get data from form and format for API
         const formData = await request.formData();
@@ -30,13 +31,11 @@ export const actions = {
         });
 
         if (response.status === 200) {
-            // If successful, return a redirect response
+            // redirect
             throw redirect(302, '/admin/bikes');
         }  else {
             console.log('Failed to create a new bike:', response.statusText);
-            // Optionally handle the error case here
+            //TODO error handling
         }
-
-        console.log(response.statusText);
 	}
 };
