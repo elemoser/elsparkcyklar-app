@@ -2,6 +2,7 @@
 
 DBFILE="new_bikr.db"
 THISFILENAME=$(basename "$0") # Get file name
+BOUNDSDATAFOLDER="data"
 
 # Remove any existing db of the same name
 rm -f $DBFILE
@@ -15,6 +16,13 @@ touch $DBFILE
 chmod 777 $DBFILE
 sqlite3 $DBFILE < sql/create-tables.sql
 
+# Create the data folder for the <city>.json backupfiles.
+if [ -d $BOUNDSDATAFOLDER ]; then
+    echo "The folder $BOUNDSDATAFOLDER exists."
+else
+    mkdir "$BOUNDSDATAFOLDER"
+    echo "The folder $BOUNDSDATAFOLDER is created."
+fi
 # Create city table with nominatim data
 index=1
 
