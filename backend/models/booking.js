@@ -3,6 +3,7 @@ const Booking = require("../orm/model-router.js")("booking");
 const Bike = require("../orm/model-router.js")("bike");
 const User = require("../orm/model-router.js")("user");
 const Invoice = require("../orm/model-router.js")("invoice");
+const Price = require("../orm/model-router.js")("price");
 
 const { Op } = require("sequelize");
 
@@ -71,8 +72,6 @@ const booking = {
 
             if (!checkUser) {
                 return res.status(400).json({ error: "User doesn't exist" });
-            } else if (checkUser.balance === 0) {
-                return res.status(400).json({ error: "Balance is too low" });
             }
 
             //Hämta alla bokingar och kolla om användaren redan har en bokning
@@ -113,8 +112,9 @@ const booking = {
 
             const startTimeStamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; //Formatera tidsstämpeln
 
-            //Sätt startpriset till 0 kronor om det är en subscriber, annars 10 kronor
-            let price = checkUser.subscriber === 1 ? 0 : 10;
+            //Hämta pris från pris-tabellen
+            const getPrice = await Price.findOne();
+            let price = getPrice.start_fee;
 
             const newBooking = await Booking.create({
                 bike_id: parseInt(bike_id),
@@ -188,20 +188,53 @@ const booking = {
             const stopLocation = existingBooking.bike.position;
             const price = existingBooking.price;
 
+            //Hämta hur lång tid bokningen varade så att batteriprocent plus price kan beräknas
+            const startTimeUnix = new Date(startTime).getTime() / 1000;
+            const stopTimeUnix = new Date(stopTimeStamp).getTime() / 1000;
+
+            //i sekunder och konvertera till minuter
+            const tripLengthInSeconds = (stopTimeUnix - startTimeUnix);
+            const convertToMinutes = tripLengthInSeconds / 60;
+
+            //hämta priset från pris-tabellen
+            const getPrice = await Price.findOne();
+
+            //slutpriset (ursprungspriset + (antal minuter gånger minutpriset)
+            const calculatePrice = price + (convertToMinutes * getPrice.cost_per_minute);
+
             //hämta aktuell cykel samt justera batteri-nivån och tillgänglighet
             const existingBike = await Bike.findByPk(bikeId);
-            const batteryLevel = existingBike.battery - getRandomInt(5, 20);
 
-            await existingBike.update({
-                state: "available",
-                battery: batteryLevel
-            });
+            //grov uppskattning för hur mycket batteri som dras varje minut
+            const batteryLevel = existingBike.battery - (0.5 * convertToMinutes);
+
+            //Om batteriet är mindre än 20 får cykeln panik och varnar (läskigt)
+            if (batteryLevel < 20) {
+                await existingBike.update({
+                    low_battery: true
+                });
+            }
+
+            //om batterinivån skulle visa sig bli 0 så blir cykeln 'disabled'
+            if (batteryLevel <= 0) {
+                await existingBike.update({
+                    state: "disabled",
+                    battery: 0,
+                    speed: 0
+                });
+            } else {
+                await existingBike.update({
+                    state: "available",
+                    battery: batteryLevel,
+                    speed: 0
+                });
+            }
 
             //skapa faktura för aktuell användare
             await Invoice.create({
                 log_id: parseInt(booking_id),
                 user_id: parseInt(userId),
-                total_price: parseFloat(price),
+                total_price: parseFloat(calculatePrice),
                 status: "pending"
             });
 
@@ -213,7 +246,7 @@ const booking = {
                 start_location: startLocation,
                 stop_time: stopTimeStamp,
                 stop_location: stopLocation,
-                price: parseFloat(price),
+                price: parseFloat(calculatePrice),
             });
 
             res.status(200).json({
