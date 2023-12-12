@@ -63,6 +63,7 @@
     {:else}
     <button on:click={ () => check = true }>Ta bort</button>
     <button on:click={ () => edit = true }>Redigera</button>
+    <button><a href="/admin/bikes">Avbryt</a></button>
     {/if}
 {/if}
 
