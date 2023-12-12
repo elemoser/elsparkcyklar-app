@@ -12,6 +12,7 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 - [Booking](#booking)
 - [Invoice](#invoice)
 - [Price](#price)
+- [Parking](#parking)
 
 ## USERS
 
@@ -23,8 +24,6 @@ first_name
 last_name
 phone
 mail
-balance
-subscriber
 ```
 
 ### Hämta alla kunder
@@ -43,9 +42,7 @@ Result:
             "first_name": "John",
             "last_name": "Doe",
             "phone": "123456789",
-            "mail": "john.doe@example.com",
-            "balance": 50,
-            "subscriber": 1
+            "mail": "john.doe@example.com"
         },
         {
             "id": 2101020002,
@@ -53,9 +50,7 @@ Result:
             "first_name": "Jane",
             "last_name": "Smith",
             "phone": "987654321",
-            "mail": "jane.smith@example.com",
-            "balance": 30,
-            "subscriber": 0
+            "mail": "jane.smith@example.com"
         },
     ...
     ]
@@ -77,9 +72,7 @@ Result for "2101010001":
         "first_name": "John",
         "last_name": "Doe",
         "phone": "123456789",
-        "mail": "john.doe@example.com",
-        "balance": 50,
-        "subscriber": 1
+        "mail": "john.doe@example.com"
     }
 }
 ```
@@ -106,13 +99,32 @@ Result for "2101010001":
 }
 ```
 
-### Hämta en kunds fakturor
+### Hämta ALLA fakturor för en specifik kund
 
 ```
 GET /v1/users/invoice/[user_id]
 ```
 
 Result for "2101010001":
+```
+{
+    "user": {
+        "id": 1,
+        "log_id": 1,
+        "user_id": 2101010001,
+        "total_price": 10,
+        "status": "pending"
+    }
+}
+```
+
+### Hämta EN specifik faktura för en specifik kund
+
+```
+GET /v1/users/invoice/[user_id]/[invoice_id]
+```
+
+Result for "2101010001/1":
 ```
 {
     "user": {
@@ -141,9 +153,7 @@ Result for "john":
             "first_name": "John",
             "last_name": "Doe",
             "phone": "123456789",
-            "mail": "john.doe@example.com",
-            "balance": 50,
-            "subscriber": 1
+            "mail": "john.doe@example.com"
         },
         {
             "id": 2101030003,
@@ -151,9 +161,7 @@ Result for "john":
             "first_name": "Alice",
             "last_name": "Johnson",
             "phone": "555111222",
-            "mail": "alice.johnson@example.com",
-            "balance": 20,
-            "subscriber": 1
+            "mail": "alice.johnson@example.com"
         }
     ]
 }
@@ -175,8 +183,6 @@ mail
 Optional parameters:
 ```
 role
-balance
-subscriber
 ```
 Result:
 ```
@@ -201,8 +207,6 @@ first_name
 last_name
 phone
 mail
-balance
-subscriber
 ```
 Result:
 ```
@@ -283,7 +287,6 @@ POST /v1/city
 ```
 Required parameters:
 ```
-id
 name
 bounds
 ```
@@ -291,10 +294,6 @@ bounds
 Result:
 ```
 status(200) - 'City created successfully'
-```
-Possible errors (if 'id' already exists):
-```
-status(500) 'Validation error'
 ```
 
 ### Uppdatera en stad
@@ -344,7 +343,7 @@ city_id
 speed
 position
 state
-disabled
+low_battery
 ```
 
 ### Hämta alla cyklar
@@ -363,17 +362,17 @@ Result:
             "city_id": 1,
             "speed": 25,
             "position": "59.3293, 18.0686",
-            "state": "active",
-            "disabled": 0
+            "state": "occupied",
+            "low_battery": false
         },
         {
             "id": 2,
             "battery": 60,
-            "city_id": 2,
-            "speed": 22.5,
+            "city_id": 1,
+            "speed": 0,
             "position": "59.3099, 18.0752",
-            "state": "inactive",
-            "disabled": 1
+            "state": "disabled",
+            "low_battery": false
         },
     ...
     ]
@@ -387,7 +386,6 @@ POST /v1/bikes
 ```
 Required parameters:
 ```
-id
 battery
 city_id
 position
@@ -402,11 +400,7 @@ Result:
 ```
 status(200) - 'Bike created successfully'
 ```
-Possible errors (if 'id' already exists):
-```
-status(500) 'Validation error'
-```
-...or
+Possible errors:
 ```
 status(400) 'position' is not formatted correctly'
 status(400) 'state' must be one of: "occupied", "available", "disabled"'
@@ -457,7 +451,8 @@ Result for "4":
         "city_id": 4,
         "speed": 20,
         "position": "59.8586, 17.6389",
-        "state": "occupied"
+        "state": "occupied",
+        "low_battery": false
     }
 }
 ```
@@ -478,7 +473,8 @@ Result for "5":
             "city_id": 5,
             "speed": 0,
             "position": "58.4108, 15.6214",
-            "state": "available"
+            "state": "available",
+            "low_battery": false
         }
     ]
 }
@@ -555,7 +551,7 @@ start_time
 start_location
 stop_time
 stop_location
-price FLOAT
+price
 ```
 
 ### Hämta alla bokningar
@@ -623,7 +619,6 @@ POST /v1/booking
 ```
 Required parameters:
 ```
-id,
 bike_id,
 user_id,
 ```
@@ -632,15 +627,10 @@ Result:
 ```
 status(200) - 'Booking created successfully'
 ```
-Possible errors (if 'id' already exists):
-```
-status(500) 'Validation error'
-```
-...or
+Possible errors:
 ```
 User-related:
     status(400) 'User doesn't exist'
-    status(400) 'Balance is too low'
     status(400) 'User already has an active booking'
 
 Bike-related:
@@ -788,7 +778,7 @@ free_parking_fee,
 start_free_park_discount
 ```
 
-### Hämta alla prisgrupper
+### Hämta priser
 
 ```
 GET /v1/price
@@ -809,53 +799,10 @@ Result:
 }
 ```
 
-### Hämta specifik prisgrupp (id)
+### Uppdatera priser
 
 ```
-GET /v1/price/id/[price_id]
-```
-
-Result for "1":
-```
-{
-    "price": {
-        "id": 1,
-        "start_fee": 20,
-        "cost_per_minute": 3,
-        "free_parking_fee": 20,
-        "start_free_park_discount": 0.5
-    }
-}
-```
-
-### Skapa en ny prisgrupp
-
-```
-POST v1/price
-```
-
-Required parameters:
-```
-start_fee,
-cost_per_minute,
-free_parking_fee,
-start_free_park_discount
-```
-
-Result:
-```
-status(200) "Price created successfully"
-```
-Possible errors (besides from db-errors):
-```
-status(400) "Missing required fields"
-status(400) "Values must be floats"
-```
-
-### Uppdatera en prisgrupp
-
-```
-PUT v1/price/id/[price_id]
+PUT v1/price/
 ```
 
 Optional parameters:
@@ -876,10 +823,119 @@ status(404) "PriceType doesn't exist"
 status(400) "Values must be floats"
 ```
 
-### Radera en prisgrupp
+
+## PARKING
+
+En parkering har följande attribut:
+```
+id,
+city_id
+name,
+bounds,
+number_of_chargers
+```
+
+### Hämta alla parkeringar
 
 ```
-DELETE /v1/price/id/[price_id]
+GET /v1/parking
+```
+
+Result:
+```
+{
+    "parking": [
+        {
+            "id": 2,
+            "city_id": 1,
+            "name": "Område 2",
+            "bounds": "59.332, 17.937, 59.312, 17.957",
+            "number_of_chargers": 8
+        },
+        {
+            "id": 3,
+            "city_id": 1,
+            "name": "Område 3",
+            "bounds": "59.398, 17.902, 59.378, 17.922",
+            "number_of_chargers": 12
+        },
+    ...
+    ]
+}
+```
+
+### Hämta specifik parkering (id)
+
+```
+GET /v1/parking/id/[parking_id]
+```
+
+Result for "2":
+```
+{
+    "parking": {
+        "id": 2,
+        "city_id": 1,
+        "name": "Område 2",
+        "bounds": "59.332, 17.937, 59.312, 17.957",
+        "number_of_chargers": 8
+    }
+}
+```
+
+### Skapa en ny parkering
+
+```
+POST v1/parking
+```
+
+Required parameters:
+```
+city_id,
+name,
+bounds,
+number_of_chargers
+```
+
+Result:
+```
+status(200) "Parking created successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "City_id and number_of_chargers must be numbers"
+status(400) "Invalid coordinates format"
+status(400) "City doesn't exist!"
+```
+
+### Uppdatera en parkering
+
+```
+PUT v1/parking/id/[parking_id]
+```
+
+Optional parameters:
+```
+name,
+bounds,
+number_of_chargers,
+```
+
+Result:
+```
+status(200) "Parking updated successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "Parking doesn't exist!"
+status(400) "'number_of_chargers' must be a number"
+status(400) "Invalid coordinates format"
+```
+
+### Radera en parkering
+
+```
+DELETE /v1/parking/id/[parking_id]
 ```
 
 Required parameters:
@@ -888,9 +944,130 @@ id
 ```
 Result:
 ```
-status(200) 'Price successfully deleted'
+status(200) 'Parking successfully deleted'
 ```
 Possible errors (besides from db-errors):
 ```
-status(404) 'Price doesn't exist'
+status(404) 'Parking doesn't exist'
+```
+
+## CHARGER
+
+En laddare har följande attribut:
+```
+id,
+parking_id,
+bike_id,
+status
+```
+
+### Hämta alla laddare
+
+```
+GET /v1/charger
+```
+
+Result:
+```
+{
+    "chargers": [
+        {
+            "id": 1,
+            "parking_id": 1,
+            "bike_id": 0,
+            "status": "available"
+        },
+        {
+            "id": 2,
+            "parking_id": 2,
+            "bike_id": 2,
+            "status": "occupied"
+        },
+    ...
+    ]
+}
+```
+
+### Hämta specifik laddare (id)
+
+```
+GET /v1/charger/id/[charger_id]
+```
+
+Result for "1":
+```
+{
+    "charger": {
+        "id": 1,
+        "parking_id": 1,
+        "bike_id": 0,
+        "status": "available"
+    }
+}
+```
+
+### Skapa en ny laddare
+
+```
+POST v1/charger
+```
+
+Required parameters:
+```
+parking_id
+```
+
+Result:
+```
+status(200) "Charger created successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(400) "Parking_id must be numbers"
+status(400) "Parking_id must be one of: *available ids*"
+```
+
+### Uppdatera en laddare
+
+```
+PUT v1/charger/id/[charger_id]
+```
+
+Optional parameters:
+```
+parking_id,
+bike_id,
+status,
+```
+
+Result:
+```
+status(200) "Charger updated successfully"
+```
+Possible errors (besides from db-errors):
+```
+status(404) "Charger doesn't exist"
+status(404) "Bike doesn't exist"
+status(400) "'status' must be one of: available, occupied"
+status(400) "If no bike is using the charger, status should be 'available'"
+status(400) "Parking_id must be one of: *available ids*"
+```
+
+### Radera en laddare
+
+```
+DELETE /v1/charger/id/[charger_id]
+```
+
+Required parameters:
+```
+id
+```
+Result:
+```
+status(200) 'Charger successfully deleted'
+```
+Possible errors (besides from db-errors):
+```
+status(404) 'Charger doesn't exist'
 ```

@@ -27,16 +27,6 @@ module.exports = function(sequelize, DataTypes) {
     mail: {
       type: DataTypes.TEXT,
       allowNull: false
-    },
-    balance: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-      defaultValue: 0.00
-    },
-    subscriber: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: 0
     }
   }, {
     sequelize,

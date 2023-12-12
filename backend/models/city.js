@@ -46,17 +46,15 @@ const city = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 name,
                 bounds
             } = req.body;
 
-            if (!id || !name || !bounds) {
+            if (!name || !bounds) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
             const newCity = await City.create({
-                id: parseInt(id),
                 name,
                 bounds
             });

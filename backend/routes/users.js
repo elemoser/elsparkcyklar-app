@@ -25,7 +25,14 @@ router.get('/history/:user_id', (req, res) => {
 //Get invoices for specific user
 router.get('/invoice/:user_id', (req, res) => {
     let user_id = req.params.user_id;
-    users.getUserInvoice(req, res, user_id)
+    users.getUserInvoices(req, res, user_id)
+});
+
+//Get specific invoice for specific user
+router.get('/invoice/:user_id/:invoice_id', (req, res) => {
+    let user_id = req.params.user_id;
+    let invoice_id = req.params.invoice_id;
+    users.getSpecificUserInvoice(req, res, user_id, invoice_id)
 });
 
 //Update user

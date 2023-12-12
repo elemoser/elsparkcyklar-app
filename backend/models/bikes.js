@@ -27,7 +27,6 @@ const bike = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 battery,
                 city_id,
                 speed,
@@ -36,7 +35,6 @@ const bike = {
             } = req.body;
 
             if (
-                !id ||
                 !battery ||
                 !city_id ||
                 !position
@@ -61,15 +59,28 @@ const bike = {
                     error: `'state' must be one of: ${validStates.join(', ')}`
                 });
             }
-            
+
+            //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
+            const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+
+            function isValidCoordinates(coordinates) {
+                return coordinatesPattern.test(coordinates);
+            }
+
+            let low_battery = false;
+
+            if (battery < 20) {
+                low_battery = true;
+            }
+
             if (isValidCoordinates(position) && position.length === 16) {
                 const newBike = await Bike.create({
-                    id: parseInt(id),
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
                     speed: parseFloat(speed),
                     position,
-                    state
+                    state,
+                    low_battery
                 });
 
                 res.status(200).json({ message: "Bike created successfully", bike: newBike });
@@ -110,6 +121,7 @@ const bike = {
             speed = speed || existingBike.speed;
             position = position || existingBike.position;
             state = state || existingBike.state;
+            let low_battery = existingBike.low_battery;
 
             const existingCity = await City.findByPk(city_id);
 
@@ -138,9 +150,13 @@ const bike = {
             //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
             // const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 
-            // function isValidCoordinates(coordinates) {
-            //     return coordinatesPattern.test(coordinates);
-            // }
+            function isValidCoordinates(coordinates) {
+                return coordinatesPattern.test(coordinates);
+            }
+
+            if (battery < 20) {
+                low_battery = true;
+            }
 
             if (isValidCoordinates(position) && position.length === 16) {
                 await existingBike.update({
@@ -148,7 +164,8 @@ const bike = {
                     city_id: parseInt(city_id),
                     speed: parseFloat(speed),
                     position,
-                    state
+                    state,
+                    low_battery
                 });
 
                 res.status(200).json({ message: "Bike updated successfully" });

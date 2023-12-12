@@ -6,6 +6,6 @@ export const load = async () => {
 	};
 
 	return {
-		cities: allCities(),
+		cities: allCities()
 	};
 };
