@@ -1,8 +1,10 @@
 <script>
     import { goto } from '$app/navigation';
+    import LeafletMap from '$lib/components/LeafletMap.svelte';
 
     /** @type {import('./$types').PageData} */
     export let data;
+    let mapData = {};
     let check = false;
     let edit = false;
     // All statuses allowed
@@ -22,6 +24,15 @@
         }  else {
             console.log(`Failed to delete bike ${id}:`, response.statusText);
             //TODO error handling
+        }
+    }
+
+    if (data.props.data.position) {
+        mapData['markers'] = {
+            0: {
+                text: `Bike ${data.props.data.id}`,
+                coordinates: [data.props.data.position.split(', ')[0], data.props.data.position.split(', ')[1]]
+            }
         }
     }
 </script>
@@ -75,6 +86,7 @@
     <button on:click={ () => edit = true }>Redigera</button>
     <button><a href="/admin/bikes">Avbryt</a></button>
     {/if}
+    <LeafletMap data={ mapData }/>
 {/if}
 
 

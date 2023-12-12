@@ -17,7 +17,7 @@ export async function load({ params }) {
                 data = await response.json();
                 data = data.bike;
             } else {
-                data['error'] = responseCities.statusText;
+                data['error'] = response.statusText;
             }
             
         } catch (error) {
