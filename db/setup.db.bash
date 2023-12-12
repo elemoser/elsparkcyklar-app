@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 DBFILE="new_bikr.db"
+DATAFOLDER="data"
 THISFILENAME=$(basename "$0") # Get file name
 
 # Remove any existing db of the same name
@@ -15,9 +16,11 @@ touch $DBFILE
 chmod 777 $DBFILE
 sqlite3 $DBFILE < sql/create-tables.sql
 
+# Create the data folder for the <city>.json backupfiles.
+mkdir -p $DATAFOLDER
+
 # Create city table with nominatim data
 index=1
-
 for i in "${!IDS[@]}"
 do 
     name=${CITIES[$i]}
