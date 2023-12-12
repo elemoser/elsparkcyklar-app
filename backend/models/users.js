@@ -1,11 +1,9 @@
 
-const User = require("../orm/model-router.js")("user"); // Import user db-model
-
+const User = require("../orm/model-router.js")("user");
+const Booking = require("../orm/model-router.js")("booking");
+const Invoice = require("../orm/model-router.js")("invoice");
+const { upperFirst } = require("./utils.js")
 const { Op } = require("sequelize");
-
-function upperFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 const users = {
     /**
@@ -37,6 +35,72 @@ const users = {
             }
 
             return res.json({ user: specUser });
+        } catch (err) {
+            console.error("Error in getSpecificUser:", err);
+            return res.status(500).json({ err: err.message });
+        }
+    },
+
+    /**
+     * @description Get booking-history based on id
+     *
+     */
+        getUserHistory: async function getUserHistory(req, res, user_id) {
+            try {
+                const userHistory = await Booking.findOne({
+                    where: { user_id: user_id },
+                });
+    
+                if (!userHistory) {
+                    return res.status(404).json({ error: "No matching id" });
+                }
+    
+                return res.json({ user: userHistory });
+            } catch (err) {
+                console.error("Error in getSpecificUser:", err);
+                return res.status(500).json({ err: err.message });
+            }
+        },
+
+    /**
+     * @description Get invoices based on id
+     *
+     */
+        getUserInvoices: async function getUserInvoices(req, res, user_id) {
+            try {
+                const userInvoice = await Invoice.findAll({
+                    where: { user_id: user_id },
+                });
+
+                if (!userInvoice) {
+                    return res.status(404).json({ error: "No matching id" });
+                }
+
+                return res.json({ user: userInvoice });
+            } catch (err) {
+                console.error("Error in getSpecificUser:", err);
+                return res.status(500).json({ err: err.message });
+            }
+        },
+
+    /**
+ * @description Get ONE invoice based on its id for a specific user
+ *
+ */
+    getSpecificUserInvoice: async function getSpecificUserInvoice(req, res, user_id, invoice_id) {
+        try {
+            const userInvoice = await Invoice.findOne({
+                where: { 
+                    user_id: user_id,
+                    id: invoice_id
+                },
+            });
+
+            if (!userInvoice) {
+                return res.status(404).json({ error: "No matching id" });
+            }
+
+            return res.json({ user: userInvoice });
         } catch (err) {
             console.error("Error in getSpecificUser:", err);
             return res.status(500).json({ err: err.message });
@@ -82,9 +146,7 @@ const users = {
                 first_name,
                 last_name,
                 phone,
-                mail,
-                balance,
-                subscriber,
+                mail
             } = req.body;
 
             if (!id || !first_name || !last_name || !mail || !phone) {
@@ -95,23 +157,13 @@ const users = {
                 role = "customer";
             }
 
-            if (!balance) {
-                balance = 0.0;
-            }
-
-            if (!subscriber) {
-                subscriber = 0;
-            }
-
             const newUser = await User.create({
                 id: parseInt(id),
                 role,
                 first_name,
                 last_name,
                 phone,
-                mail,
-                balance: parseFloat(balance),
-                subscriber: parseInt(subscriber),
+                mail
             });
 
             res.status(200).json({ message: "User created successfully", user: newUser });
@@ -139,14 +191,15 @@ const users = {
                 first_name,
                 last_name,
                 phone,
-                mail,
-                balance,
-                subscriber,
+                mail
             } = req.body;
 
-            if (!role || !first_name || !last_name || !mail || !phone || !balance || !subscriber) {
-                return res.status(400).json({ error: "Missing required fields" });
-            }
+            //Sätt optionella värden till nya eller ursprungliga värden
+            role = role || existingUser.role;
+            first_name = first_name || existingUser.first_name;
+            last_name = last_name || existingUser.last_name;
+            phone = phone || existingUser.phone;
+            mail = mail || existingUser.mail;
 
             await existingUser.update({
                 role,
@@ -154,8 +207,6 @@ const users = {
                 last_name,
                 phone,
                 mail,
-                balance: parseFloat(balance),
-                subscriber: parseInt(subscriber),
             });
 
             res.status(200).json({ message: "User updated successfully" });

@@ -1,6 +1,6 @@
 
 //const { Op } = require("sequelize");
-const City = require("../orm/model-router.js")("city"); // Import city db-model
+const City = require("../orm/model-router.js")("city");
 
 const city = {
     /**
@@ -46,28 +46,21 @@ const city = {
         try {
             /* Hämta attribut från req.body */
             let {
-                id,
                 name,
-                bounds,
-                radius
+                bounds
             } = req.body;
 
-            if (!id || !name || !bounds) {
+            if (!name || !bounds) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
-            if (!radius) {
-                radius = 5000;
-            }
-
             const newCity = await City.create({
-                id: parseInt(id),
                 name,
-                bounds,
-                radius: parseInt(radius)
+                bounds
             });
 
             res.status(200).json({ message: "City created successfully", city: newCity });
+
         } catch (err) {
             console.error("Error in createUser:", err);
             res.status(500).json({ error: err.message });
@@ -89,21 +82,20 @@ const city = {
 
             let {
                 name,
-                bounds,
-                radius
+                bounds
             } = req.body;
 
-            if (!name || !bounds || !radius) {
-                return res.status(400).json({ error: "Missing required fields" });
-            }
+            //Sätt optionella värden till nya eller ursprungliga värden
+            name = name || existingCity.name;
+            bounds = bounds || existingCity.bounds;
 
             await existingCity.update({
                 name,
-                bounds,
-                radius: parseInt(radius)
+                bounds
             });
 
             res.status(200).json({ message: "City updated successfully" });
+
         } catch (err) {
             console.error("Error in updateUser:", err);
             res.status(500).json({ error: err.message });

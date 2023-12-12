@@ -1,12 +1,11 @@
 <script>
-	import '$lib/styles/main.scss';
 	import { app_name } from '$lib/index.js';
 
 	let register = false;
 </script>
 
 <h1>{app_name}</h1>
-<p>Här kan du komma åt <a href="/about">om sidan</a></p>
+<p>Här kan du komma åt <a href="/map">kartvyn</a></p>
 
 <label>
 	<input type="checkbox" bind:checked={register} />
