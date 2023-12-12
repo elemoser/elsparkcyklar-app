@@ -108,17 +108,16 @@ const users = {
     },
 
     /**
-     * @description Get all users whose first_name or last_name match the provided name
+     * @description Get all users whose username matches the search string
      *
      */
     getMatchingUser: async function getMatchingUser(req, res, name) {
         try {
             const matchingUsers = await User.findAll({
                 where: {
-                    [Op.or]: [
-                        { first_name: { [Op.like]: `%${upperFirst(name)}%` } },
-                        { last_name: { [Op.like]: `%${upperFirst(name)}%` } },
-                    ],
+                    username: {
+                        [Op.like]: `%${upperFirst(name)}%`
+                    }
                 },
             });
 
@@ -142,14 +141,13 @@ const users = {
             /* Hämta attribut från req.body */
             let {
                 id,
+                username,
                 role,
-                first_name,
-                last_name,
-                phone,
-                mail
+                balance
+
             } = req.body;
 
-            if (!id || !first_name || !last_name || !mail || !phone) {
+            if (!id || !username) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
@@ -157,13 +155,23 @@ const users = {
                 role = "customer";
             }
 
+            if (role !== "customer" && role !== "admin") {
+                return res.status(404).json({ error: "Role must be either 'customer' or 'admin'" });
+            }
+
+            if (!balance) {
+                balance = 0;
+            }
+
+            if (isNaN(balance)) {
+                return res.status(404).json({ error: "'Balance' must be a number!" });
+            }
+
             const newUser = await User.create({
                 id: parseInt(id),
-                role,
-                first_name,
-                last_name,
-                phone,
-                mail
+                username: username,
+                role: role,
+                balance: parseFloat(balance)
             });
 
             res.status(200).json({ message: "User created successfully", user: newUser });
@@ -188,25 +196,28 @@ const users = {
 
             let {
                 role,
-                first_name,
-                last_name,
-                phone,
-                mail
+                balance
             } = req.body;
 
             //Sätt optionella värden till nya eller ursprungliga värden
             role = role || existingUser.role;
-            first_name = first_name || existingUser.first_name;
-            last_name = last_name || existingUser.last_name;
-            phone = phone || existingUser.phone;
-            mail = mail || existingUser.mail;
+            balance = balance || existingUser.balance;
+
+            if (role !== "customer" && role !== "admin") {
+                return res.status(404).json({ error: "Role must be either 'customer' or 'admin'" });
+            }
+
+            if (isNaN(balance)) {
+                return res.status(404).json({ error: "'Balance' must be a number!" });
+            }
+
+            if (!balance) {
+                balance = 0;
+            }
 
             await existingUser.update({
                 role,
-                first_name,
-                last_name,
-                phone,
-                mail,
+                balance: parseFloat(balance)
             });
 
             res.status(200).json({ message: "User updated successfully" });

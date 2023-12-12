@@ -6,6 +6,7 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 
 ### Innehåll
 
+- [Important](#important)
 - [Users](#users)
 - [City](#city)
 - [Bikes](#bikes)
@@ -14,16 +15,20 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 - [Price](#price)
 - [Parking](#parking)
 
+## Important
+
+Notera att du MÅSTE vara autentiserad med ett GitHub-konto för att få ta del av API:t.
+Alla requests som görs utan en autentisering kommer annars att returnera svaret
+'status(500) "You don't have permission to be here"'
+
 ## USERS
 
 En användare har följande attribut:
 ```
 id
+username
 role
-first_name
-last_name
-phone
-mail
+balance
 ```
 
 ### Hämta alla kunder
@@ -38,26 +43,22 @@ Result:
     "users": [
         {
             "id": 2101010001,
+            "username": "horselover1337",
             "role": "customer",
-            "first_name": "John",
-            "last_name": "Doe",
-            "phone": "123456789",
-            "mail": "john.doe@example.com"
+            "balance": 0
         },
         {
             "id": 2101020002,
+            "username": "gurkOlle",
             "role": "customer",
-            "first_name": "Jane",
-            "last_name": "Smith",
-            "phone": "987654321",
-            "mail": "jane.smith@example.com"
+            "balance": 100
         },
     ...
     ]
 }
 ```
 
-### Hämta EN kund via födelsedatum (id)
+### Hämta EN kund via id
 
 ```
 GET /v1/users/id/[user_id]
@@ -67,13 +68,11 @@ Result for "2101010001":
 ```
 {
     "user": {
-        "id": 2101010001,
-        "role": "customer",
-        "first_name": "John",
-        "last_name": "Doe",
-        "phone": "123456789",
-        "mail": "john.doe@example.com"
-    }
+            "id": 2101010001,
+            "username": "horselover1337",
+            "role": "customer",
+            "balance": 0
+        }
 }
 ```
 
@@ -143,25 +142,21 @@ Result for "2101010001/1":
 GET /v1/users/name/[name]
 ```
 
-Result for "john":
+Result for "h":
 ```
 {
     "users": [
         {
             "id": 2101010001,
+            "username": "horselover1337",
             "role": "customer",
-            "first_name": "John",
-            "last_name": "Doe",
-            "phone": "123456789",
-            "mail": "john.doe@example.com"
+            "balance": 0
         },
         {
             "id": 2101030003,
+            "username": "githubForever",
             "role": "customer",
-            "first_name": "Alice",
-            "last_name": "Johnson",
-            "phone": "555111222",
-            "mail": "alice.johnson@example.com"
+            "balance": 200
         }
     ]
 }
@@ -174,15 +169,13 @@ POST /v1/users
 Required parameters:
 ```
 id
-first_name
-last_name
-phone
-mail
+username
 ```
 
 Optional parameters:
 ```
 role
+balance
 ```
 Result:
 ```
@@ -190,7 +183,9 @@ status(200) - 'User created successfully'
 ```
 Possible errors (if 'id' already exists):
 ```
-status(500) 'Validation error' 
+status(500) 'Validation error'
+status(400) "'Balance' must be a number!"
+status(404) "Role must be either 'customer' or 'admin'"
 ```
 
 ### Uppdatera en användare
@@ -203,10 +198,7 @@ Please note that "id" can't be updated.
 Optional parameters:
 ```
 role
-first_name
-last_name
-phone
-mail
+balance
 ```
 Result:
 ```
@@ -215,6 +207,8 @@ status(200) - 'User updated successfully'
 Possible errors (besides from db-errors):
 ```
 status(404) 'User doesn't exist'
+status(404) "'Balance' must be a number!"
+status(404) "Role must be either 'customer' or 'admin'"
 ```
 
 ### Ta bort en användare

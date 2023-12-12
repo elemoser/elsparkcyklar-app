@@ -44,10 +44,10 @@ app.get('/auth/github/callback',
     }
 );
 
-// Logga ut
 app.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
+    req.logout(() => {
+        res.redirect('http://localhost:5173/login');
+    });
 });
 
 

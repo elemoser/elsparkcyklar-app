@@ -1,13 +1,13 @@
 PRAGMA foreign_keys = ON;
 
 -- Inserting data into the User Table
-INSERT INTO user (id, role, first_name, last_name, phone, mail)
+INSERT INTO user (id, username, role, balance)
 VALUES
-    (2101010001, 'customer', 'John', 'Doe', '123456789', 'john.doe@example.com'),
-    (2101020002, 'customer', 'Jane', 'Smith', '987654321', 'jane.smith@example.com'),
-    (2101030003, 'customer', 'Alice', 'Johnson', '555111222', 'alice.johnson@example.com'),
-    (2101040004, 'customer', 'Bob', 'Williams', '777888999', 'bob.williams@example.com'),
-    (2101050005, 'admin', 'Admin', 'User', '999000111', 'admin@example.com');
+    (2101010001, 'horselover1337', 'customer', 0),
+    (2101020002, 'gurkOlle', 'customer', 100),
+    (2101030003, 'githubForever', 'customer', 200),
+    (2101040004, 'flowerpower', 'customer', 0),
+    (2101050005, 'smart_guy', 'admin', 0);
 
 
 -- Inserting data into the Bike Table
