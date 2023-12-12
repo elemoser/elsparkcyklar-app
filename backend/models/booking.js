@@ -3,15 +3,11 @@ const Booking = require("../orm/model-router.js")("booking");
 const Bike = require("../orm/model-router.js")("bike");
 const User = require("../orm/model-router.js")("user");
 const Invoice = require("../orm/model-router.js")("invoice");
+const { getRandomInt } = require("./utils.js")
 const Price = require("../orm/model-router.js")("price");
 
 const { Op } = require("sequelize");
 
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 const booking = {
     /**

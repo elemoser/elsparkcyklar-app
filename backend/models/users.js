@@ -2,12 +2,8 @@
 const User = require("../orm/model-router.js")("user");
 const Booking = require("../orm/model-router.js")("booking");
 const Invoice = require("../orm/model-router.js")("invoice");
-
+const { upperFirst } = require("./utils.js")
 const { Op } = require("sequelize");
-
-function upperFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 const users = {
     /**
