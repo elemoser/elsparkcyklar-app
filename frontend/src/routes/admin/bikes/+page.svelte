@@ -43,15 +43,16 @@
 
         return name;
     }
+    //TODO enable searching the table
 </script>
 
 {#if data.props.data.error }
     <p>{ data.props.data.error }</p>
 {:else}
-    <form>
-        <input type="text">
+    <!-- <form method="POST">
+        <input name="search_input" type="text">
         <input type="submit" value='Sök'>
-    </form>
+    </form> -->
     <button><a href="/admin/bikes/new">+</a></button>
     <Table data={ bikes }/>
 {/if}

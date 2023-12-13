@@ -25,12 +25,13 @@
         cities['body'] = body;
         cities['links'] = links;
     }
+    //TODO search function
 </script>
 
-<form>
+<!-- <form>
     <input type="text">
     <input type="submit" value='Sök'>
-</form>
+</form> -->
 
 {#if cities }
     <Table data={ cities }/>

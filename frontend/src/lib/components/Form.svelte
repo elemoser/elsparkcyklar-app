@@ -1,4 +1,5 @@
 <script>
+    // Remove this if not used in admin/[info]
     export let data = {};
     // NOTE: format of data should be as follows
     // data = {

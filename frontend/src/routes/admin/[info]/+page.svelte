@@ -1,4 +1,5 @@
 <script>
+    // TODO remove?
 	import Form from '$lib/components/Form.svelte';
 	/** @type {import('./$types').PageData} */
 	export let data;
