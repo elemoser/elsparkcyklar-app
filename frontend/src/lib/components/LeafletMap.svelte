@@ -45,15 +45,19 @@
 				// Transform the incomming string of coordinates into arrays
 				let boundsArray = eval(data.polygon.coordinates);
 
-				// Adapt to different geojson formats
-				if (boundsArray[0].length > 2) {
-					boundsArray = boundsArray[0];
+				// Adjust for formatting
+				if (data.polygon.text === 'Linköping') {
+					boundsArray = boundsArray[0]; 
 				}
 
+				if (data.polygon.text === 'Uppsala') {
+					boundsArray = boundsArray[1]; 
+				}
+				
 				// Sort the coordinates in the right order for leaflet
 				let sortedLatLon = [];
 				
-				for (let pair of boundsArray) {
+				for (let pair of boundsArray[0]) {
 					sortedLatLon.push([pair[1], pair[0]]);
 				}
 
