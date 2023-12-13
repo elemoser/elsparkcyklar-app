@@ -44,6 +44,12 @@
 			if (data.polygon) {
 				// Transform the incomming string of coordinates into arrays
 				let boundsArray = eval(data.polygon.coordinates);
+
+				// Adapt to different geojson formats
+				if (boundsArray[0].length > 2) {
+					boundsArray = boundsArray[0];
+				}
+
 				// Sort the coordinates in the right order for leaflet
 				let sortedLatLon = [];
 				
