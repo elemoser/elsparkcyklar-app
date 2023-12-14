@@ -14,6 +14,7 @@ const invoice = require('./routes/invoice.js');
 const price = require('./routes/price.js');
 const parking = require('./routes/parking.js');
 const charger = require('./routes/charger.js');
+const simulate = require('./routes/simulate.js');
 
 app.use(cors());
 app.options('*', cors());
@@ -35,6 +36,7 @@ app.use("/v1/invoice", invoice);
 app.use("/v1/price", price);
 app.use("/v1/parking", parking);
 app.use("/v1/charger", charger);
+app.use("/v1/simulate", simulate)
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
