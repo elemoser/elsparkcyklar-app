@@ -32,7 +32,7 @@
 			let lat = data.markers ? data.markers[0].coordinates[0] : 59.3293;
 			let lon = data.markers ? data.markers[0].coordinates[1] : 18.0686;
 
-			map = L.map(mapElement).setView([lat, lon], 14);
+			map = L.map(mapElement).setView([lat, lon], 5);
 
 			// Create the map
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -76,7 +76,7 @@
 				for (const key in data.markers) {
 					lat = data.markers[key].coordinates[0];
 					lon = data.markers[key].coordinates[1];
-					L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text).openPopup();
+					L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text).bindPopup();
 				}
 			}
 		}
