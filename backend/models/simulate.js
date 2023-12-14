@@ -16,20 +16,26 @@ const simulate = {
             let data
             const intervalId = setInterval(() => {
                 if (bikeRoute.trips[0].coords.length == loop) {
-                    data = "end"; 
+                    data = { finished: true };
                     clearInterval(intervalId);
                 } else {
-                    data = JSON.stringify([bikeRoute.trips[0].coords[loop][1], bikeRoute.trips[0].coords[loop][0]])
+                    data = {
+                        lat: bikeRoute.trips[0].coords[loop][1],
+                        lon: bikeRoute.trips[0].coords[loop][0]
+                    };
                 }
-                res.write(`data: ${data}\n\n`); 
+                const jsonData = JSON.stringify(data);
+                console.log(jsonData);
+                res.write(`data: ${jsonData}\n\n`); 
 
                 if (bikeRoute.trips[0].coords.length == loop) {
-                    res.end(); }
+                    res.end();
+                }
                 loop++; // Increment to next position value
             }, 1000);
 
         } catch (err) {
-            console.error("Error in getBike:", err);
+            console.error("Error in simulate:", err);
             return res.status(500).json({ err: err.message });
         }
     },
