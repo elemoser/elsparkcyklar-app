@@ -1,6 +1,6 @@
 <script>
 	import Table from '$lib/components/Table.svelte';
-
+	//TODO update after oauth in place
 	export let data;
 	let users = {};
 
