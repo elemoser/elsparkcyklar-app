@@ -1,44 +1,31 @@
 <script>
-    import LeafletMap from "$lib/components/LeafletMap.svelte";
-    export let data;
-    let mapData = {}
-    // mapData needs to be formatted the following way
-	// data = {
-	//     markers: {
-	//         0: {
-	// 			text: "point A",
-	// 			coordinates: ["lat", "lon"]
-	// 		   },
-	//         1: {
-	// 			text: "point B",
-	// 			coordinates: ["lat", "lon"]
-	// 		    },
-	//     },
-	//     polygon: {
-	//         text: "city A",
-	//         coordinates: [...]
-	//     },
-	// }
+    // import { source } from 'sveltekit-sse';
+    import { onMount } from 'svelte';
+    let eventSource;
 
-    if (data.props.data.bike) {
-        const obj = (data.props.data.bike)
-        let markers = {};
+    onMount(async () => {
+        // eventSource = source('http://localhost:1338/v1/simulate');
+        const response = await fetch('http://localhost:1338/v1/simulate');
+        eventSource = await response.json();
+        console.log(eventSource);
+    });
 
-        for (let key in obj) {
-            markers[key] = {
-                text: obj[key].id,
-                coordinates: [
-                    parseFloat(obj[key].position.split(', ')[0]),
-                    parseFloat(obj[key].position.split(', ')[1])
-                ]
-            }
+    function stopUpdates() {
+        if (eventSource) {
+            console.log("Sim stopped");
+            eventSource.close();
         }
-        mapData['markers'] = markers;
+    }
+
+    function startUpdates() {
+        if (eventSource) {
+            console.log("Sim started");
+            eventSource.onmessage = function(event) {
+                console.log(event);
+            };
+        }
     }
 </script>
 
-{#if data.props.data.error}
-    <p>Something went wrong!</p>
-{:else}
-<LeafletMap data={ mapData }/>
-{/if}
+<button on:click={startUpdates}>Start</button>
+<button on:click={stopUpdates}>Stop</button>
