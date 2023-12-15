@@ -32,7 +32,7 @@
 			let lat = data.markers ? data.markers[0].coordinates[0] : 59.3293;
 			let lon = data.markers ? data.markers[0].coordinates[1] : 18.0686;
 
-			map = L.map(mapElement).setView([lat, lon], 5);
+			map = L.map(mapElement).setView([lat, lon], 10);
 
 			// Create the map
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
