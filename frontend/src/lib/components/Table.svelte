@@ -18,30 +18,30 @@
 </script>
 
 {#if data.body}
-	<table>
-		<thead>
-			<tr>
-				{#each data.header as col}
-					<th>{col}</th>
-				{/each}
-				{#if Object.keys(data.links).length}
-					<th>Details</th>
-				{/if}
-			</tr>
-		</thead>
-		<tbody>
-			{#each Object.entries(data.body) as [key, value]}
-				<tr>
-					{#each value as cell}
-						<td>{cell}</td>
-					{/each}
-					{#if Object.keys(data.links).length}
-						<td><a href={data.links[key][0]}>{data.links[key][1]}</a></td>
-					{/if}
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+<table>
+    <thead>
+        <tr>
+        {#each data.header as col}
+          <th>{ col }</th>
+        {/each}
+        {#if Object.keys(data.links).length}
+            <th>details</th>
+        {/if}
+        </tr>
+    </thead>
+    <tbody>
+        {#each Object.entries(data.body) as [key, value]}
+        <tr>
+            {#each value as cell}
+                <td>{ cell }</td>
+            {/each}
+            {#if Object.keys(data.links).length}
+                <td><a href={ data.links[key][0] }>{ data.links[key][1] }</a></td>
+            {/if}
+        </tr>
+        {/each}
+    </tbody>
+</table>
 {:else}
 	<p>Loading...</p>
 {/if}
