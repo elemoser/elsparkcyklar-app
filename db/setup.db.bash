@@ -48,6 +48,8 @@ rm -f bikr.db
 # Rename newly created db to bikr.db
 mv $DBFILE bikr.db
 
+source "json.to.db.bash"
+
 # Check the exit status
 if [ $? -eq 0 ]; then
     
