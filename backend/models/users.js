@@ -47,7 +47,7 @@ const users = {
      */
         getUserHistory: async function getUserHistory(req, res, user_id) {
             try {
-                const userHistory = await Booking.findOne({
+                const userHistory = await Booking.findAll({
                     where: { user_id: user_id },
                 });
     
