@@ -18,7 +18,10 @@ const price = require('./routes/price.js');
 const parking = require('./routes/parking.js');
 const charger = require('./routes/charger.js');
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 app.options('*', cors());
 
 app.disable('x-powered-by');
@@ -26,7 +29,13 @@ app.disable('x-powered-by');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-app.use(session({ secret: 'hemligt', resave: false, saveUninitialized: false }));
+app.use(session({
+    name: 'passport',
+    secret: 'hemligt',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }
+}));
 
 // Använd passport för autentisering
 app.use(passport.initialize());
@@ -49,7 +58,6 @@ app.get('/logout', (req, res) => {
         res.redirect('http://localhost:5173/login');
     });
 });
-
 
 app.get("/", (req, res) => {
     res.send('Hello World!')

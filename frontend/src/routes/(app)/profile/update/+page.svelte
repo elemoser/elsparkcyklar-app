@@ -1,27 +1,47 @@
 <script>
+	import { goto } from '$app/navigation';
 	export let data;
 	const { user } = data;
+
+	async function handleSubmit(e) {
+		e.preventDefault();
+		const formData = new FormData(e.target);
+		const userId = formData.get('id');
+		//TODO Fix update user in backend to allow user to update username.
+		/*
+		const userObj = {
+			first_name: data.get('username'),
+			phone: data.get('phone'),
+			mail: data.get('email')
+		};
+		*/
+		const response = await fetch(`http://server:1338/v1/users/id/${userId}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(userObj)
+		});
+
+		const res = await response.json();
+
+		res.error ? console.log('Something went wrong.') : goto ('/profile'); //TODO Actually implement error handling?
+	}
 </script>
 
 <div class="update-container">
 	<h1>Update user</h1>
-	<form method="POST" action="?/update">
+	<form on:submit={handleSubmit}>
 		<input id="id" name="id" type="hidden" value={user.id} required />
 
-		<label for="fname">Förnamn</label>
-		<input id="fname" name="fname" type="text" placeholder={user.first_name} />
+		<label for="username">Username</label>
+		<input id="username" name="username" type="text" placeholder={user.username} />
 
-		<label for="lname">Efternamn</label>
-		<input id="lname" name="lname" type="text" placeholder={user.last_name} />
-
-		<label for="phone">Telefonnummer</label>
+		<label for="phone">Phone</label>
 		<input id="phone" name="phone" type="tel" placeholder={user.phone} />
 
-		<label for="email">E-post</label>
+		<label for="email">Mail</label>
 		<input id="email" name="email" type="email" placeholder={user.mail} />
-
-		<label for="pw">Lösenord</label>
-		<input id="pw" name="pw" type="password" placeholder="**************" />
 
 		<input type="submit" value="Update" />
 	</form>

@@ -7,7 +7,10 @@ export async function load({ params, fetch }) {
 	// If first character is 'k' => get user data
 	if (params.info.charAt(0) === 'k') {
 		try {
-			const response = await fetch(`http://server:1338/v1/users/id/${params.info.slice(1)}`);
+			const response = await fetch(`http://server:1338/v1/users/id/${params.info.slice(1)}`, {
+				method: 'GET',
+				credentials: 'include'
+			});
 			if (!response.ok) {
 				throw new Error('Failed to fetch');
 			}

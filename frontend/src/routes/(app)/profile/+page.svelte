@@ -1,22 +1,29 @@
 <script>
-	export let data;
+	import { onMount } from 'svelte';
+	let user = {};
 
-	const { user } = data;
+	async function userData () {
+		const userId = 117276057; //TODO Fix ID.
+		const response = await fetch(`http://localhost:1338/v1/users/id/${userId}`, {
+			method: 'GET',
+			credentials: 'include'
+		});
+		const res = await response.json();
+
+		return res.user;
+	};
+
+	onMount(async () => {
+		user = await userData();
+	});
 </script>
 
 <div class="profile-container">
 	<div class="user-div">
-		<h1>{user.first_name} {user.last_name}</h1>
+		<h1>{user.username}</h1>
 		<h4>Mail: {user.mail}</h4>
 		<h4>Phone: {user.phone}</h4>
 		<h5>Role: {user.role}</h5>
-		{#if user.subscriber}
-			<h5>Active subscription</h5>
-		{:else}
-			<h5>No current subscription</h5>
-		{/if}
-		<h5 class="api-key">API KEY: uiseHgt789y4587234ynas32asde21x</h5>
-		<!-- TODO Show actual user API KEY in the future -->
 
 		<a class="button" href="/profile/update">Update profile</a>
 	</div>
@@ -29,6 +36,7 @@
 			<h2><a class="button" href="/profile/invoice">Invoice</a></h2>
 			<h2><a class="button" href="/profile">Payment</a></h2>
 			<!-- TODO Implement payment and update href -->
+
 			<form method="POST" action="?/logout">
 				<button class="button" type="submit">Logout</button>
 			</form>
