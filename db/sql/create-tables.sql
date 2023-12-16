@@ -105,3 +105,11 @@ CREATE TABLE price (
     free_parking_fee FLOAT DEFAULT 20.00,
     start_free_park_discount FLOAT DEFAULT 0.5
 );
+
+DROP TABLE IF EXISTS simulate;
+CREATE TABLE simulate (
+    city_id,
+    bike_route TEXT NOT NULL,
+
+    FOREIGN KEY (city_id) REFERENCES city(id)
+);
