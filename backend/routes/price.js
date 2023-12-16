@@ -1,5 +1,4 @@
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const price = require("../models/price.js");
@@ -10,11 +9,9 @@ const isAuthenticated = require("../auth-utils.js");
 router.use(isAuthenticated);
 
 //Get prices
-router.get('/', (req, res) => price.getPriceType(req, res));
+router.get("/", (req, res) => price.getPriceType(req, res));
 
 //Update price
-router.put('/', (req, res) => price.updatePriceType(req, res));
-
-
+router.put("/", (req, res) => price.updatePriceType(req, res));
 
 module.exports = router;

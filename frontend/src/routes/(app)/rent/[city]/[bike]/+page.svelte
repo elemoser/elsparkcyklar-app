@@ -14,7 +14,7 @@
 
 		const response = await fetch(`http://localhost:1338/v1/booking`, {
 			method: 'POST',
-            credentials: 'include',
+			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -31,7 +31,6 @@
 <!-- TODO importera kartan och rita ut var cykeln befinner sig med hjälp av cykelns coords. -->
 <p>Battery: {bike.battery}%</p>
 <p>Status: {bike.state}</p>
-
 
 <!-- TODO add action to rent bike. -->
 <button class="button" type="submit" on:click={rentBike} value={bike.id}>Rent</button>

@@ -1,9 +1,8 @@
-
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    return res.status(500).json({ error: "You don't have permission to be here" }); // Redirect till inloggningssidan om inte inloggad
+    return res.redirect("http://localhost:5173/login");
 }
 
 module.exports = isAuthenticated;

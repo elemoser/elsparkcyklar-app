@@ -6,7 +6,7 @@ export const load = async ({ params, fetch }) => {
 		const bikeRes = await fetch(`http://localhost:1338/v1/bikes/id/${bikeId}`, {
 			method: 'GET',
 			headers: {
-				'Content-Type' : 'application/json'
+				'Content-Type': 'application/json'
 			},
 			credentials: 'include'
 		});

@@ -2,16 +2,22 @@
 	import { onMount } from 'svelte';
 	let user = {};
 
-	async function userData () {
-		const userId = 117276057; //TODO Fix ID.
-		const response = await fetch(`http://localhost:1338/v1/users/id/${userId}`, {
+	async function userData() {
+		const id = sessionStorage.getItem('user');
+		const response = await fetch(`http://localhost:1338/v1/users/id/${id}`, {
 			method: 'GET',
 			credentials: 'include'
 		});
 		const res = await response.json();
 
 		return res.user;
-	};
+	}
+
+	function deleteSession() {
+		sessionStorage.removeItem('user');
+
+		document.getElementById('logoutForm').submit();
+	}
 
 	onMount(async () => {
 		user = await userData();
@@ -37,8 +43,8 @@
 			<h2><a class="button" href="/profile">Payment</a></h2>
 			<!-- TODO Implement payment and update href -->
 
-			<form method="POST" action="?/logout">
-				<button class="button" type="submit">Logout</button>
+			<form id="logoutForm" method="POST" action="?/logout">
+				<button class="button" type="submit" on:click={deleteSession}>Logout</button>
 			</form>
 		</div>
 	</div>

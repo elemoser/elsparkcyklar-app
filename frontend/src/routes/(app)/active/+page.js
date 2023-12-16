@@ -5,7 +5,7 @@ export const load = async ({ fetch }) => {
 		const response = await fetch(`http://localhost:1338/v1/booking/ongoing`, {
 			method: 'GET',
 			headers: {
-				'Content-Type' : 'application/json'
+				'Content-Type': 'application/json'
 			},
 			credentials: 'include'
 		});

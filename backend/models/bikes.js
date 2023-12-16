@@ -1,10 +1,10 @@
-
 const { Op } = require("sequelize");
 
 const City = require("../orm/model-router.js")("city");
 const Bike = require("../orm/model-router.js")("bike");
-const { upperFirst, isValidCoordinates } = require("./utils.js")
-const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+const { upperFirst, isValidCoordinates } = require("./utils.js");
+const coordinatesPattern =
+    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 const bike = {
     //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
 
@@ -29,37 +29,29 @@ const bike = {
     createBike: async function createBike(req, res) {
         try {
             /* Hämta attribut från req.body */
-            let {
-                battery,
-                city_id,
-                speed,
-                position,
-                state
-            } = req.body;
+            let { battery, city_id, speed, position, state } = req.body;
 
-            if (
-                !battery ||
-                !city_id ||
-                !position
-                ) {
-                return res.status(400).json({ error: "Missing required fields" });
+            if (!battery || !city_id || !position) {
+                return res
+                    .status(400)
+                    .json({ error: "Missing required fields" });
             }
 
             // Om en cykel är disabled kan den inte ha hastighet
             if (!speed || state != "occupied") {
-                speed = 0.00;
+                speed = 0.0;
             }
 
             //Default för cyklar utan state
             if (!state) {
-                state = "available"
+                state = "available";
             }
 
             const validStates = ["occupied", "available", "disabled"];
 
             if (!validStates.includes(state)) {
                 return res.status(400).json({
-                    error: `'state' must be one of: ${validStates.join(', ')}`
+                    error: `'state' must be one of: ${validStates.join(", ")}`,
                 });
             }
 
@@ -69,21 +61,28 @@ const bike = {
                 low_battery = true;
             }
 
-            if (isValidCoordinates(position, coordinatesPattern) && position.length === 16) {
+            if (
+                isValidCoordinates(position, coordinatesPattern) &&
+                position.length === 16
+            ) {
                 const newBike = await Bike.create({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
                     speed: parseFloat(speed),
                     position,
                     state,
-                    low_battery
+                    low_battery,
                 });
 
-                res.status(200).json({ message: "Bike created successfully", bike: newBike });
+                res.status(200).json({
+                    message: "Bike created successfully",
+                    bike: newBike,
+                });
             } else {
-                return res.status(400).json({ error: "'position' is not formatted correctly" });
+                return res
+                    .status(400)
+                    .json({ error: "'position' is not formatted correctly" });
             }
-
         } catch (err) {
             console.error("Error in createUser:", err);
             res.status(500).json({ error: err.message });
@@ -103,13 +102,7 @@ const bike = {
                 return res.status(404).json({ error: "Bike doesn't exist" });
             }
 
-            let {
-                battery,
-                city_id,
-                speed,
-                position,
-                state
-            } = req.body;
+            let { battery, city_id, speed, position, state } = req.body;
 
             //Sätt optionella värden till nya eller ursprungliga värden
             battery = battery || existingBike.battery;
@@ -127,44 +120,47 @@ const bike = {
 
             //Default för cyklar utan state
             if (!state) {
-                state = "available"
+                state = "available";
             }
 
             const validStates = ["occupied", "available", "disabled"];
 
             if (!validStates.includes(state)) {
                 return res.status(400).json({
-                    error: `'state' must be one of: ${validStates.join(', ')}`
+                    error: `'state' must be one of: ${validStates.join(", ")}`,
                 });
             }
 
             // Om en cykel är ledig/trasig kan den inte ha hastighet
             if (!speed || state != "occupied") {
-                speed = 0.00;
+                speed = 0.0;
             }
 
             // regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
-            
 
             if (battery < 20) {
                 low_battery = true;
             }
 
-            if (isValidCoordinates(position, coordinatesPattern) && position.length === 16) {
+            if (
+                isValidCoordinates(position, coordinatesPattern) &&
+                position.length === 16
+            ) {
                 await existingBike.update({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
                     speed: parseFloat(speed),
                     position,
                     state,
-                    low_battery
+                    low_battery,
                 });
 
                 res.status(200).json({ message: "Bike updated successfully" });
             } else {
-                return res.status(400).json({ error: "'position' is not formatted correctly" });
+                return res
+                    .status(400)
+                    .json({ error: "'position' is not formatted correctly" });
             }
-
         } catch (err) {
             console.error("Error in updateBike:", err);
             res.status(500).json({ error: err.message });
@@ -192,17 +188,14 @@ const bike = {
         }
     },
 
-        /**
+    /**
      * @description Get all available bikes in a specific city based on ID
      *
      */
     getAvailableBikes: async function getAvailableBikes(req, res, city_id) {
         try {
             const availableBikes = await Bike.findAll({
-                where: [
-                    { state: 'available' },
-                    { city_id: city_id },
-                ],
+                where: [{ state: "available" }, { city_id: city_id }],
             });
 
             if (availableBikes.length == 0) {
@@ -250,7 +243,7 @@ const bike = {
                         [Op.like]: `%${upperFirst(city_name)}%`,
                     },
                 },
-                attributes: ['id', 'name'],
+                attributes: ["id", "name"],
             });
 
             if (matchingCities.length === 0) {
@@ -261,14 +254,14 @@ const bike = {
             const matchingBikes = await Bike.findAll({
                 where: {
                     city_id: {
-                        [Op.in]: matchingCities.map(city => city.id),
+                        [Op.in]: matchingCities.map((city) => city.id),
                     },
                 },
                 include: [
                     {
                         model: City,
                         as: "city",
-                        attributes: ['name'],
+                        attributes: ["name"],
                     },
                 ],
             });
@@ -277,23 +270,22 @@ const bike = {
                 return res.status(404).json({ error: "No bikes found" });
             }
 
-            const formattedResult = matchingBikes.map(bike => ({
+            const formattedResult = matchingBikes.map((bike) => ({
                 id: bike.id,
                 battery: bike.battery,
                 city_id: bike.city_id,
                 speed: bike.speed,
                 position: bike.position,
                 state: bike.state,
-                city: bike.city.name
+                city: bike.city.name,
             }));
-    
-            return res.json({ bikes: formattedResult });
 
+            return res.json({ bikes: formattedResult });
         } catch (err) {
             console.error("Error in getBikesInCity:", err);
             return res.status(500).json({ error: err.message });
         }
     },
-}
+};
 
 module.exports = bike;

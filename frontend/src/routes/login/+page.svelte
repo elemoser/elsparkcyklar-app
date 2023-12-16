@@ -1,9 +1,5 @@
 <script>
 	import { app_name } from '$lib/index.js';
-	export let form;
-
-	//TODO Remove "ID" has to exist because ID is forced in order to create user.
-	//TODO Change login to not be ID.
 </script>
 
 <div class="login-wrapper">
@@ -11,7 +7,7 @@
 		<h1>{app_name}</h1>
 
 		<p>Login with:</p>
-		<a class="button" href="http://localhost:1338/login">Github<i class="fab fa-github"></i></a>
+		<a class="button" href="http://localhost:1338/login">Github<i class="fab fa-github" /></a>
 	</div>
 </div>
 

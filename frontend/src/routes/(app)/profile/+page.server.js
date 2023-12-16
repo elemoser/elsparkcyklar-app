@@ -1,5 +1,6 @@
-import { redirect } from "@sveltejs/kit";
+import { redirect } from '@sveltejs/kit';
 
+export const prerender = false;
 export const actions = {
 	logout: async ({ cookies }) => {
 		cookies.delete('passport'); //Easier to remove cookie from server side.

@@ -10,22 +10,23 @@
 		//TODO Fix update user in backend to allow user to update username.
 		/*
 		const userObj = {
-			first_name: data.get('username'),
+			username: data.get('username'),
 			phone: data.get('phone'),
 			mail: data.get('email')
 		};
 		*/
+		/*
 		const response = await fetch(`http://server:1338/v1/users/id/${userId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(userObj)
-		});
+		});*/
 
 		const res = await response.json();
 
-		res.error ? console.log('Something went wrong.') : goto ('/profile'); //TODO Actually implement error handling?
+		res.error ? console.log('Something went wrong.') : goto('/profile'); //TODO Actually implement error handling?
 	}
 </script>
 
