@@ -15,7 +15,8 @@
     async function removeBike(id) {
         // Note that localhost instead of server needs to be used here 
         const response = await fetch(`http://localhost:1338/v1/bikes/id/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
+            credentials: 'include'
         });
 
         if (response.status === 200) {
