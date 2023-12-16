@@ -32,7 +32,7 @@ do
         exit 1
     else
         echo "$data" > "$DATAFOLDER/$name.json"
-        bounds=$(jq -cr '.[0].geojson.coordinates[0]' "$DATAFOLDER/$name.json")
+        bounds=$(jq -cr '.[0].geojson.coordinates' "$DATAFOLDER/$name.json")
         sqlite3 $DBFILE "INSERT INTO city(id, name, bounds) VALUES($index,'$name','$bounds');"
     fi
     ((index=index+1))
