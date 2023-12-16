@@ -1,9 +1,3 @@
-import { redirect } from '@sveltejs/kit';
-
-// This tells SvelteKit not to prerender this page
-// so that we can use actions
-export const prerender = false;
-
 // Load data for specific row in db
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
@@ -12,7 +6,10 @@ export async function load({ params }) {
 
     if (target) {
         try {
-            const response = await fetch(`http://server:1338/v1/city/id/${target}`);
+            const response = await fetch(`http://localhost:1338/v1/city/id/${target}`, {
+                method: 'GET',
+                credentials: 'include'
+            });
             if (response.status == '200') {
                 data = await response.json();
                 data = data.city;
@@ -34,7 +31,8 @@ export async function load({ params }) {
     };
 }
 
-/** @type {import('./$types').Actions} */
+///** @type {import('./$types').Actions} */
+/*
 export const actions = {
     // Update given row in db
 	default: async ({request}) => {
@@ -67,4 +65,4 @@ export const actions = {
         //     //TODO error handling
         // }
 	}
-};
+};*/

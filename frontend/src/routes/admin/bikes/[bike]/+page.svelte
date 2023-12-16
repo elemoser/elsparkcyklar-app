@@ -35,13 +35,54 @@
             }
         }
     }
+
+    async function updateBike(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const bikeId = formData.get('id');
+        const lat = formData.get('lat');
+        const lon = formData.get('lon');
+        let state = formData.get('state');
+        let newState = formData.get('new_state');
+
+        if (state != newState ) {
+            state = newState;
+        }
+
+        const data = {
+            battery: formData.get('battery'),
+            city_id: formData.get('city_id'),
+            speed: formData.get('speed'),
+            position: lat + ', ' + lon,
+            state: state
+        }
+
+        const encodedData = new URLSearchParams(data).toString();
+
+        const response = await fetch(`http://localhost:1338/v1/bikes/id/${bikeId}`, {
+            method: "PUT",
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: encodedData
+        });
+
+        if (response.status === 200) {
+            // redirect
+            goto('/admin/bikes/');
+        }  else {
+            console.log(`Failed to update bike ${bikeId}:`, response.statusText);
+            //TODO error handling
+        }
+    }
 </script>
 
 {#if data.props.data.error }
     <p>{ data.props.data.error }</p>
 {:else}
     <h2>Detaljer för cykeln { data.props.target }</h2>
-    <form method="POST">
+    <form on:submit={updateBike}>
         <label for="id">Cykel id
             <input id="id" name="id" type="text" value={ data.props.data.id } readonly/>
         </label>

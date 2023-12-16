@@ -1,4 +1,5 @@
 <script>
+    import { goto } from "$app/navigation";
     // Suggest coordinates based on city
     const coordinates = {
         '1': [59.3293, 18.0686],
@@ -13,11 +14,46 @@
     $: lon = coordinates[selectedCity] ? coordinates[selectedCity][1] : 0;
     // All statuses allowed
     const statusOptions = ['available','occupied','disabled']
+
+    async function createBike(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const bikeId = formData.get('id');
+        const lat = formData.get('lat');
+        const lon = formData.get('lon');
+
+        const data = {
+            battery: formData.get('battery'),
+            city_id: formData.get('city_id'),
+            speed: formData.get('speed'),
+            position: lat + ', ' + lon,
+            state: formData.get('state')
+        }
+
+        const encodedData = new URLSearchParams(data).toString();
+
+        const response = await fetch("http://localhost:1338/v1/bikes", {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: encodedData,
+        });
+
+        if (response.status === 200) {
+            // redirect
+            goto('/admin/bikes/');
+        }  else {
+            console.log(`Failed to update bike ${bikeId}:`, response.statusText);
+            //TODO error handling
+        }
+    }
 </script>
 
 
 <h2>Skapa en ny cykel</h2>
-<form method="POST">
+<form on:submit={createBike}>
     <label for="battery">Batteri
         <input id="battery" name="battery" type="number" max="100" min="0" required/>
     </label>
