@@ -7,6 +7,7 @@ var _invoice = require("./invoice");
 var _parked_bikes = require("./parked_bikes");
 var _parking = require("./parking");
 var _price = require("./price");
+var _simulate = require("./simulate");
 var _user = require("./user");
 
 function initModels(sequelize) {
@@ -18,6 +19,7 @@ function initModels(sequelize) {
   var parked_bikes = _parked_bikes(sequelize, DataTypes);
   var parking = _parking(sequelize, DataTypes);
   var price = _price(sequelize, DataTypes);
+  var simulate = _simulate(sequelize, DataTypes);
   var user = _user(sequelize, DataTypes);
 
   booking.belongsTo(bike, { as: "bike", foreignKey: "bike_id"});
@@ -30,6 +32,8 @@ function initModels(sequelize) {
   city.hasMany(bike, { as: "bikes", foreignKey: "city_id"});
   parking.belongsTo(city, { as: "city", foreignKey: "city_id"});
   city.hasMany(parking, { as: "parkings", foreignKey: "city_id"});
+  simulate.belongsTo(city, { as: "city", foreignKey: "city_id"});
+  city.hasMany(simulate, { as: "simulates", foreignKey: "city_id"});
   parked_bikes.belongsTo(parking, { as: "park", foreignKey: "park_id"});
   parking.hasMany(parked_bikes, { as: "parked_bikes", foreignKey: "park_id"});
   booking.belongsTo(user, { as: "user", foreignKey: "user_id"});
@@ -46,6 +50,7 @@ function initModels(sequelize) {
     parked_bikes,
     parking,
     price,
+    simulate,
     user,
   };
 }
