@@ -13,7 +13,7 @@ function upperFirst(string) {
 
 /**
  * @function isValidCoordinates
- * @param {*} coordinates 
+ * @param {*} coordinates
  * @description regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
  * @returns True / False
  */
@@ -23,8 +23,8 @@ function isValidCoordinates(coordinates, coordinatesPattern) {
 
 /**
  * @function getRandomInt
- * @param {Integer} min 
- * @param {Integer} max 
+ * @param {Integer} min
+ * @param {Integer} max
  * @returns Int
  */
 function getRandomInt(min, max) {
@@ -33,4 +33,4 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-module.exports = { upperFirst, isValidCoordinates, getRandomInt }
+module.exports = { upperFirst, isValidCoordinates, getRandomInt };

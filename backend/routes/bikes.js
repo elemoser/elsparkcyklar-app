@@ -1,41 +1,44 @@
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const bikes = require("../models/bikes.js");
+const isAuthenticated = require("../auth-utils.js");
+
+// Middleware för att skydda alla underliggande rutter
+router.use(isAuthenticated);
 
 //Get all bikes
-router.get('/', (req, res) => bikes.getBikes(req, res));
+router.get("/", (req, res) => bikes.getBikes(req, res));
 
 //Get all available bikes
-router.get('/available/:city_id', (req, res) => {
+router.get("/available/:city_id", (req, res) => {
     let city_id = req.params.city_id;
-    bikes.getAvailableBikes(req, res, city_id)
+    bikes.getAvailableBikes(req, res, city_id);
 });
 
 //Get specific bike
-router.get('/id/:bike_id', (req, res) => {
+router.get("/id/:bike_id", (req, res) => {
     let bike_id = req.params.bike_id;
-    bikes.getSpecificBike(req, res, bike_id)
+    bikes.getSpecificBike(req, res, bike_id);
 });
 
 //Search for bikes in cities
-router.get('/search/:name', (req, res) => {
+router.get("/search/:name", (req, res) => {
     let name = req.params.name;
-    bikes.getBikesInCity(req, res, name)
+    bikes.getBikesInCity(req, res, name);
 });
 
 //Create bike
-router.post('/', (req, res) => bikes.createBike(req, res));
+router.post("/", (req, res) => bikes.createBike(req, res));
 
 //Update bike
-router.put('/id/:bike_id', (req, res) => {
+router.put("/id/:bike_id", (req, res) => {
     let bike_id = req.params.bike_id;
     bikes.updateBike(req, res, bike_id);
 });
 
 //Delete bike
-router.delete('/id/:bike_id', (req, res) => {
+router.delete("/id/:bike_id", (req, res) => {
     let bike_id = req.params.bike_id;
     bikes.deleteBike(req, res, bike_id);
 });

@@ -1,4 +1,3 @@
-
 const { Op } = require("sequelize");
 
 const Charger = require("../orm/model-router.js")("charger");
@@ -28,7 +27,11 @@ const charger = {
      * @description Get specific Charger based on ID
      *
      */
-    getSpecificCharger: async function getSpecificCharger(req, res, charger_id) {
+    getSpecificCharger: async function getSpecificCharger(
+        req,
+        res,
+        charger_id
+    ) {
         try {
             const specCharger = await Charger.findByPk(charger_id);
 
@@ -47,7 +50,11 @@ const charger = {
      * @description Get all chargers matching the status-search
      *
      */
-    findChargersByStatus: async function findChargersByStatus(req, res, status) {
+    findChargersByStatus: async function findChargersByStatus(
+        req,
+        res,
+        status
+    ) {
         try {
             const chargers = await Charger.findAll({
                 where: {
@@ -75,49 +82,59 @@ const charger = {
     createCharger: async function createCharger(req, res) {
         try {
             /* Hämta attribut från req.body */
-            let {
-                parking_id
-            } = req.body;
+            let { parking_id } = req.body;
 
             if (!parking_id) {
-                return res.status(400).json({ error: "Missing required fields" });
+                return res
+                    .status(400)
+                    .json({ error: "Missing required fields" });
             }
 
             let bike_id = 0;
             let status = "available";
 
             if (isNaN(parking_id)) {
-                return res.status(400).json({ error: "Id and parking_id must be numbers" });
+                return res
+                    .status(400)
+                    .json({ error: "Id and parking_id must be numbers" });
             }
 
             const getParkings = await Parking.findAll();
-            const parkingIds = getParkings.map(parking => parseInt(parking.id));
+            const parkingIds = getParkings.map((parking) =>
+                parseInt(parking.id)
+            );
 
             if (!parkingIds.includes(parseInt(parking_id))) {
-                return res.status(400).json({ error: `Parking_id must be one of: ${parkingIds}` });
+                return res
+                    .status(400)
+                    .json({
+                        error: `Parking_id must be one of: ${parkingIds}`,
+                    });
             }
 
             const newCharger = await Charger.create({
                 parking_id: parseInt(parking_id),
                 bike_id: parseInt(bike_id),
-                status: status
+                status: status,
             });
 
             const updateParking = await Parking.findByPk(parking_id);
 
             await updateParking.update({
-                number_of_chargers: updateParking.number_of_chargers + 1
+                number_of_chargers: updateParking.number_of_chargers + 1,
             });
 
-            res.status(200).json({ message: "Charger created successfully", charger: newCharger });
-
+            res.status(200).json({
+                message: "Charger created successfully",
+                charger: newCharger,
+            });
         } catch (err) {
             console.error("Error in createUser:", err);
             res.status(500).json({ error: err.message });
         }
     },
 
-        /**
+    /**
      * @description Uppdatera cykel
      *
      */
@@ -130,11 +147,7 @@ const charger = {
                 return res.status(404).json({ error: "Charger doesn't exist" });
             }
 
-            let {
-                parking_id,
-                bike_id,
-                status,
-            } = req.body;
+            let { parking_id, bike_id, status } = req.body;
 
             //Sätt optionella värden till nya eller ursprungliga värden
             parking_id = parking_id || existingCharger.parking_id;
@@ -142,38 +155,53 @@ const charger = {
             status = status || existingCharger.status;
 
             const getParkings = await Parking.findAll();
-            const parkingIds = getParkings.map(parking => parseInt(parking.id));
+            const parkingIds = getParkings.map((parking) =>
+                parseInt(parking.id)
+            );
 
             if (!parkingIds.includes(parseInt(parking_id))) {
-                return res.status(400).json({ error: `Parking_id must be one of: ${parkingIds}` });
+                return res
+                    .status(400)
+                    .json({
+                        error: `Parking_id must be one of: ${parkingIds}`,
+                    });
             }
 
             if (bike_id != 0) {
                 const existingBike = await Bike.findByPk(bike_id);
 
                 if (!existingBike) {
-                    return res.status(404).json({ error: "Bike doesn't exist" });
+                    return res
+                        .status(404)
+                        .json({ error: "Bike doesn't exist" });
                 }
             }
 
             const acceptedStatus = ["available", "occupied"];
 
-            if(!acceptedStatus.includes(status)) {
-                return res.status(400).json({ error: `'status' must be one of: ${acceptedStatus}` });
+            if (!acceptedStatus.includes(status)) {
+                return res
+                    .status(400)
+                    .json({
+                        error: `'status' must be one of: ${acceptedStatus}`,
+                    });
             }
 
-            if(bike_id == 0 && status != "available") {
-                return res.status(400).json({ error: "If no bike is using the charger, status should be 'available'" });
+            if (bike_id == 0 && status != "available") {
+                return res
+                    .status(400)
+                    .json({
+                        error: "If no bike is using the charger, status should be 'available'",
+                    });
             }
 
             await existingCharger.update({
                 parking_id: parseInt(parking_id),
                 bike_id: parseInt(bike_id),
-                status: status
+                status: status,
             });
 
             res.status(200).json({ message: "Charger updated successfully" });
-
         } catch (err) {
             console.error("Error in updateCharger:", err);
             res.status(500).json({ error: err.message });
@@ -181,9 +209,9 @@ const charger = {
     },
 
     /**
- * @description Delete Charger
- *
- */
+     * @description Delete Charger
+     *
+     */
     deleteCharger: async function deleteCharger(req, res, charger_id) {
         try {
             /* Kontrollera om cykeln finns */
@@ -193,10 +221,12 @@ const charger = {
                 return res.status(404).json({ error: "Charger doesn't exist" });
             }
 
-            const updateParking = await Parking.findByPk(existingCharger.parking_id);
+            const updateParking = await Parking.findByPk(
+                existingCharger.parking_id
+            );
 
             await updateParking.update({
-                number_of_chargers: updateParking.number_of_chargers - 1
+                number_of_chargers: updateParking.number_of_chargers - 1,
             });
 
             await existingCharger.destroy();
@@ -207,6 +237,6 @@ const charger = {
             res.status(500).json({ error: err.message });
         }
     },
-}
+};
 
 module.exports = charger;

@@ -3,11 +3,11 @@
 //const { Op } = require("sequelize");
 const Parking = require("../orm/model-router.js")("parking");
 const City = require("../orm/model-router.js")("city");
-const { isValidCoordinates } = require("./utils.js")
-const coordinatesPattern = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)(,\s*[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?))*$/;
+const { isValidCoordinates } = require("./utils.js");
+const coordinatesPattern =
+    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)(,\s*[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?))*$/;
 
 const parking = {
-    
     /**
      * @description Getting all parkings from sqlite db
      */
@@ -26,7 +26,11 @@ const parking = {
      * @description Get specific parking based on ID
      *
      */
-    getSpecificParking: async function getSpecificParking(req, res, parking_id) {
+    getSpecificParking: async function getSpecificParking(
+        req,
+        res,
+        parking_id
+    ) {
         try {
             const specParking = await Parking.findOne({
                 where: { id: parking_id },
@@ -50,24 +54,22 @@ const parking = {
     createParking: async function createParking(req, res) {
         try {
             /* Hämta attribut från req.body */
-            let {
-                city_id,
-                name,
-                bounds,
-                number_of_chargers,
-            } = req.body;
+            let { city_id, name, bounds, number_of_chargers } = req.body;
 
-            if (!city_id ||
-                !name ||
-                !bounds
-                ) {
-                return res.status(400).json({ error: "Missing required fields" });
+            if (!city_id || !name || !bounds) {
+                return res
+                    .status(400)
+                    .json({ error: "Missing required fields" });
             }
 
             number_of_chargers = number_of_chargers || 0;
 
             if (isNaN(city_id) || isNaN(number_of_chargers)) {
-                return res.status(400).json({ error: "Id, city_id and number_of_chargers must be numbers" });
+                return res
+                    .status(400)
+                    .json({
+                        error: "Id, city_id and number_of_chargers must be numbers",
+                    });
             }
 
             const findCity = await City.findByPk(city_id);
@@ -75,20 +77,24 @@ const parking = {
             if (!findCity) {
                 return res.status(400).json({ error: "City doesn't exist!" });
             }
-            if (isValidCoordinates(bounds, coordinatesPattern) && bounds.length === 30) {
+            if (
+                isValidCoordinates(bounds, coordinatesPattern) &&
+                bounds.length === 30
+            ) {
                 const newParking = await Parking.create({
                     city_id: parseInt(city_id),
                     name: name,
                     bounds: bounds,
-                    number_of_chargers: parseInt(number_of_chargers)
+                    number_of_chargers: parseInt(number_of_chargers),
                 });
 
-            res.status(200).json({ message: "Parking created successfully", parking: newParking });
-
+                res.status(200).json({
+                    message: "Parking created successfully",
+                    parking: newParking,
+                });
             } else {
                 res.status(400).json({ error: "Invalid coordinates format" });
             }
-
         } catch (err) {
             console.error("Error in createUser:", err);
             res.status(500).json({ error: err.message });
@@ -102,39 +108,44 @@ const parking = {
     updateParking: async function updateParking(req, res, parking_id) {
         try {
             /* Hämta attribut från req.body */
-            let {
-                name,
-                bounds,
-                number_of_chargers,
-            } = req.body;
+            let { name, bounds, number_of_chargers } = req.body;
 
             const existingParking = await Parking.findByPk(parking_id);
 
             if (!existingParking) {
-                return res.status(400).json({ error: "Parking doesn't exist!" });
+                return res
+                    .status(400)
+                    .json({ error: "Parking doesn't exist!" });
             }
 
             //Optional parameter
             name = name || existingParking.name;
             bounds = bounds || existingParking.bounds;
-            number_of_chargers = number_of_chargers || existingParking.number_of_chargers;
+            number_of_chargers =
+                number_of_chargers || existingParking.number_of_chargers;
 
             if (isNaN(number_of_chargers)) {
-                return res.status(400).json({ error: "'number_of_chargers' must be a number" });
+                return res
+                    .status(400)
+                    .json({ error: "'number_of_chargers' must be a number" });
             }
-            if (isValidCoordinates(bounds, coordinatesPattern) && bounds.length === 30) {
+            if (
+                isValidCoordinates(bounds, coordinatesPattern) &&
+                bounds.length === 30
+            ) {
                 const updateParking = await existingParking.update({
                     name: name,
                     bounds: bounds,
-                    number_of_chargers: parseInt(number_of_chargers)
+                    number_of_chargers: parseInt(number_of_chargers),
                 });
 
-            res.status(200).json({ message: "parking updated successfully", parking: updateParking });
-
+                res.status(200).json({
+                    message: "parking updated successfully",
+                    parking: updateParking,
+                });
             } else {
                 res.status(400).json({ error: "Invalid coordinates format" });
             }
-
         } catch (err) {
             console.error("Error in updateUser:", err);
             res.status(500).json({ error: err.message });
@@ -142,16 +153,18 @@ const parking = {
     },
 
     /**
- * @description Delete Parking
- *
- */
+     * @description Delete Parking
+     *
+     */
     deleteParking: async function deleteParking(req, res, parking_id) {
         try {
             /* Kontrollera om fakturan finns */
             const existingParking = await Parking.findByPk(parking_id);
 
             if (!existingParking) {
-                return res.status(400).json({ error: "Parking doesn't exist!" });
+                return res
+                    .status(400)
+                    .json({ error: "Parking doesn't exist!" });
             }
 
             await existingParking.destroy();
@@ -162,6 +175,6 @@ const parking = {
             res.status(500).json({ error: err.message });
         }
     },
-}
+};
 
 module.exports = parking;

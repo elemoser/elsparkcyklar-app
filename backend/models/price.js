@@ -1,4 +1,3 @@
-
 const Price = require("../orm/model-router.js")("price");
 
 const price = {
@@ -30,24 +29,33 @@ const price = {
                 start_fee,
                 cost_per_minute,
                 free_parking_fee,
-                start_free_park_discount
+                start_free_park_discount,
             } = req.body;
 
             start_fee = start_fee || existingPrice.start_fee;
             cost_per_minute = cost_per_minute || existingPrice.cost_per_minute;
-            free_parking_fee = free_parking_fee || existingPrice.free_parking_fee;
-            start_free_park_discount = start_free_park_discount || existingPrice.start_free_park_discount;
+            free_parking_fee =
+                free_parking_fee || existingPrice.free_parking_fee;
+            start_free_park_discount =
+                start_free_park_discount ||
+                existingPrice.start_free_park_discount;
 
             const tableContent = [
                 start_fee,
                 cost_per_minute,
                 free_parking_fee,
-                start_free_park_discount
+                start_free_park_discount,
             ];
 
             for (const element of tableContent) {
-                if (isNaN(element) || element === null || element === undefined) {
-                    return res.status(400).json({ error: "Values must be floats" });
+                if (
+                    isNaN(element) ||
+                    element === null ||
+                    element === undefined
+                ) {
+                    return res
+                        .status(400)
+                        .json({ error: "Values must be floats" });
                 }
             }
 
@@ -64,6 +72,6 @@ const price = {
             res.status(500).json({ error: err.message });
         }
     },
-}
+};
 
 module.exports = price;

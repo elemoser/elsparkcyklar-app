@@ -3,11 +3,9 @@ PRAGMA foreign_keys = ON;
 DROP TABLE IF EXISTS user;
 CREATE TABLE user (
     id INTEGER NOT NULL PRIMARY KEY,
+    username TEXT NOT NULL,
     role TEXT NOT NULL DEFAULT "customer",
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    mail TEXT NOT NULL
+    balance FLOAT DEFAULT 0
 );
 
 -- City Table

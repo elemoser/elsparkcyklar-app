@@ -1,4 +1,3 @@
-
 const Invoice = require("../orm/model-router.js")("invoice");
 
 const invoice = {
@@ -20,7 +19,11 @@ const invoice = {
      * @description Get specific invoice
      *
      */
-    getSpecificInvoice: async function getSpecificInvoice(req, res, invoice_id) {
+    getSpecificInvoice: async function getSpecificInvoice(
+        req,
+        res,
+        invoice_id
+    ) {
         try {
             const specInvoice = await Invoice.findByPk(invoice_id);
 
@@ -55,17 +58,19 @@ const invoice = {
 
             if (!validStatus.includes(status)) {
                 return res.status(400).json({
-                    error: `'status' must be one of: ${validStatus.join(', ')}`
+                    error: `'status' must be one of: ${validStatus.join(", ")}`,
                 });
             }
 
             if (isNaN(price) || price === null || price === undefined) {
-                return res.status(400).json({ error: "Price must be a number" });
+                return res
+                    .status(400)
+                    .json({ error: "Price must be a number" });
             }
 
             await existingInvoice.update({
                 total_price: parseFloat(price),
-                status: status
+                status: status,
             });
 
             res.status(200).json({ message: "Invoice updated successfully" });
@@ -96,7 +101,6 @@ const invoice = {
             res.status(500).json({ error: err.message });
         }
     },
-
-}
+};
 
 module.exports = invoice;

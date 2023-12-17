@@ -1,29 +1,33 @@
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const parking = require("../models/parking.js");
 
+const isAuthenticated = require("../auth-utils.js");
+
+// Middleware för att skydda alla underliggande rutter
+router.use(isAuthenticated);
+
 //Get all Parkings
-router.get('/', (req, res) => parking.getParkings(req, res));
+router.get("/", (req, res) => parking.getParkings(req, res));
 
 //Create parking
-router.post('/', (req, res) => parking.createParking(req, res));
+router.post("/", (req, res) => parking.createParking(req, res));
 
 //Get specific parking
-router.get('/id/:parking_id', (req, res) => {
+router.get("/id/:parking_id", (req, res) => {
     let parking_id = req.params.parking_id;
-    parking.getSpecificParking(req, res, parking_id)
+    parking.getSpecificParking(req, res, parking_id);
 });
 
 //Update parking
-router.put('/id/:parking_id', (req, res) => {
+router.put("/id/:parking_id", (req, res) => {
     let parking_id = req.params.parking_id;
     parking.updateParking(req, res, parking_id);
 });
 
 //Delete parking
-router.delete('/id/:parking_id', (req, res) => {
+router.delete("/id/:parking_id", (req, res) => {
     let parking_id = req.params.parking_id;
     parking.deleteParking(req, res, parking_id);
 });
