@@ -7,7 +7,7 @@
 		<h1>{app_name}</h1>
 
 		<p>Login with:</p>
-		<a class="button" href="http://localhost:1338/login">Github<i class="fab fa-github" /></a>
+		<a class="button" href="http://localhost:1338/login">GitHub<i class="fab fa-github" /></a>
 	</div>
 </div>
 
