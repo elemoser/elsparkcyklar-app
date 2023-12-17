@@ -108,6 +108,7 @@ CREATE TABLE price (
 
 DROP TABLE IF EXISTS simulate;
 CREATE TABLE simulate (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     city_id,
     bike_route TEXT NOT NULL,
 
