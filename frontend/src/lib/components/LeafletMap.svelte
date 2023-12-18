@@ -23,7 +23,6 @@
 	let mapElement;
 	let map;
 
-
 	onMount(async () => {
 		if (browser) {
 			const L = await import('leaflet');
@@ -47,16 +46,16 @@
 
 				// Adjust for formatting
 				if (data.polygon.text === 'Linköping') {
-					boundsArray = boundsArray[0]; 
+					boundsArray = boundsArray[0];
 				}
 
 				if (data.polygon.text === 'Uppsala') {
-					boundsArray = boundsArray[1]; 
+					boundsArray = boundsArray[1];
 				}
-				
+
 				// Sort the coordinates in the right order for leaflet
 				let sortedLatLon = [];
-				
+
 				for (let pair of boundsArray[0]) {
 					sortedLatLon.push([pair[1], pair[0]]);
 				}
@@ -69,7 +68,10 @@
 				// Add polygon to map
 				map.fitBounds(polygon.getBounds());
 				// Add a marker at the center of the polygon containing the name
-				L.marker([coordinates.lat, coordinates.lng]).addTo(map).bindPopup(data.polygon.text).openPopup();
+				L.marker([coordinates.lat, coordinates.lng])
+					.addTo(map)
+					.bindPopup(data.polygon.text)
+					.openPopup();
 			}
 
 			if (data.markers) {
