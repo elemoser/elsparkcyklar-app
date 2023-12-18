@@ -6,7 +6,7 @@ name: Node.js CI
 on:
   push:
     branches: [ "main", "develop" ]
-  pull-request:
+  pull_request:
     branches: [ "main", "develop" ]
 
 jobs:
@@ -31,6 +31,11 @@ jobs:
       run: npm install
       working-directory: ./backend
 
+    - name: Run SQLite Setup Script
+      run: |
+        chmod +x ./setup.db.bash
+        ./setup.db.bash
+      working-directory: ./db
+
     - run: npm run test
       working-directory: ./backend
-
