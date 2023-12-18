@@ -212,11 +212,30 @@ const users = {
                 return res.status(404).json({ error: "User doesn't exist" });
             }
 
-            let { role, balance } = req.body;
+            let { username, role, balance } = req.body;
 
             //Sätt optionella värden till nya eller ursprungliga värden
             role = role || existingUser.role;
             balance = balance || existingUser.balance;
+
+            if (!username) {
+                username = existingUser.username;
+            } else {
+                // Om ett nytt användarnamn finns i requesten, kontrollera om det redan finns
+                const usernameExists = await User.findOne({
+                    where: { username: username },
+                });
+    
+                if (usernameExists) {
+                    return res.status(400).json({
+                        error: "Username already exists!",
+                    });
+                }
+
+                else {
+                    username = username;
+                }
+            }
 
             if (role !== "customer" && role !== "admin") {
                 return res
@@ -237,6 +256,7 @@ const users = {
             }
 
             await existingUser.update({
+                username,
                 role,
                 balance: parseFloat(balance),
             });
