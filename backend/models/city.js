@@ -1,4 +1,3 @@
-
 //const { Op } = require("sequelize");
 const City = require("../orm/model-router.js")("city");
 
@@ -45,22 +44,23 @@ const city = {
     createCity: async function createCity(req, res) {
         try {
             /* Hämta attribut från req.body */
-            let {
-                name,
-                bounds
-            } = req.body;
+            let { name, bounds } = req.body;
 
             if (!name || !bounds) {
-                return res.status(400).json({ error: "Missing required fields" });
+                return res
+                    .status(400)
+                    .json({ error: "Missing required fields" });
             }
 
             const newCity = await City.create({
                 name,
-                bounds
+                bounds,
             });
 
-            res.status(200).json({ message: "City created successfully", city: newCity });
-
+            res.status(200).json({
+                message: "City created successfully",
+                city: newCity,
+            });
         } catch (err) {
             console.error("Error in createUser:", err);
             res.status(500).json({ error: err.message });
@@ -80,10 +80,7 @@ const city = {
                 return res.status(404).json({ error: "City doesn't exist" });
             }
 
-            let {
-                name,
-                bounds
-            } = req.body;
+            let { name, bounds } = req.body;
 
             //Sätt optionella värden till nya eller ursprungliga värden
             name = name || existingCity.name;
@@ -91,11 +88,10 @@ const city = {
 
             await existingCity.update({
                 name,
-                bounds
+                bounds,
             });
 
             res.status(200).json({ message: "City updated successfully" });
-
         } catch (err) {
             console.error("Error in updateUser:", err);
             res.status(500).json({ error: err.message });
@@ -123,6 +119,6 @@ const city = {
             res.status(500).json({ error: err.message });
         }
     },
-}
+};
 
 module.exports = city;

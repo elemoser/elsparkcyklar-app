@@ -25,7 +25,7 @@
 					<th>{col}</th>
 				{/each}
 				{#if Object.keys(data.links).length}
-					<th>Details</th>
+					<th>details</th>
 				{/if}
 			</tr>
 		</thead>

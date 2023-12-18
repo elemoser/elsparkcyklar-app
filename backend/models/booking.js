@@ -1,16 +1,11 @@
-
 const Booking = require("../orm/model-router.js")("booking");
 const Bike = require("../orm/model-router.js")("bike");
 const User = require("../orm/model-router.js")("user");
 const Invoice = require("../orm/model-router.js")("invoice");
+const { getRandomInt } = require("./utils.js");
+const Price = require("../orm/model-router.js")("price");
 
 const { Op } = require("sequelize");
-
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 const booking = {
     /**
@@ -35,9 +30,9 @@ const booking = {
             const booking = await Booking.findAll({
                 where: {
                     stop_time: {
-                        [Op.eq]: ""
-                    }
-                }
+                        [Op.eq]: "",
+                    },
+                },
             });
 
             return res.json({ booking: booking });
@@ -54,49 +49,50 @@ const booking = {
     createBooking: async function createBooking(req, res) {
         try {
             /* Hämta attribut från req.body */
-            let {
-                bike_id,
-                user_id,
-            } = req.body;
+            let { bike_id, user_id } = req.body;
 
             if (!bike_id || !user_id) {
-                return res.status(400).json({ error: "Missing required fields" });
+                return res
+                    .status(400)
+                    .json({ error: "Missing required fields" });
             }
 
             const checkUser = await User.findOne({
                 where: {
                     id: user_id,
-                }
+                },
             });
 
             if (!checkUser) {
                 return res.status(400).json({ error: "User doesn't exist" });
-            } else if (checkUser.balance === 0) {
-                return res.status(400).json({ error: "Balance is too low" });
             }
 
             //Hämta alla bokingar och kolla om användaren redan har en bokning
             const bookings = await Booking.findAll({
                 where: {
-                    user_id: checkUser.id
-                }
+                    user_id: checkUser.id,
+                },
             });
 
-            const hasBooking = bookings.some(booking => (booking.stop_time === ""));
+            const hasBooking = bookings.some(
+                (booking) => booking.stop_time === ""
+            );
 
             if (hasBooking) {
-                return res.status(400).json({ error: "User already has an active booking" });
+                return res
+                    .status(400)
+                    .json({ error: "User already has an active booking" });
             }
 
             const checkBike = await Bike.findOne({
                 where: {
                     id: bike_id,
-                }
+                },
             });
 
             if (!checkBike) {
                 return res.status(400).json({ error: "Bike doesn't exist" });
-            } else if (checkBike.state !== 'available') {
+            } else if (checkBike.state !== "available") {
                 return res.status(400).json({ error: "Bike is not available" });
             }
 
@@ -105,16 +101,25 @@ const booking = {
 
             //Fånga år, måndag, dag, tid
             const year = currentDate.getFullYear();
-            const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-            const day = currentDate.getDate().toString().padStart(2, '0');
-            const hours = currentDate.getHours().toString().padStart(2, '0');
-            const minutes = currentDate.getMinutes().toString().padStart(2, '0');
-            const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+            const month = (currentDate.getMonth() + 1)
+                .toString()
+                .padStart(2, "0");
+            const day = currentDate.getDate().toString().padStart(2, "0");
+            const hours = currentDate.getHours().toString().padStart(2, "0");
+            const minutes = currentDate
+                .getMinutes()
+                .toString()
+                .padStart(2, "0");
+            const seconds = currentDate
+                .getSeconds()
+                .toString()
+                .padStart(2, "0");
 
             const startTimeStamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; //Formatera tidsstämpeln
 
-            //Sätt startpriset till 0 kronor om det är en subscriber, annars 10 kronor
-            let price = checkUser.subscriber === 1 ? 0 : 10;
+            //Hämta pris från pris-tabellen
+            const getPrice = await Price.findOne();
+            let price = getPrice.start_fee;
 
             const newBooking = await Booking.create({
                 bike_id: parseInt(bike_id),
@@ -123,18 +128,21 @@ const booking = {
                 start_location: checkBike.position,
                 stop_time: "",
                 stop_location: "",
-                price: parseFloat(price)
+                price: parseFloat(price),
             });
 
             let bikeSpeed = getRandomInt(5, 25);
 
             //Uppdatera status och hastighet för den uthyrda cykeln
             checkBike.update({
-                state: 'occupied',
-                speed: parseFloat(bikeSpeed)
-            })
+                state: "occupied",
+                speed: parseFloat(bikeSpeed),
+            });
 
-            res.status(200).json({ message: "Booking created successfully", booking: newBooking });
+            res.status(200).json({
+                message: "Booking created successfully",
+                booking: newBooking,
+            });
         } catch (err) {
             console.error("Error in createBooking:", err);
             res.status(500).json({ error: err.message });
@@ -156,7 +164,7 @@ const booking = {
                     {
                         model: Bike,
                         as: "bike",
-                        attributes: ['position'],
+                        attributes: ["position"],
                     },
                 ],
             });
@@ -164,7 +172,9 @@ const booking = {
             if (!existingBooking) {
                 return res.status(404).json({ error: "Booking doesn't exist" });
             } else if (existingBooking.stop_time != "") {
-                return res.status(400).json({ error: "Trip is already stopped" });
+                return res
+                    .status(400)
+                    .json({ error: "Trip is already stopped" });
             }
 
             const currentTimestamp = Date.now(); //Skapa ett datum
@@ -172,11 +182,19 @@ const booking = {
 
             //Fånga år, måndag, dag, tid
             const year = currentDate.getFullYear();
-            const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-            const day = currentDate.getDate().toString().padStart(2, '0');
-            const hours = currentDate.getHours().toString().padStart(2, '0');
-            const minutes = currentDate.getMinutes().toString().padStart(2, '0');
-            const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+            const month = (currentDate.getMonth() + 1)
+                .toString()
+                .padStart(2, "0");
+            const day = currentDate.getDate().toString().padStart(2, "0");
+            const hours = currentDate.getHours().toString().padStart(2, "0");
+            const minutes = currentDate
+                .getMinutes()
+                .toString()
+                .padStart(2, "0");
+            const seconds = currentDate
+                .getSeconds()
+                .toString()
+                .padStart(2, "0");
 
             const stopTimeStamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; //Formatera tidsstämpeln
 
@@ -188,21 +206,55 @@ const booking = {
             const stopLocation = existingBooking.bike.position;
             const price = existingBooking.price;
 
+            //Hämta hur lång tid bokningen varade så att batteriprocent plus price kan beräknas
+            const startTimeUnix = new Date(startTime).getTime() / 1000;
+            const stopTimeUnix = new Date(stopTimeStamp).getTime() / 1000;
+
+            //i sekunder och konvertera till minuter
+            const tripLengthInSeconds = stopTimeUnix - startTimeUnix;
+            const convertToMinutes = tripLengthInSeconds / 60;
+
+            //hämta priset från pris-tabellen
+            const getPrice = await Price.findOne();
+
+            //slutpriset (ursprungspriset + (antal minuter gånger minutpriset)
+            const calculatePrice =
+                price + convertToMinutes * getPrice.cost_per_minute;
+
             //hämta aktuell cykel samt justera batteri-nivån och tillgänglighet
             const existingBike = await Bike.findByPk(bikeId);
-            const batteryLevel = existingBike.battery - getRandomInt(5, 20);
 
-            await existingBike.update({
-                state: "available",
-                battery: batteryLevel
-            });
+            //grov uppskattning för hur mycket batteri som dras varje minut
+            const batteryLevel = existingBike.battery - 0.5 * convertToMinutes;
+
+            //Om batteriet är mindre än 20 får cykeln panik och varnar (läskigt)
+            if (batteryLevel < 20) {
+                await existingBike.update({
+                    low_battery: true,
+                });
+            }
+
+            //om batterinivån skulle visa sig bli 0 så blir cykeln 'disabled'
+            if (batteryLevel <= 0) {
+                await existingBike.update({
+                    state: "disabled",
+                    battery: 0,
+                    speed: 0,
+                });
+            } else {
+                await existingBike.update({
+                    state: "available",
+                    battery: batteryLevel,
+                    speed: 0,
+                });
+            }
 
             //skapa faktura för aktuell användare
             await Invoice.create({
                 log_id: parseInt(booking_id),
                 user_id: parseInt(userId),
-                total_price: parseFloat(price),
-                status: "pending"
+                total_price: parseFloat(calculatePrice),
+                status: "pending",
             });
 
             await existingBooking.update({
@@ -213,18 +265,17 @@ const booking = {
                 start_location: startLocation,
                 stop_time: stopTimeStamp,
                 stop_location: stopLocation,
-                price: parseFloat(price),
+                price: parseFloat(calculatePrice),
             });
 
             res.status(200).json({
-                message: "Booking successfully updated. Trip is now stopped"
+                message: "Booking successfully updated. Trip is now stopped",
             });
-
-            } catch (err) {
-                console.error("Error in deleteBooking:", err);
-                res.status(500).json({ error: err.message });
+        } catch (err) {
+            console.error("Error in deleteBooking:", err);
+            res.status(500).json({ error: err.message });
         }
     },
-}
+};
 
 module.exports = booking;

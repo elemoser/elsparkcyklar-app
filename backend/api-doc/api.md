@@ -1,4 +1,3 @@
-
 # Dokumentation - API
 
 Den här sidan innehåller dokumentation om API:et som används för systemet "Svenska Elsparkcyklar
@@ -6,26 +5,30 @@ AB". Funktionaliteten är samlad under olika underrubriker beroende på vilken d
 
 ### Innehåll
 
-- [Users](#users)
-- [City](#city)
-- [Bikes](#bikes)
-- [Booking](#booking)
-- [Invoice](#invoice)
-- [Price](#price)
-- [Parking](#parking)
+-   [Important](#important)
+-   [Users](#users)
+-   [City](#city)
+-   [Bikes](#bikes)
+-   [Booking](#booking)
+-   [Invoice](#invoice)
+-   [Price](#price)
+-   [Parking](#parking)
+
+## Important
+
+Notera att du MÅSTE vara autentiserad med ett GitHub-konto för att få ta del av API:t.
+Alla requests som görs utan en autentisering kommer annars att returnera svaret
+'status(500) "You don't have permission to be here"'
 
 ## USERS
 
 En användare har följande attribut:
+
 ```
 id
+username
 role
-first_name
-last_name
-phone
-mail
 balance
-subscriber
 ```
 
 ### Hämta alla kunder
@@ -35,53 +38,43 @@ GET /v1/users
 ```
 
 Result:
+
 ```
 {
     "users": [
         {
             "id": 2101010001,
+            "username": "horselover1337",
             "role": "customer",
-            "first_name": "John",
-            "last_name": "Doe",
-            "phone": "123456789",
-            "mail": "john.doe@example.com",
-            "balance": 50,
-            "subscriber": 1
+            "balance": 0
         },
         {
             "id": 2101020002,
+            "username": "gurkOlle",
             "role": "customer",
-            "first_name": "Jane",
-            "last_name": "Smith",
-            "phone": "987654321",
-            "mail": "jane.smith@example.com",
-            "balance": 30,
-            "subscriber": 0
+            "balance": 100
         },
     ...
     ]
 }
 ```
 
-### Hämta EN kund via födelsedatum (id)
+### Hämta EN kund via id
 
 ```
 GET /v1/users/id/[user_id]
 ```
 
 Result for "2101010001":
+
 ```
 {
     "user": {
-        "id": 2101010001,
-        "role": "customer",
-        "first_name": "John",
-        "last_name": "Doe",
-        "phone": "123456789",
-        "mail": "john.doe@example.com",
-        "balance": 50,
-        "subscriber": 1
-    }
+            "id": 2101010001,
+            "username": "horselover1337",
+            "role": "customer",
+            "balance": 0
+        }
 }
 ```
 
@@ -92,6 +85,7 @@ GET /v1/users/history/[user_id]
 ```
 
 Result for "2101010001":
+
 ```
 {
     "user": {
@@ -114,6 +108,7 @@ GET /v1/users/invoice/[user_id]
 ```
 
 Result for "2101010001":
+
 ```
 {
     "user": {
@@ -133,6 +128,7 @@ GET /v1/users/invoice/[user_id]/[invoice_id]
 ```
 
 Result for "2101010001/1":
+
 ```
 {
     "user": {
@@ -151,63 +147,63 @@ Result for "2101010001/1":
 GET /v1/users/name/[name]
 ```
 
-Result for "john":
+Result for "h":
+
 ```
 {
     "users": [
         {
             "id": 2101010001,
+            "username": "horselover1337",
             "role": "customer",
-            "first_name": "John",
-            "last_name": "Doe",
-            "phone": "123456789",
-            "mail": "john.doe@example.com",
-            "balance": 50,
-            "subscriber": 1
+            "balance": 0
         },
         {
             "id": 2101030003,
+            "username": "githubForever",
             "role": "customer",
-            "first_name": "Alice",
-            "last_name": "Johnson",
-            "phone": "555111222",
-            "mail": "alice.johnson@example.com",
-            "balance": 20,
-            "subscriber": 1
+            "balance": 200
         }
     ]
 }
 ```
+
 ### Skapa en användare
 
 ```
 POST /v1/users
 ```
+
 Required parameters:
+
 ```
 id
-first_name
-last_name
-phone
-mail
+username
 ```
 
 Optional parameters:
+
 ```
 role
 balance
-subscriber
 ```
+
 Result:
+
 ```
 status(200) - 'User created successfully'
 ```
+
 Possible errors (if 'id' already exists):
+
 ```
-status(500) 'Validation error' 
+status(500) 'Validation error'
+status(400) "'Balance' must be a number!"
+status(404) "Role must be either 'customer' or 'admin'"
 ```
 
 ### Uppdatera en användare
+
 ```
 PUT /v1/users/id/[user_id]
 ```
@@ -215,37 +211,46 @@ PUT /v1/users/id/[user_id]
 Please note that "id" can't be updated.
 
 Optional parameters:
+
 ```
 role
-first_name
-last_name
-phone
-mail
 balance
-subscriber
 ```
+
 Result:
+
 ```
 status(200) - 'User updated successfully'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'User doesn't exist'
+status(404) "'Balance' must be a number!"
+status(404) "Role must be either 'customer' or 'admin'"
 ```
 
 ### Ta bort en användare
+
 ```
 DELETE /v1/users/id/[user_id]
 ```
+
 Required parameters:
+
 ```
 id
 ```
+
 Result:
+
 ```
 status(200) 'User successfully deleted'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'User doesn't exist'
 ```
@@ -253,6 +258,7 @@ status(404) 'User doesn't exist'
 ## CITY
 
 En stad har följande attribut:
+
 ```
 id
 name
@@ -266,6 +272,7 @@ GET /v1/city
 ```
 
 Result:
+
 ```
 {
     "city": [
@@ -286,6 +293,7 @@ GET /v1/city/id/[city_id]
 ```
 
 Result for "2":
+
 ```
 {
     "city": {
@@ -301,50 +309,66 @@ Result for "2":
 ```
 POST /v1/city
 ```
+
 Required parameters:
+
 ```
 name
 bounds
 ```
 
 Result:
+
 ```
 status(200) - 'City created successfully'
 ```
 
 ### Uppdatera en stad
+
 ```
 PUT /v1/city/id/[city_id]
 ```
 
 Please note that "id" can't be updated.
 Optional parameters:
+
 ```
 name
 bounds
 ```
+
 Result:
+
 ```
 status(200) - 'City updated successfully'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'City doesn't exist'
 ```
 
 ### Ta bort en stad
+
 ```
 DELETE /v1/city/id/[city_id]
 ```
+
 Required parameters:
+
 ```
 id
 ```
+
 Result:
+
 ```
 status(200) 'City successfully deleted'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'City doesn't exist'
 ```
@@ -352,6 +376,7 @@ status(404) 'City doesn't exist'
 ## BIKES
 
 En cykel har följande attribut:
+
 ```
 id,
 battery
@@ -359,7 +384,7 @@ city_id
 speed
 position
 state
-disabled
+low_battery
 ```
 
 ### Hämta alla cyklar
@@ -369,6 +394,7 @@ GET /v1/bikes
 ```
 
 Result:
+
 ```
 {
     "bike": [
@@ -378,17 +404,17 @@ Result:
             "city_id": 1,
             "speed": 25,
             "position": "59.3293, 18.0686",
-            "state": "active",
-            "disabled": 0
+            "state": "occupied",
+            "low_battery": false
         },
         {
             "id": 2,
             "battery": 60,
-            "city_id": 2,
-            "speed": 22.5,
+            "city_id": 1,
+            "speed": 0,
             "position": "59.3099, 18.0752",
-            "state": "inactive",
-            "disabled": 1
+            "state": "disabled",
+            "low_battery": false
         },
     ...
     ]
@@ -400,7 +426,9 @@ Result:
 ```
 POST /v1/bikes
 ```
+
 Required parameters:
+
 ```
 battery
 city_id
@@ -408,15 +436,20 @@ position
 ```
 
 Optional parameters:
+
 ```
 speed
 state
 ```
+
 Result:
+
 ```
 status(200) - 'Bike created successfully'
 ```
+
 Possible errors:
+
 ```
 status(400) 'position' is not formatted correctly'
 status(400) 'state' must be one of: "occupied", "available", "disabled"'
@@ -431,6 +464,7 @@ PUT /v1/bikes/id/[bike_id]
 Please note that "id" can't be updated.
 
 Optional parameters:
+
 ```
 battery
 city_id
@@ -438,15 +472,21 @@ position
 speed
 state
 ```
+
 Result:
+
 ```
 status(200) - 'Bike updated successfully'
 ```
+
 Possible errors (if 'id' already exists):
+
 ```
 status(500) 'Validation error'
 ```
+
 ...or
+
 ```
 status(400) 'position' is not formatted correctly'
 status(400) 'state' must be one of: "occupied", "available", "disabled"'
@@ -459,6 +499,7 @@ GET /v1/bikes/id/[bike_id]
 ```
 
 Result for "4":
+
 ```
 {
     "bike": {
@@ -467,18 +508,20 @@ Result for "4":
         "city_id": 4,
         "speed": 20,
         "position": "59.8586, 17.6389",
-        "state": "occupied"
+        "state": "occupied",
+        "low_battery": false
     }
 }
 ```
 
-### Hämta alla *tillgängliga* cyklar i en specifik stad via stadens id
+### Hämta alla _tillgängliga_ cyklar i en specifik stad via stadens id
 
 ```
 GET /v1/bikes/available/[city_id]
 ```
 
 Result for "5":
+
 ```
 {
     "bikes": [
@@ -488,7 +531,8 @@ Result for "5":
             "city_id": 5,
             "speed": 0,
             "position": "58.4108, 15.6214",
-            "state": "available"
+            "state": "available",
+            "low_battery": false
         }
     ]
 }
@@ -501,6 +545,7 @@ GET /v1/bikes/search/[name]
 ```
 
 Result for "s":
+
 ```
 {
     "bikes": [
@@ -542,14 +587,19 @@ DELETE /v1/bikes/id/[bike_id]
 ```
 
 Required parameters:
+
 ```
 id
 ```
+
 Result:
+
 ```
 status(200) 'Bike successfully deleted'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'Bike doesn't exist'
 ```
@@ -557,6 +607,7 @@ status(404) 'Bike doesn't exist'
 ## BOOKING
 
 En bokning har följande attribut:
+
 ```
 id
 bike_id
@@ -565,7 +616,7 @@ start_time
 start_location
 stop_time
 stop_location
-price FLOAT
+price
 ```
 
 ### Hämta alla bokningar
@@ -575,6 +626,7 @@ GET /v1/booking
 ```
 
 Result:
+
 ```
 {
     "booking": [
@@ -604,11 +656,13 @@ Result:
 ```
 
 ### Hämta alla pågående resor
+
 ```
 GET /v1/booking/ongoing
 ```
 
 Result:
+
 ```
 {
     "booking": [
@@ -631,21 +685,25 @@ Result:
 ```
 POST /v1/booking
 ```
+
 Required parameters:
+
 ```
 bike_id,
 user_id,
 ```
 
 Result:
+
 ```
 status(200) - 'Booking created successfully'
 ```
+
 Possible errors:
+
 ```
 User-related:
     status(400) 'User doesn't exist'
-    status(400) 'Balance is too low'
     status(400) 'User already has an active booking'
 
 Bike-related:
@@ -667,10 +725,13 @@ booking, please turn to "Invoice" instead.
 No parameters are required.
 
 Result:
+
 ```
 status(200) - "Booking successfully updated. Trip is now stopped"
 ```
+
 Possible errors:
+
 ```
 status(404) "Booking doesn't exist"
 status(400) "Trip is already stopped"
@@ -679,6 +740,7 @@ status(400) "Trip is already stopped"
 ## INVOICE
 
 En faktura har följande attribut:
+
 ```
 id,
 log_id,
@@ -697,6 +759,7 @@ GET /v1/invoice
 ```
 
 Result:
+
 ```
 {
     "invoice": [
@@ -726,6 +789,7 @@ GET v1/invoice/id/[invoice_id]
 ```
 
 Result for "1":
+
 ```
 {
     "invoice": {
@@ -745,6 +809,7 @@ PUT v1/invoice/id/[invoice_id]
 ```
 
 Optional parameters:
+
 ```
 total_price
 status
@@ -754,10 +819,13 @@ Please note that you can only set the 'status'
 to either 'pending' or 'payed'.
 
 Result:
+
 ```
 status(200) - "Invoice updated successfully"
 ```
+
 Possible errors:
+
 ```
 status(404) "Invoice doesn't exist"
 status(400) "'status' must be one of: payed, pending"
@@ -770,14 +838,19 @@ DELETE /v1/invoice/id/[invoice_id]
 ```
 
 Required parameters:
+
 ```
 id
 ```
+
 Result:
+
 ```
 status(200) 'Invoice successfully deleted'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'Invoice doesn't exist'
 ```
@@ -785,6 +858,7 @@ status(404) 'Invoice doesn't exist'
 ## PRICE
 
 En prisgrupp har följande attribut:
+
 ```
 id,
 start_fee,
@@ -793,13 +867,14 @@ free_parking_fee,
 start_free_park_discount
 ```
 
-### Hämta alla prisgrupper
+### Hämta priser
 
 ```
 GET /v1/price
 ```
 
 Result:
+
 ```
 {
     "price": [
@@ -814,56 +889,14 @@ Result:
 }
 ```
 
-### Hämta specifik prisgrupp (id)
+### Uppdatera priser
 
 ```
-GET /v1/price/id/[price_id]
-```
-
-Result for "1":
-```
-{
-    "price": {
-        "id": 1,
-        "start_fee": 20,
-        "cost_per_minute": 3,
-        "free_parking_fee": 20,
-        "start_free_park_discount": 0.5
-    }
-}
-```
-
-### Skapa en ny prisgrupp
-
-```
-POST v1/price
-```
-
-Required parameters:
-```
-start_fee,
-cost_per_minute,
-free_parking_fee,
-start_free_park_discount
-```
-
-Result:
-```
-status(200) "Price created successfully"
-```
-Possible errors (besides from db-errors):
-```
-status(400) "Missing required fields"
-status(400) "Values must be floats"
-```
-
-### Uppdatera en prisgrupp
-
-```
-PUT v1/price/id/[price_id]
+PUT v1/price/
 ```
 
 Optional parameters:
+
 ```
 start_fee,
 cost_per_minute,
@@ -872,37 +905,22 @@ start_free_park_discount
 ```
 
 Result:
+
 ```
 status(200) "Price updated successfully"
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) "PriceType doesn't exist"
 status(400) "Values must be floats"
 ```
 
-### Radera en prisgrupp
-
-```
-DELETE /v1/price/id/[price_id]
-```
-
-Required parameters:
-```
-id
-```
-Result:
-```
-status(200) 'Price successfully deleted'
-```
-Possible errors (besides from db-errors):
-```
-status(404) 'Price doesn't exist'
-```
-
 ## PARKING
 
 En parkering har följande attribut:
+
 ```
 id,
 city_id
@@ -918,6 +936,7 @@ GET /v1/parking
 ```
 
 Result:
+
 ```
 {
     "parking": [
@@ -947,6 +966,7 @@ GET /v1/parking/id/[parking_id]
 ```
 
 Result for "2":
+
 ```
 {
     "parking": {
@@ -966,6 +986,7 @@ POST v1/parking
 ```
 
 Required parameters:
+
 ```
 city_id,
 name,
@@ -974,10 +995,13 @@ number_of_chargers
 ```
 
 Result:
+
 ```
 status(200) "Parking created successfully"
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(400) "City_id and number_of_chargers must be numbers"
 status(400) "Invalid coordinates format"
@@ -991,6 +1015,7 @@ PUT v1/parking/id/[parking_id]
 ```
 
 Optional parameters:
+
 ```
 name,
 bounds,
@@ -998,10 +1023,13 @@ number_of_chargers,
 ```
 
 Result:
+
 ```
 status(200) "Parking updated successfully"
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(400) "Parking doesn't exist!"
 status(400) "'number_of_chargers' must be a number"
@@ -1015,14 +1043,19 @@ DELETE /v1/parking/id/[parking_id]
 ```
 
 Required parameters:
+
 ```
 id
 ```
+
 Result:
+
 ```
 status(200) 'Parking successfully deleted'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'Parking doesn't exist'
 ```
@@ -1030,6 +1063,7 @@ status(404) 'Parking doesn't exist'
 ## CHARGER
 
 En laddare har följande attribut:
+
 ```
 id,
 parking_id,
@@ -1044,6 +1078,7 @@ GET /v1/charger
 ```
 
 Result:
+
 ```
 {
     "chargers": [
@@ -1071,6 +1106,7 @@ GET /v1/charger/id/[charger_id]
 ```
 
 Result for "1":
+
 ```
 {
     "charger": {
@@ -1089,15 +1125,19 @@ POST v1/charger
 ```
 
 Required parameters:
+
 ```
 parking_id
 ```
 
 Result:
+
 ```
 status(200) "Charger created successfully"
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(400) "Parking_id must be numbers"
 status(400) "Parking_id must be one of: *available ids*"
@@ -1110,6 +1150,7 @@ PUT v1/charger/id/[charger_id]
 ```
 
 Optional parameters:
+
 ```
 parking_id,
 bike_id,
@@ -1117,10 +1158,13 @@ status,
 ```
 
 Result:
+
 ```
 status(200) "Charger updated successfully"
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) "Charger doesn't exist"
 status(404) "Bike doesn't exist"
@@ -1136,14 +1180,19 @@ DELETE /v1/charger/id/[charger_id]
 ```
 
 Required parameters:
+
 ```
 id
 ```
+
 Result:
+
 ```
 status(200) 'Charger successfully deleted'
 ```
+
 Possible errors (besides from db-errors):
+
 ```
 status(404) 'Charger doesn't exist'
 ```

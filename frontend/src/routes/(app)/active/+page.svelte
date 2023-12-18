@@ -1,8 +1,20 @@
 <script>
+	import { goto } from '$app/navigation';
 	import LeafletMap from '$lib/components/LeafletMap.svelte';
 	export let data;
 
 	const { active } = data;
+
+	async function stopRide() {
+		const endResponse = await fetch(`http://localhost:1338/v1/booking/id/${active.id}`, {
+			method: 'PUT',
+			credentials: 'include'
+		});
+
+		if (endResponse.status === 200) {
+			goto('/profile/invoice');
+		}
+	}
 </script>
 
 <div class="tour-container">
@@ -11,9 +23,7 @@
 	<div class="map-container">
 		<LeafletMap />
 	</div>
-	<form method="POST">
-		<button class="button stop" formaction="?/stop">Stop</button>
-	</form>
+	<button class="button stop" on:click={stopRide}>Stop</button>
 </div>
 
 <!-- TODO Pause button? -->
@@ -30,16 +40,9 @@
 		margin: 0 auto $calculated-line-height auto;
 	}
 
-	form {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: $calculated-line-height;
-
-		button {
-			font-size: 1.5em;
-			border: 1px solid $con-border-col;
-		}
+	button {
+		font-size: 1.5em;
+		border: 1px solid $con-border-col;
 	}
 
 	.stop {
