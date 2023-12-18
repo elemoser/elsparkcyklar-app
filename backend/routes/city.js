@@ -3,11 +3,6 @@ const router = express.Router();
 
 const city = require("../models/city.js");
 
-const isAuthenticated = require("../auth-utils.js");
-
-// Middleware för att skydda alla underliggande rutter
-router.use(isAuthenticated);
-
 //Get all cities
 router.get("/", (req, res) => city.getCities(req, res));
 

@@ -9,7 +9,8 @@
         "es2021": true,
         "node": true
     },
+    "ignorePatterns": ["/orm/*", "/test/*"],
     "rules": {
-        "no-console": ["warn", { "allow": ["warn", "error"] }]
+        "no-console": "off"
     }
 }
