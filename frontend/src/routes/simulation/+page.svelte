@@ -6,10 +6,11 @@
     let L;
     let mapElement;
 	let map;
+    let markerLayer;
 
     onMount(async () => {
         // Get data via SSE
-        eventSource = new EventSource('http://localhost:1338/v1/simulate');
+        // eventSource = new EventSource('http://localhost:1338/v1/simulate');
 
         // Create a map
         if (browser) {
@@ -20,34 +21,61 @@
 			let lat = 59.33808;
 			let lon = 18.08996;
 
-			map = L.map(mapElement).setView([lat, lon], 14);
+			map = L.map(mapElement).setView([lat, lon], 12);
 
 			// Create the map
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				attribution:
 					'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
+
+            // Create a layer for markers
+            markerLayer = L.layerGroup().addTo(map);
 		}
     });
 
+    function newEventSource() {
+        // Get data via SSE
+        eventSource = new EventSource('http://localhost:1338/v1/simulate');
+    }
+
     function startUpdates() {
-        console.log("Sim started");
+        // Remove markers from map if any
+        markerLayer.clearLayers();
+
+        // Start EventSource
+        if (!eventSource || eventSource.readyState === 2) {
+            newEventSource();
+            console.log("Sim started");
+        }
+
+        let data = {};
+        let simulationDone = false;
         let marker;
-        let lat;
-        let lon;
+        let markers = {};
+        let lat = 0;
+        let lon = 0;
+
+        // Function triggered at each eventSource message
         eventSource.onmessage = function(event) {
-            console.log(event.data);
-            if (event.data.includes('finished')) {
+            data = JSON.parse(event.data);
+            simulationDone = data['simulationDone'] ? data['simulationDone'] : false;
+
+            if (simulationDone) {
                 stopUpdates();
             } else {
-                // The data is a string!
-                lat = parseFloat(event.data.split(',')[0].slice(7));
-                lon = parseFloat(event.data.split(',')[1].slice(6,-1));
+                console.log(data);
+                for (let key in data) {
+                    lat = parseFloat(data[key].lat);
+                    lon = parseFloat(data[key].lon);
 
-                if (marker) {
-                    marker.setLatLng([lat, lon]);
-                } else {
-                    marker = L.marker([lat, lon]).addTo(map);
+                    if (markers[key]) {
+                        marker = markers[key];
+                        marker.setLatLng([lat, lon]);
+                    } else {
+                        marker = L.marker([lat, lon]).addTo(markerLayer);
+                        markers[key] = marker;
+                    }
                 }
             }
         };
