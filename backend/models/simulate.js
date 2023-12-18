@@ -31,7 +31,7 @@ const simulate = {
 
                     // If they have a next pos they are still active in the simulation
                     // If finishCounter remains unchanged all bikes are done and the sim should be over
-                    if (trip.route[loop] !== undefined || trip.route[loop]) {
+                    if (trip.route[loop] !== undefined) {
                         nextPos = {
                             id: trip.id,
                             city: trip.city,
@@ -49,13 +49,14 @@ const simulate = {
                     jsonData = JSON.stringify({simulationDone: true})
                     clearInterval(intervalId);
                 }
+                // console.log("🚀 ~ file: simulate.js:50 ~ intervalId ~ sonData:", jsonData)
                 res.write(`data: ${jsonData}\n\n`);   
 
-                if (bikeRoute.trips[0].coords.length == loop) {
+                if (trips.length - 1 == finishedCounter) {
                     res.end();
                 }
                 loop++; // Increment to next position value
-            }, 1000);
+            },1000);
 
         } catch (err) {
             console.error("Error in simulate:", err);
@@ -85,7 +86,7 @@ const simulate = {
         //         return res.status(200).json({ trips: trips });
         //     } catch (err) {
         //         console.error("Error in getTrips:", err);
-        //         return res.status(500).json({ err: err.message });
+        //         return res.status(500).json({ err: err.message }); 
         //     }
         // },
 }
