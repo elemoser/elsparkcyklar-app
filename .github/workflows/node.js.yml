@@ -33,9 +33,9 @@ jobs:
 
     - name: Run SQLite Setup Script
       run: |
-        chmod +x setup.db.bash
-        ./setup.db.bash
-      working-directory: ./backend
+        chmod +x ./db/setup.db.bash
+        ./db/setup.db.bash
+      working-directory: ./db
 
     - run: npm run test
       working-directory: ./backend
