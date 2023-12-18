@@ -33,7 +33,6 @@ jobs:
 
     - name: Run SQLite Setup Script
       run: |
-        cd backend/db
         chmod +x setup.db.bash
         ./setup.db.bash
       working-directory: ./backend
