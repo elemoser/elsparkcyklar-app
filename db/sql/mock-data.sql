@@ -15,7 +15,7 @@ INSERT INTO bike (id, battery, city_id, speed, position, state, low_battery)
 VALUES
     (1, 80, 1, 25.0, '59.3293, 18.0686', 'available', false),
     (2, 60, 1, 100.00, '59.3099, 18.0752', 'available', false),
-    (3, 90, 3, 28.0, '59.3091, 18.0766', 'available', false),
+    (3, 90, 1, 28.0, '59.3091, 18.0766', 'available', false),
     (4, 70, 4, 20.0, '59.8586, 17.6389', 'occupied', false),
     (5, 75, 5, 0.00, '58.4108, 15.6214', 'available', false);
 

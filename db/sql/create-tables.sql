@@ -19,7 +19,7 @@ CREATE TABLE city (
 -- Bike Table
 DROP TABLE IF EXISTS bike;
 CREATE TABLE bike (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     battery INTEGER,
     city_id INTEGER,
     speed REAL DEFAULT 0.00,
