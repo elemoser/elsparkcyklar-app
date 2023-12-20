@@ -1,40 +1,11 @@
 <script>
 	import { app_name } from '$lib/index.js';
-
-	let register = false;
 </script>
 
+<!--TODO Fix this page!-->
 <h1>{app_name}</h1>
-<p>Här kan du komma åt <a href="/map">kartvyn</a></p>
 
-<label>
-	<input type="checkbox" bind:checked={register} />
-	Registrera dig
-</label>
-
-{#if register}
-	<form method="POST" action="">
-		<label for="fname">Förnamn</label>
-		<input id="fname" type="text" />
-		<label for="lname">Efternamn</label>
-		<input id="lname" type="text" />
-		<label for="email">E-post</label>
-		<input id="email" type="email" required />
-		<label for="pw">Lösenord</label>
-		<input id="pw" type="password" required />
-		<input type="button" value="Registrera" />
-	</form>
-{:else}
-	<form method="POST" action="">
-		<label for="email">E-post</label>
-		<input id="email" type="email" required />
-		<label for="pw">Lösenord</label>
-		<input id="pw" type="password" required />
-		<input type="button" value="Skicka" />
-	</form>
-{/if}
-
-<h3>Jesper gillar latin</h3>
+<h3>This is a header</h3>
 <p>
 	Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam omnis at deserunt et inventore,
 	itaque atque, eligendi dolor nobis ipsum libero rerum cumque accusantium alias nostrum aspernatur

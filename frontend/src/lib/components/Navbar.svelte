@@ -1,25 +1,54 @@
 <script>
 	import { app_name } from '$lib/index.js';
+	import { user } from '$lib/stores/user';
+	import { onDestroy } from 'svelte';
 
-	const navLinks = [
-		{ name: 'Home', url: '/' },
-		{ name: 'About', url: '/about' },
-		{ name: 'Profile', url: '/profile' },
+	let userData;
+
+	const unsubscribe = user.subscribe(val => {
+		userData = val;
+	})
+
+	const navLinksAdm = [
 		{ name: 'Rent', url: '/rent' },
+		{ name: 'Profile', url: '/profile' },
 		{ name: 'Admin', url: '/admin' }
 	];
+
+	const navLinks = [
+		{ name: 'Rent', url: '/rent' },
+		{ name: 'Profile', url: '/profile' },
+		{ name: 'Admin', url: '/admin' }
+	];
+
+	onDestroy(() => {
+		unsubscribe();
+	});
 </script>
 
-<nav>
-	<div class="logo">
-		<p>{app_name}</p>
-	</div>
-	<ul>
-		{#each navLinks as link}
-			<li><a class="button" href={link.url}>{link.name}</a></li>
-		{/each}
-	</ul>
-</nav>
+{#if userData && userData.role === 'admin'}
+	<nav>
+		<div class="logo">
+			<p>{app_name}</p>
+		</div>
+		<ul>
+			{#each navLinksAdm as link}
+				<li><a class="button" href={link.url}>{link.name}</a></li>
+			{/each}
+		</ul>
+	</nav>
+{:else}
+	<nav>
+		<div class="logo">
+			<p>{app_name}</p>
+		</div>
+		<ul>
+			{#each navLinks as link}
+				<li><a class="button" href={link.url}>{link.name}</a></li>
+			{/each}
+		</ul>
+	</nav>
+{/if}
 
 <style lang="scss">
 	nav {
@@ -58,6 +87,7 @@
 		}
 
 		ul {
+			z-index: 9999; //force ontop of maps
 			padding: 1em;
 			background-color: $dark-color;
 			justify-content: space-evenly;

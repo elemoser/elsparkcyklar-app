@@ -6,27 +6,25 @@
 	async function handleSubmit(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
+
 		const userId = formData.get('id');
-		//TODO Fix update user in backend to allow user to update username.
-		/*
 		const userObj = {
-			username: data.get('username'),
-			phone: data.get('phone'),
-			mail: data.get('email')
+			username: formData.get('username'),
+			role: user.role,
+			balance: user.balance
 		};
-		*/
-		/*
-		const response = await fetch(`http://server:1338/v1/users/id/${userId}`, {
+
+		const response = await fetch(`http://localhost:1338/v1/users/id/${userId}`, {
 			method: 'PUT',
+			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(userObj)
-		});*/
-
+		});
 		const res = await response.json();
 
-		res.error ? console.log('Something went wrong.') : goto('/profile'); //TODO Actually implement error handling?
+		res.error ? console.log('Something went wrong.') : goto('/profile');
 	}
 </script>
 
@@ -39,10 +37,10 @@
 		<input id="username" name="username" type="text" placeholder={user.username} />
 
 		<label for="phone">Phone</label>
-		<input id="phone" name="phone" type="tel" placeholder={user.phone} />
+		<input id="phone" name="phone" type="tel" placeholder={user.phone} disabled/>
 
 		<label for="email">Mail</label>
-		<input id="email" name="email" type="email" placeholder={user.mail} />
+		<input id="email" name="email" type="email" placeholder={user.mail} disabled/>
 
 		<input type="submit" value="Update" />
 	</form>

@@ -9,15 +9,37 @@
 		history = [history];
 	}
 
-	//TODO make responsive.
-
 	let rowTracker = null;
+	let mapData;
 
 	function showDetails(rowId) {
 		if (rowTracker === rowId) {
 			rowTracker = null;
 		} else {
 			rowTracker = rowId;
+			let specificTravel = history.find(e => e.id === rowId);
+
+			const startCoords = specificTravel.start_location.split(', ');
+			const stopCoords = specificTravel.stop_location.split(', ');
+
+			mapData = {
+				markers: {
+					0: {
+						text: `Start`,
+						coordinates: [
+							startCoords[0],
+							startCoords[1]
+						]
+					},
+					1: {
+						text: `Stop`,
+						coordinates: [
+							stopCoords[0],
+							stopCoords[1]
+						]
+					}
+				}
+			}
 		}
 	}
 </script>
@@ -40,8 +62,7 @@
 				</div>
 				{#if rowTracker === log.id}
 					<div class="details-box">
-						<LeafletMap />
-						<!-- TODO Add so you can pass coords to map to generate markers? -->
+						<LeafletMap data={mapData} />
 						<div class="info-dump">
 							<h5>ID: {log.id}</h5>
 							<h5>Time: {log.start_time.slice(11, 16)}-{log.stop_time.slice(11, 16)}</h5>

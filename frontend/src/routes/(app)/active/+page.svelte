@@ -15,18 +15,28 @@
 			goto('/profile/invoice');
 		}
 	}
+
+	const coords = active.start_location.split(', ');
+	const mapData = {
+		markers: {
+			0: {
+				text: `Bike ${active.bike_id}`,
+				coordinates: [
+					coords[0],
+					coords[1]
+				]
+			}
+		}
+	};
 </script>
 
 <div class="tour-container">
 	<h1>Bike {active.bike_id}</h1>
-	<!-- TODO Add user coords -->
 	<div class="map-container">
-		<LeafletMap />
+		<LeafletMap data={mapData} />
 	</div>
 	<button class="button stop" on:click={stopRide}>Stop</button>
 </div>
-
-<!-- TODO Pause button? -->
 
 <style lang="scss">
 	.tour-container {

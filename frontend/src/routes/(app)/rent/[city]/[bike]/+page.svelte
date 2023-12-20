@@ -1,15 +1,35 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { user } from '$lib/stores/user.js';
+	import LeafletMap from '$lib/components/LeafletMap.svelte';
+	import { onDestroy } from 'svelte';
 	export let data;
 	const { cityId } = data;
 	const { bike } = data;
+	let userData;
+
+	const unsubscribe = user.subscribe(val => {
+		userData = val;
+	})
+
+	const coords = bike.position.split(', ');
+	const mapData = {
+		markers: {
+			0: {
+				text: `Bike ${bike.id}`,
+				coordinates: [
+					coords[0],
+					coords[1]
+				]
+			}
+		}
+	}
 
 	async function rentBike() {
-		const userId = 117276057; //TODO FIX DYNAMIC USER ID.
 
 		const bookingObj = {
 			bike_id: bike.id,
-			user_id: userId
+			user_id: userData.id
 		};
 
 		const response = await fetch(`http://localhost:1338/v1/booking`, {
@@ -25,20 +45,21 @@
 
 		res.error ? console.log('something went wrong') : goto('/active');
 	}
+
+	onDestroy(() => {
+		unsubscribe();
+	});
 </script>
 
 <h2>Bike {bike.id}</h2>
-<!-- TODO importera kartan och rita ut var cykeln befinner sig med hjälp av cykelns coords. -->
+<div class="map-container">
+	<LeafletMap data={mapData} />
+</div>
 <p>Battery: {bike.battery}%</p>
 <p>Status: {bike.state}</p>
 
-<!-- TODO add action to rent bike. -->
 <button class="button" type="submit" on:click={rentBike} value={bike.id}>Rent</button>
 
-<!--
-	is user subscriber? else pay upfront to rent
-	to pay up front does the user have sufficient funds?
--->
 <a href="/rent/{cityId}">Tillbaka</a>
 
 <style lang="scss">
@@ -53,6 +74,11 @@
 	.button {
 		display: block;
 		border: 1px solid $con-border-col;
+		margin-bottom: $calculated-line-height;
+	}
+
+	.map-container {
+		max-width: 500px;
 		margin-bottom: $calculated-line-height;
 	}
 </style>

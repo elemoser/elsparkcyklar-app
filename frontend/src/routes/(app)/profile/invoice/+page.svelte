@@ -7,9 +7,6 @@
 	if (!Array.isArray(invoices) && invoices != undefined) {
 		invoices = [invoices];
 	}
-
-	//TODO Make pretty.
-	//TODO make responsive.
 </script>
 
 <div class="invoice-wrapper">
@@ -18,14 +15,7 @@
 		{#each invoices as invoice}
 			<div class="invoice-row">
 				<p>{invoice.id}</p>
-				<!--
-				<div class="date-div">
-					<p>{invoice.created}</p>
-					<p>-</p>
-					<p>{invoice.due}</p>
-				</div>
-				-->
-				<p>Price: {invoice.total_price}</p>
+				<p>Price: {parseFloat(invoice.total_price).toFixed(2)}</p>
 				{#if invoice.status === 'payed'}
 					<p class="paid">Paid</p>
 				{:else}
