@@ -213,6 +213,7 @@ Please note that "id" can't be updated.
 Optional parameters:
 
 ```
+username
 role
 balance
 ```
@@ -227,6 +228,7 @@ Possible errors (besides from db-errors):
 
 ```
 status(404) 'User doesn't exist'
+status(404) "Username already exists!"
 status(404) "'Balance' must be a number!"
 status(404) "Role must be either 'customer' or 'admin'"
 ```
