@@ -40,6 +40,7 @@ done
 
 # Import rest of data dependent on CSV data above
 sqlite3 $DBFILE < sql/mock-data.sql
+sqlite3 $DBFILE < sql/user-data.sql
 
 sqlite3 $DBFILE "SELECT * FROM city;"
 

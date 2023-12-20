@@ -20,19 +20,9 @@ const simulate = {
             let trips = await this.getTrips();
             // let simBikes = await this.createSimulationBikes(trips, simBikeStartIds);
             // await this.destroySimulationBikes(simBikeStartIds)   
-
-            // const as = fetch("http://localhost:1338/v1/booking", {
-            //     method: "GET",
-            //     headers: {
-            //         "Content-type": "application/json; charset=UTF-8"
-            //     }
-            // });
-            // const response = await fetch(`http://localhost:1338/v1/city`, {
-            //     method: 'GET',
-            //     credentials: 'include'
-            // });
+            this.createBooking() // Stoppa i simbike id och user id, Först skapa users! med dokumentet du fick från gpt?!!!
+            console.log("🚀 ~ file: simulate.js:34 ~ startSimulation ~ as:", as)
             const intervalId = setInterval(async () => {
-            // console.log("🚀 ~ file: simulate.js:30 ~ startSimulation ~ as:", as)
             
                 // Set counter of total bikes (-1 to match arrays)
                 let finishedCounter = trips.length - 1
@@ -136,6 +126,27 @@ const simulate = {
                 await Bike.destroy(condition);
             } catch (err) {
                 console.error("Error in destroySimulationBikes:", err);
+                return err ;
+            }
+        },
+    /**
+     * @description Getting all generated simulation trips from sqlite db
+     */
+        createBooking: async function createBooking(bikeId, userId) {
+            try {
+                const booking = await fetch("http://localhost:1338/v1/booking", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        bike_id: bikeId,
+                        user_id: userId
+                    }),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                });
+                return booking
+            } catch (err) {
+                console.error("Error in createBooking:", err);
                 return err ;
             }
         },
