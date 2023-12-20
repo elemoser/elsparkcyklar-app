@@ -2,13 +2,18 @@ const Simulate = require("../orm/model-router.js")("simulate");
 const User = require("../orm/model-router.js")("user");
 const Bike = require("../orm/model-router.js")("bike");
 const { Op } = require("sequelize");
-const simulate = {
 
+const simUsersOnlyBelowThis = 9005001 // used to get all simulator users as they start on 900001
+
+const simulate = {
+    
     /**
      * @description Getting all bikes from sqlite db
      */
-    startSimulation: async function startSimulation(req, res) {
+    startSimulation: async function startSimulation(req, res, totalBikesToRun = 50) {
         let intervalId;
+        // Set how many simulationtrips you want to 
+        // const totalBikesToRun = 6;
         try {
 
             res.writeHead(200, {
@@ -18,21 +23,36 @@ const simulate = {
             });
             let loop = 0; 
             // Set the amount of simulation trips that should be made (Max trips.length)
-            const totalBikesToRun = 100;
             let simBikeStartIds = 10000 // is incremented by a trips id in: createSimulationBikes (first id is 10001)
-
-            let trips = await this.getTrips();
+            
+            
+            let trips = await this.getTrips(totalBikesToRun);
             let simBikes = await this.createSimulationBikes(trips, simBikeStartIds); // Create and return bikes for the sim
             let simUsers = await this.getSimulationCustomers() 
 
             await this.createBooking(simBikes, simUsers, totalBikesToRun)
+            const activeBookings = await this.getActiveBookings()
             intervalId = setInterval(async () => {
             
                 // Set counter of total bikes (-1 to match arrays)
                 let finishedCounter = trips.length - 1
 
                 // Loop the new positons to see if they have a next position. If they dont they will return finished: true
-                let newPosition = trips.map(trip => {
+                if (loop < 2) {
+                    console.log("🚀 ~ file: simulate.js:42 ~ intervalId=setInterval ~ loop:", loop)
+
+                    console.log("🚀 ~ file: simulate.js:44 ~ intervalId=setInterval ~ activeBookings.length:", activeBookings.length)
+                    for (let i = 0; i < activeBookings.length; i++) {
+                        console.log("Pos:",i)
+                        if (trips[i].route[loop] !== undefined) {
+                            console.log("ASDASD\n",i,trips[i].id,"\n\n\n");
+                        }
+                        // console.log("🚀 ~ file: simulate.js:43 ~ intervalId=setInterval ~ trips[i].route:", trips)
+                        // console.log("🚀 ~ file: simulate.js:44 ~ intervalId=setInterval ~ trip.route:", trip.route)
+                    }
+                }
+
+                let newPosition = await trips.map(trip => {
                     let nextPos = {
                         id: trip.id,
                         lat: trip.route[trip.route.length - 1][1],
@@ -88,7 +108,7 @@ const simulate = {
     /**
      * @description Getting all generated simulation trips from sqlite db
      */
-        getTrips: async function getTrips(req, res) {
+        getTrips: async function getTrips(totalTrips) {
             try {
                 const trips = await Simulate.findAll();
                 const parsedTrips = trips.map((trip) => {
@@ -96,8 +116,7 @@ const simulate = {
                     parsedTrip.dataValues.bike_route = JSON.parse(parsedTrip.dataValues.bike_route); // Parse the bike_route property
                     return {id: parsedTrip.dataValues.id,city: parseInt(parsedTrip.dataValues.city_id), route: parsedTrip.dataValues.bike_route};
                 });
-                console.log("🚀 ~ file: simulate.js:117 ~ getTrips ~ parsedTrips:", parsedTrips[0].route)
-                return parsedTrips
+                return parsedTrips.filter(trip => trip.id <= totalTrips);
             } catch (err) {
                 console.error("Error in getTrips:", err);
                 return err ;
@@ -108,10 +127,9 @@ const simulate = {
      */
         getSimulationCustomers: async function getSimulationCustomers(req, res) {
             try {
-                const simUserStartId = 9005001
                 const users = await User.findAll({where: {
                     id: {
-                        [Op.lte]: simUserStartId
+                        [Op.lte]: simUsersOnlyBelowThis
                     }
                 }
                 },);
@@ -190,6 +208,26 @@ const simulate = {
                     return booking
             } catch (err) {
                 console.error("Error in createBooking:", err);
+                return err ;
+            }
+        },
+        getActiveBookings: async function getActiveBookings() {
+            try {
+                const response = await fetch("http://localhost:1338/v1/booking/ongoing", {
+                    method: "GET",
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                });
+                const activeBookings = await response.json();
+                const filteredActiveBookings = activeBookings.booking.map( (aBooking) => {
+                    if (aBooking.user_id < simUsersOnlyBelowThis) {
+                        return {[aBooking.bike_id]: {bookingId: aBooking.id, isFinished: false}}
+                    } return null
+                }).filter(item => item);
+                return  filteredActiveBookings
+            } catch (err) {
+                console.error("Error in getActiveBookings:", err);
                 return err ;
             }
         },
