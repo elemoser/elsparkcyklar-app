@@ -5,7 +5,7 @@
 	};
 </script>
 
-<form>
+<form class="submit-form">
 	{#each Object.entries(pricing) as [name, price]}
 		<label>
 			{name}
@@ -14,3 +14,7 @@
 	{/each}
 	<input type="submit" />
 </form>
+
+<style lang="scss">
+	// More style
+</style>

@@ -62,7 +62,7 @@
 	<p>{data.props.data.error}</p>
 {:else}
 	<h2>Detaljer för kund {data.props.target}</h2>
-	<form on:submit={updateUser}>
+	<form class="submit-form" on:submit={updateUser}>
 		<label for="id"
 			>Kund id
 			<input id="id" name="id" type="number" value={data.props.data.id} readonly />
@@ -129,3 +129,9 @@
 		<button><a href="/admin/users">Avbryt</a></button>
 	{/if}
 {/if}
+
+<style lang="scss">
+	h2 {
+		color: white;
+	}
+</style>

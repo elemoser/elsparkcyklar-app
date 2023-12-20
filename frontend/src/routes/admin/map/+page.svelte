@@ -4,7 +4,7 @@
 	export let filterOptions = ['Kund', 'Cykel', 'Stad', 'Parkering', 'Laddstation', 'Bokning'];
 </script>
 
-<form>
+<form class="submit-form-online">
 	<input type="text" />
 	{#each filterOptions as filter}
 		<label>
@@ -15,3 +15,7 @@
 	<input type="submit" />
 </form>
 <LeafletMap />
+
+<style lang="scss">
+	// More style
+</style>
