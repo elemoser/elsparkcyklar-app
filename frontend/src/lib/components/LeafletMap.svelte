@@ -78,7 +78,7 @@
 				for (const key in data.markers) {
 					lat = data.markers[key].coordinates[0];
 					lon = data.markers[key].coordinates[1];
-					L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text).bindPopup();
+					L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text);
 				}
 			}
 		}
