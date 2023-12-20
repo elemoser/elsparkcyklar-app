@@ -9,6 +9,7 @@ const simulate = {
      */
     startSimulation: async function startSimulation(req, res) {
         try {
+
             res.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
@@ -17,11 +18,21 @@ const simulate = {
             let loop = 0;
             let simBikeStartIds = 9999 // is incremented by a trips id in: createSimulationBikes (first id is 10000)
             let trips = await this.getTrips();
-            let simBikes = await this.createSimulationBikes(trips, simBikeStartIds);
+            // let simBikes = await this.createSimulationBikes(trips, simBikeStartIds);
             // await this.destroySimulationBikes(simBikeStartIds)   
 
-
+            // const as = fetch("http://localhost:1338/v1/booking", {
+            //     method: "GET",
+            //     headers: {
+            //         "Content-type": "application/json; charset=UTF-8"
+            //     }
+            // });
+            // const response = await fetch(`http://localhost:1338/v1/city`, {
+            //     method: 'GET',
+            //     credentials: 'include'
+            // });
             const intervalId = setInterval(async () => {
+            // console.log("🚀 ~ file: simulate.js:30 ~ startSimulation ~ as:", as)
             
                 // Set counter of total bikes (-1 to match arrays)
                 let finishedCounter = trips.length - 1
