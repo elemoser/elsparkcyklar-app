@@ -34,7 +34,7 @@
 </script>
 
 <h2>Skapa en ny användare</h2>
-<form on:submit={createUser}>
+<form class="submit-form" on:submit={createUser}>
     <label for="id"
         >Kund id
         <input id="id" name="id" type="number" max="9999999999" required/>
@@ -76,28 +76,7 @@
 <button><a href="/admin/users">Avbryt</a></button>
 
 <style lang="scss">
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-
-		input,
-		select {
-			width: fit-content;
-			margin-left: 0.2rem;
-			padding: 0.2rem 0.4rem;
-			border-radius: 5px;
-		}
-
-		option:disabled,
-		input:read-only:not([type='submit']) {
-			color: $dark-color;
-			border: none;
-		}
-
-		input:focus,
-		select:focus {
-			outline: none;
-		}
+	h2 {
+		color: white;
 	}
 </style>

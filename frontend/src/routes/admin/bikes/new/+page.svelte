@@ -52,7 +52,7 @@
 </script>
 
 <h2>Skapa en ny cykel</h2>
-<form on:submit={createBike}>
+<form class="submit-form" on:submit={createBike}>
 	<label for="battery"
 		>Batteri
 		<input id="battery" name="battery" type="number" max="100" min="0" required />
@@ -87,28 +87,7 @@
 <button><a href="/admin/bikes">Avbryt</a></button>
 
 <style lang="scss">
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-
-		input,
-		select {
-			width: fit-content;
-			margin-left: 0.2rem;
-			padding: 0.2rem 0.4rem;
-			border-radius: 5px;
-		}
-
-		option:disabled,
-		input:read-only:not([type='submit']) {
-			color: $dark-color;
-			border: none;
-		}
-
-		input:focus,
-		select:focus {
-			outline: none;
-		}
+	h2 {
+		color: white;
 	}
 </style>
