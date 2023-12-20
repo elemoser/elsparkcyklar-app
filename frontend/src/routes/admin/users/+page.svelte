@@ -15,18 +15,19 @@
 
 		for (const row in userData) {
 			body[row] = Object.values(userData[row]);
-			links[row] = [`/admin/k${userData[row].id}`, 'view'];
+			links[row] = [`/admin/users/${userData[row].id}`, 'view'];
 		}
 		users['body'] = body;
 		users['links'] = links;
 	}
 </script>
 
-<form>
+<!-- <form>
 	<input type="text" />
 	<input type="submit" value="Sök" />
-</form>
+</form> -->
 
 {#if users}
+	<button><a href="/admin/users/new">+</a></button>
 	<Table data={users} />
 {/if}
