@@ -29,6 +29,7 @@
 	}
 
 	function filterData(inputData, filter) {
+		// TODO Here I could transform the data so string to filter numbers as well
 		for (let key in inputData.body) {
 			if (!inputData.body[key].includes(filter)) {
 				delete inputData.body[key];

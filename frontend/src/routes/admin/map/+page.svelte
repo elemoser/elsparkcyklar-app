@@ -2,9 +2,10 @@
 	import LeafletMap from '$lib/components/LeafletMap.svelte';
 	// All filter options
 	export let filterOptions = ['Kund', 'Cykel', 'Stad', 'Parkering', 'Laddstation', 'Bokning'];
+	//TODO Populate the map
 </script>
 
-<form class="submit-form-online">
+<!-- <form class="submit-form-online">
 	<input type="text" />
 	{#each filterOptions as filter}
 		<label>
@@ -13,7 +14,7 @@
 		</label>
 	{/each}
 	<input type="submit" />
-</form>
+</form> -->
 <LeafletMap />
 
 <style lang="scss">
