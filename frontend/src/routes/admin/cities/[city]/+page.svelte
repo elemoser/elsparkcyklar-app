@@ -26,7 +26,7 @@
 		</label>
 		<label for="name"
 			>Namn
-			<input id="name" name="name" type="text" value={data.props.data.name} readonly/>
+			<input id="name" name="name" type="text" value={data.props.data.name} readonly />
 		</label>
 	</form>
 	<button><a href="/admin/cities">Gå tillbaka</a></button>

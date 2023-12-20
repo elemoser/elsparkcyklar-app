@@ -7,7 +7,7 @@
 		start_free_park_discount: 0,
 		free_parking_fee: 0,
 		cost_per_minute: 0
-	}
+	};
 
 	if (data.props.data.price) {
 		price['id'] = data.props.data.price.id;
@@ -16,7 +16,7 @@
 		price['free_parking_fee'] = data.props.data.price.free_parking_fee;
 		price['cost_per_minute'] = data.props.data.price.cost_per_minute;
 	}
-	
+
 	async function updatePricing(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
@@ -50,28 +50,35 @@
 </script>
 
 {#if data.props.data.price}
-<form class="submit-form" on:submit={updatePricing}>
-	<input type="number" value={price.id} hidden/>
-	<label id="start_fee">
-		Startavgift
-		<input type="number" value={price.start_fee} readonly={!edit}>
-	</label>
-	<label id="cost_per_minute">
-		Kostnad per minut
-		<input type="number" value={price.cost_per_minute} readonly={!edit}>
-	</label>
-	<label id="free_parking_fee">
-		Fri parkering avgift
-		<input type="number" value={price.free_parking_fee} readonly={!edit}>
-	</label>
-	<label id="start_free_park_discount">
-		Fri parkering rabatt
-		<input type="number" value={price.start_free_park_discount} min="0" max="1" step="0.1" readonly={!edit}>
-	</label>
-	{#if edit}
-		<input type="submit" value="Spara"/>
-	{/if}
-</form>
+	<form class="submit-form" on:submit={updatePricing}>
+		<input type="number" value={price.id} hidden />
+		<label id="start_fee">
+			Startavgift
+			<input type="number" value={price.start_fee} readonly={!edit} />
+		</label>
+		<label id="cost_per_minute">
+			Kostnad per minut
+			<input type="number" value={price.cost_per_minute} readonly={!edit} />
+		</label>
+		<label id="free_parking_fee">
+			Fri parkering avgift
+			<input type="number" value={price.free_parking_fee} readonly={!edit} />
+		</label>
+		<label id="start_free_park_discount">
+			Fri parkering rabatt
+			<input
+				type="number"
+				value={price.start_free_park_discount}
+				min="0"
+				max="1"
+				step="0.1"
+				readonly={!edit}
+			/>
+		</label>
+		{#if edit}
+			<input type="submit" value="Spara" />
+		{/if}
+	</form>
 	{#if edit}
 		<button on:click={() => (edit = false)}>Avbryta</button>
 	{:else}
