@@ -12,6 +12,7 @@
 			coordinates: data.props.data.bounds
 		};
 	}
+	//TODO Add reshistorik, invoices, whether or not has rented a bike atm
 </script>
 
 {#if data.props.data.error}

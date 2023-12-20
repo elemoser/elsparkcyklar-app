@@ -105,6 +105,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+		min-height: 65vh;
 	}
 
 	@media screen and (max-width: 400px) {
