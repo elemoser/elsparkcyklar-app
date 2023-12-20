@@ -7,7 +7,7 @@
         "test": "nyc --reporter=text mocha --timeout 10000 --recursive",
         "test-cov": "nyc --reporter=html --reporter=text --reporter=clover mocha --timeout 10000 --recursive",
         "start": "node app.js",
-        "start-dev": "nodemon app.js",
+        "start-dev": "nodemon app-test.js",
         "format:check": "prettier --check .",
         "format:write": "prettier --write .",
         "lint:check": "eslint .",
