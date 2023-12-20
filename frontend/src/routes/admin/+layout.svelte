@@ -1,6 +1,14 @@
 <script>
 	import '$lib/styles/main.scss';
 	import { app_name } from '$lib/index.js';
+	import { page } from '$app/stores';  
+
+	let currentPath;
+
+	// Subscribe to changes in the $page store
+	$: {
+		currentPath = $page.url.pathname;
+	}	
 </script>
 
 <nav>
@@ -14,11 +22,12 @@
 
 <div class="wrapper">
 	<div class="admin-nav">
-		<div><a href="/admin/users">Kunder</a></div>
-		<div><a href="/admin/bikes">Cyklar</a></div>
-		<div><a href="/admin/cities">Städer</a></div>
-		<div><a href="/admin/map">Karta</a></div>
-		<div><a href="/admin/pricing">Priser</a></div>
+		<!-- class="{currentPath = '/admin/users' ? 'admin-nav-active': ''}" -->
+		<a class="{currentPath ==='/admin/users' ? 'active': ''}" href="/admin/users">Kunder</a>
+		<a class="{currentPath === '/admin/bikes' ? 'active': ''}" href="/admin/bikes">Cyklar</a>
+		<a class="{currentPath === '/admin/cities' ? 'active': ''}" href="/admin/cities">Städer</a>
+		<a class="{currentPath === '/admin/map' ? 'active': ''}" href="/admin/map">Karta</a>
+		<a class="{currentPath === '/admin/pricing' ? 'active': ''}" href="/admin/pricing">Priser</a>
 	</div>
 	<div class="admin-main">
 		<slot />
@@ -74,30 +83,24 @@
 	.admin-nav {
 		display: flex;
 		flex-direction: row;
-		position: relative;
-		top: 0.5rem;
-
-		div {
-			background-color: $dark-color;
-			border-radius: 5px;
-			margin: 1rem 1rem 0rem 0rem;
-		}
-
-		div a {
-			color: white;
+		a {
+			color: $text-color;
 			text-decoration: none;
+			background-color: $contrast-color;
+			border-radius: 5px 5px 0px 0px;
+			margin: 1rem 1rem 0rem 0rem;
+			padding: 0.4rem 0.6rem 0.6rem;	
 		}
-
-		div,
-		div a {
-			padding: 0.4rem 0.6rem 1rem;
-		}
+	}
+	.active {
+		background-color: $dark-color !important;
+		color: white !important;
 	}
 
 	.admin-main {
 		background-color: $dark-color;
 		color: white;
-		border-radius: 5px;
+		border-radius: 0px 5px 5px;
 		padding: 3rem;
 		display: flex;
 		flex-direction: column;
