@@ -1,5 +1,7 @@
 const bikeRoute = require("../bike-routes/1.json") 
 const Simulate = require("../orm/model-router.js")("simulate");
+const Bike = require("../orm/model-router.js")("bike");
+const { Op } = require("sequelize");
 const simulate = {
 
     /**
@@ -13,9 +15,13 @@ const simulate = {
                 'Connection': 'keep-alive'  // Denna behövs inte men gör det tydligare för klienten
             });
             let loop = 0;
+            let simBikeStartIds = 9999 // is incremented by a trips id in: createSimulationBikes (first id is 10000)
             let trips = await this.getTrips();
+            let simBikes = await this.createSimulationBikes(trips, simBikeStartIds);
+            // await this.destroySimulationBikes(simBikeStartIds)   
 
-            const intervalId = setInterval(() => {
+
+            const intervalId = setInterval(async () => {
             
                 // Set counter of total bikes (-1 to match arrays)
                 let finishedCounter = trips.length - 1
@@ -49,15 +55,16 @@ const simulate = {
                     jsonData = JSON.stringify({simulationDone: true})
                     clearInterval(intervalId);
                 }
-                // console.log("🚀 ~ file: simulate.js:50 ~ intervalId ~ sonData:", jsonData)
                 res.write(`data: ${jsonData}\n\n`);   
 
                 if (trips.length - 1 == finishedCounter) {
                     res.end();
+                    console.log("\n\n\nSLUUUUT\n\n");
+                    await this.destroySimulationBikes(simBikeStartIds)
                 }
+
                 loop++; // Increment to next position value
             },1000);
-
         } catch (err) {
             console.error("Error in simulate:", err);
             return res.status(500).json({ err: err.message });
@@ -74,21 +81,53 @@ const simulate = {
                     parsedTrip.dataValues.bike_route = JSON.parse(parsedTrip.dataValues.bike_route); // Parse the bike_route property
                     return {id: parsedTrip.dataValues.id,city: parseInt(parsedTrip.dataValues.city_id), route: parsedTrip.dataValues.bike_route};
                 });
+                console.log("🚀 ~ file: simulate.js:117 ~ getTrips ~ parsedTrips:", parsedTrips[0].route)
                 return parsedTrips
             } catch (err) {
                 console.error("Error in getTrips:", err);
                 return err ;
             }
         },
-        // getTrips: async function getTrips(req, res) {
-        //     try {
-        //         const trips = await Simulate.findAll();
-        //         return res.status(200).json({ trips: trips });
-        //     } catch (err) {
-        //         console.error("Error in getTrips:", err);
-        //         return res.status(500).json({ err: err.message }); 
-        //     }
-        // },
+    /**
+     * @description Getting all generated simulation trips from sqlite db
+     */
+        createSimulationBikes: async function createSimulationBikes(trips, simBikeStartIds) {
+            try {
+                const simulationBikes = await trips.map( (trip) => {
+                    return {
+                        id: simBikeStartIds + trip.id, 
+                        city_id: trip.city, 
+                        position:  `${trip.route[0][1]}, ${trip.route[0][0]}`,
+                        battery: Math.ceil((Math.random() * (100 - 60) + 60)),
+                        speed: 10,
+                        state: "available"
+                    }
+                })  
+                const as = await Bike.bulkCreate(simulationBikes);
+            } catch (err) {
+                console.error("Error in createSimulationBikes:", err);
+                return err ;
+            }
+        },
+    /**
+     * @description Getting all generated simulation trips from sqlite db
+     */
+        destroySimulationBikes: async function destroySimulationBikes(simBikeStartIds) {
+            try {
+                const condition = {
+                    where: {
+                        id: {
+                            [Op.gte]: simBikeStartIds
+                        }
+                    },
+                    // limit: simBikeStartIds + 3, // Limit the number of rows to delete to 1000
+                };
+                await Bike.destroy(condition);
+            } catch (err) {
+                console.error("Error in destroySimulationBikes:", err);
+                return err ;
+            }
+        },
 }
 
 module.exports = simulate;
