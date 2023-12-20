@@ -10,7 +10,7 @@
 	}
 
 	function formatTableData(inputData) {
-		let dict = {}
+		let dict = {};
 		let body = {};
 		let links = {};
 
@@ -50,7 +50,7 @@
 
 			let tempUsers = users;
 
-			users = filterData(tempUsers,searchWord);
+			users = filterData(tempUsers, searchWord);
 		}
 	}
 
@@ -60,7 +60,7 @@
 </script>
 
 <form on:submit={filterUsers}>
-	<input name="search_word" type="text" maxlength="20"/>
+	<input name="search_word" type="text" maxlength="20" />
 	<input type="submit" value="Sök" />
 </form>
 <button on:click={resetData}>Reset</button>

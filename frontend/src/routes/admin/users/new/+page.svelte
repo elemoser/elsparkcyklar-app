@@ -1,6 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
-    let roleOptions = ['customer','admin'];
+	let roleOptions = ['customer', 'admin'];
 
 	async function createUser(e) {
 		e.preventDefault();
@@ -35,42 +35,29 @@
 
 <h2>Skapa en ny användare</h2>
 <form class="submit-form" on:submit={createUser}>
-    <label for="id"
-        >Kund id
-        <input id="id" name="id" type="number" max="9999999999" required/>
-        *max=10
-    </label>
-    <label for="username"
-        >Användarnamn
-        <input
-            id="username"
-            name="username"
-            type="text"
-            maxlength="20"
-            required
-        />
-        *max=20
-    </label>
-    <label for="role"
-        >Rättigheter
-        <select id="role" name="role">
+	<label for="id"
+		>Kund id
+		<input id="id" name="id" type="number" max="9999999999" required />
+		*max=10
+	</label>
+	<label for="username"
+		>Användarnamn
+		<input id="username" name="username" type="text" maxlength="20" required />
+		*max=20
+	</label>
+	<label for="role"
+		>Rättigheter
+		<select id="role" name="role">
 			{#each roleOptions as opt}
 				<option value={opt}>{opt}</option>
 			{/each}
 		</select>
-    </label>
-    <label for="balance"
-        >Saldo
-        <input
-            id="balance"
-            name="balance"
-            type="number"
-            value=0
-            min="0"
-            max="10000"
-            step="0.01"
-        />
-	<input type="submit" value="Spara" />
+	</label>
+	<label for="balance"
+		>Saldo
+		<input id="balance" name="balance" type="number" value="0" min="0" max="10000" step="0.01" />
+		<input type="submit" value="Spara" />
+	</label>
 </form>
 
 <button><a href="/admin/users">Avbryt</a></button>

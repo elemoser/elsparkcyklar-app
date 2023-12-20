@@ -6,14 +6,12 @@
 	export let data;
 	let edit = false;
 	let check = false;
-    let roleOptions = ['customer','admin'];
-
+	let roleOptions = ['customer', 'admin'];
 
 	async function updateUser(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const userId = formData.get('id');
-		
 
 		const data = {
 			username: formData.get('username'),
@@ -81,13 +79,7 @@
 		<label for="role"
 			>Rättigheter
 			{#if !edit}
-				<input
-					id="role"
-					name="role"
-					type="text"
-					value={data.props.data.role}
-					readonly
-				/>
+				<input id="role" name="role" type="text" value={data.props.data.role} readonly />
 			{:else}
 				<select id="role" name="role">
 					{#each roleOptions as opt}
