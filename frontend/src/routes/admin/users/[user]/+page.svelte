@@ -4,9 +4,14 @@
 	import { goto } from '$app/navigation';
 	/** @type {import('./$types').PageData} */
 	export let data;
+	let user = {};
 	let edit = false;
 	let check = false;
 	let roleOptions = ['customer', 'admin'];
+
+	if (data.props.data.user) {
+		user = data.props.data.user;
+	}
 
 	async function updateUser(e) {
 		e.preventDefault();
@@ -63,7 +68,7 @@
 	<form class="submit-form" on:submit={updateUser}>
 		<label for="id"
 			>Kund id
-			<input id="id" name="id" type="number" value={data.props.data.id} readonly />
+			<input id="id" name="id" type="number" value={user.id} readonly />
 		</label>
 		<label for="username"
 			>Användarnamn
@@ -71,7 +76,7 @@
 				id="username"
 				name="username"
 				type="text"
-				value={data.props.data.username}
+				value={user.username}
 				readonly={!edit}
 				maxlength="20"
 			/>
@@ -79,11 +84,11 @@
 		<label for="role"
 			>Rättigheter
 			{#if !edit}
-				<input id="role" name="role" type="text" value={data.props.data.role} readonly />
+				<input id="role" name="role" type="text" value={user.role} readonly />
 			{:else}
 				<select id="role" name="role">
 					{#each roleOptions as opt}
-						{#if opt == data.props.data.role}
+						{#if opt == user.role}
 							<option value={opt} selected>{opt}</option>
 						{:else}
 							<option value={opt}>{opt}</option>
@@ -98,7 +103,7 @@
 				id="balance"
 				name="balance"
 				type="number"
-				value={data.props.data.balance}
+				value={user.balance}
 				readonly={!edit}
 				min="0"
 				max="10000"
@@ -111,7 +116,7 @@
 	</form>
 	{#if check}
 		<p>Är du säker på att du vill ta bort denna användare från databasen?</p>
-		<button on:click={removeUser(data.props.data.id)}>Radera</button>
+		<button on:click={removeUser(user.id)}>Radera</button>
 		<button on:click={() => (check = false)}>Avbryt</button>
 	{:else if edit}
 		<button on:click={() => (edit = false)}>Avbryt</button>

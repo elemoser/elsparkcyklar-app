@@ -1,7 +1,7 @@
 // Load data for specific row in db
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, fetch }) {
-	let data;
+	let data = {};
 	let target = params.user;
 
 	if (target) {
@@ -10,19 +10,23 @@ export async function load({ params, fetch }) {
 				method: 'GET',
 				credentials: 'include'
 			});
-			if (!response.ok) {
-				throw new Error('Failed to fetch');
+
+			if (response.status == '200') {
+				let userData = await response.json();
+				data['user'] = userData.user;
+			} else {
+				data['error'] = response.statusText;
 			}
-			data = await response.json();
-			data = data.user;
+
+			//TODO show bookings and invoices
+			
 		} catch (error) {
 			console.error('Fetch error:', error.message);
-			// Error
-			data = { error: error.message };
+			data['error'] = response.statusText;
 		}
 	} else {
 		// Error if the condition is not met
-		data = { error: 'Invalid parameter' };
+		data['error'] = 'Invalid parameter';
 	}
 
 	return {
