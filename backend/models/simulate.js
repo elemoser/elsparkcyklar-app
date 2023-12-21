@@ -90,12 +90,17 @@ const simulate = {
                 res.write(`data: ${jsonData}\n\n`);   
 
                 if (trips.length - 1 == finishedCounter) {
+                if (trips.length - 1 == finishedCounter) {
                     res.end();
+                    console.log("\n\n\nSLUUUUT\n\n");
+                    await this.destroySimulationBikes(simBikeStartIds)
                     console.log("\n\n\nSLUUUUT\n\n");
                     await this.destroySimulationBikes(simBikeStartIds)
                 }
 
+
                 loop++; // Increment to next position value
+            },1000);
             },1000);
         } catch (err) {
             console.error("Error in simulate:", err);
