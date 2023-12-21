@@ -28,6 +28,7 @@
 		<a class={currentPath === '/admin/cities' ? 'active' : ''} href="/admin/cities">Städer</a>
 		<a class={currentPath === '/admin/map' ? 'active' : ''} href="/admin/map">Karta</a>
 		<a class={currentPath === '/admin/pricing' ? 'active' : ''} href="/admin/pricing">Priser</a>
+		<a class={currentPath === '/admin/bookings' ? 'active' : ''} href="/admin/bookings">Bokningar</a>
 	</div>
 	<div class="admin-main">
 		<slot />
