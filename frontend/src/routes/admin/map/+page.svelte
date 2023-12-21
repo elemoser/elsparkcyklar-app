@@ -1,22 +1,146 @@
 <script>
-	import LeafletMap from '$lib/components/LeafletMap.svelte';
-	// All filter options
-	export let filterOptions = ['Kund', 'Cykel', 'Stad', 'Parkering', 'Laddstation', 'Bokning'];
-	//TODO Populate the map
+    import { onMount, onDestroy } from 'svelte';
+    import { browser } from '$app/environment';
+	export let data;
+
+    let L;
+    let mapElement;
+	let map;
+	let bikeLayer;
+	// let scooterIcon;
+	let showBikes = false;
+
+    onMount(async () => {
+        // Create a map
+        if (browser) {
+			L = await import('leaflet');
+
+			// Coordinates for the maps view
+            // For the current example (zoom on Östermalm)
+			let lat = 59.33808;
+			let lon = 18.08996;
+
+			map = L.map(mapElement);
+
+			// Create the map
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution:
+					'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+
+			// Create a layer for markers
+			bikeLayer = L.layerGroup().addTo(map);
+
+			if (data.props.data.city) {
+				let cities = data.props.data.city;
+				let bounds;
+				
+				for (let key in cities) {
+					bounds = eval(cities[key].bounds);
+
+					// Adjust for formatting
+					if (cities[key].name === 'Linköping') {
+						bounds = bounds[0];
+					}
+
+					if (cities[key].name === 'Uppsala') {
+						bounds = bounds[1];
+					}
+
+					// Sort the coordinates in the right order for leaflet
+					let sortedLatLon = [];
+
+					for (let pair of bounds[0]) {
+						sortedLatLon.push([pair[1], pair[0]]);
+					}
+
+					// Create polygon
+					let polygon = L.polygon(sortedLatLon, { color: '#9747ff', weight: 1, fill: false }).addTo(map);
+
+					// Add polygon to map
+					map.fitBounds(polygon.getBounds());
+					}
+			}
+
+			map.setView([lat, lon], 5);
+		}
+    });
+
+    onDestroy(async () => {
+		if (map) {
+			// console.log('Unloading Leaflet map.');
+			map.remove();
+		}
+	});	
+
+	function toggleBikes() {
+		showBikes = !showBikes;
+
+		if (showBikes) {
+			// scooterIcon = L.icon({
+			// 	iconUrl: "/kick-scooter-icon.png",
+			// 	iconSize:     [20, 25], // size of the icon
+			// 	// iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+			// 	// popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+			// });
+
+			if (data.props.data.bike) {
+				let coordinates = [];
+				let text = '';
+
+				for (let key in data.props.data.bike) {
+					coordinates = data.props.data.bike[key].position.split(', ');
+					coordinates = coordinates.map((x) => parseFloat(x));
+					text = `Cykel ${data.props.data.bike[key].id}`;
+
+					L.marker(coordinates).addTo(bikeLayer).bindPopup(text);
+				}
+			}
+		} else {
+			bikeLayer.clearLayers();
+		}
+	}
+
+	function zoomIn(e) {
+		e.preventDefault();
+		const formData = new FormData(e.target);
+		const lat = formData.get('lat');
+		// const lon = formData.get('lon');
+
+		let coordinates = lat.split(', ');
+		coordinates = coordinates.map((x) => parseFloat(x));
+
+		map.flyTo(coordinates, 14);
+	}
 </script>
 
-<!-- <form class="submit-form-online">
-	<input type="text" />
-	{#each filterOptions as filter}
-		<label>
-			<input type="checkbox" />
-			{filter}
-		</label>
-	{/each}
-	<input type="submit" />
-</form> -->
-<LeafletMap />
+<form class="custom-form" on:submit={zoomIn}>
+	<label>
+		Zoom
+		<input name="lat" type="text" placeholder="lat, lon" required>
+		<!-- <input name="lon" type="number" step="0.000001" placeholder="lon" required> -->
+	</label>
+	<input type="submit" value="Ta mig dit">
+</form>
 
-<style lang="scss">
-	// More style
+<label>
+	<input type="checkbox" on:click={toggleBikes}>
+	cyklar
+</label>
+<div class="map" bind:this={mapElement} />
+
+<style>
+	@import 'leaflet/dist/leaflet.css';
+	.map {
+		height: 500px;
+	}
+
+	.custom-form {
+		display: flex;
+		flex-direction: row;
+	}
+
+	p {
+			color: white;
+	}
 </style>
