@@ -63,15 +63,15 @@
 				// Create polygon
 				let polygon = L.polygon(sortedLatLon, { color: 'red' }).addTo(map);
 				// Get the lat and lon for the center of the polygone
-				let coordinates = polygon.getCenter();
+				// let coordinates = polygon.getCenter();
 
 				// Add polygon to map
 				map.fitBounds(polygon.getBounds());
 				// Add a marker at the center of the polygon containing the name
-				L.marker([coordinates.lat, coordinates.lng])
-					.addTo(map)
-					.bindPopup(data.polygon.text)
-					.openPopup();
+				// L.marker([coordinates.lat, coordinates.lng])
+				// 	.addTo(map)
+				// 	.bindPopup(data.polygon.text)
+				// 	.openPopup();
 			}
 
 			if (data.markers) {
