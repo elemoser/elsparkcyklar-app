@@ -1,8 +1,10 @@
-export const load = async ({ params, fetch }) => {
+import { getUser } from '$lib/stores/user';
+export const load = async ({ params, fetch, parent }) => {
 	const { slug } = params;
+	await parent();
+	const userData = getUser();
 	const userInvoice = async () => {
-		const id = sessionStorage.getItem('user');
-		const response = await fetch(`http://localhost:1338/v1/users/invoice/${id}/${slug}`, {
+		const response = await fetch(`http://localhost:1338/v1/users/invoice/${userData.id}/${slug}`, {
 			method: 'GET',
 			credentials: 'include'
 		});
@@ -11,8 +13,7 @@ export const load = async ({ params, fetch }) => {
 	};
 
 	return {
-		invoice: userInvoice()
+		invoice: userInvoice(),
+		user: userData
 	};
 };
-
-//TODO Add action for payment.
