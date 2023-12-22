@@ -25,7 +25,7 @@ CREATE TABLE bike (
     speed REAL DEFAULT 0.00,
     position TEXT,
     state TEXT DEFAULT "available",
-    low_battery BOOLEAN,
+    low_battery INTEGER,
 
     FOREIGN KEY (city_id) REFERENCES city(id)
 );
@@ -79,7 +79,8 @@ CREATE TABLE parking (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     city_id INTEGER,
     name TEXT,
-    bounds TEXT,
+    center TEXT,
+    radius INTEGER,
     number_of_chargers INTEGER,
 
     FOREIGN KEY (city_id) REFERENCES city(id)
@@ -100,8 +101,7 @@ CREATE TABLE price (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     start_fee FLOAT DEFAULT 20.00,
     cost_per_minute FLOAT DEFAULT 3.00,
-    free_parking_fee FLOAT DEFAULT 20.00,
-    start_free_park_discount FLOAT DEFAULT 0.5
+    cost_per_minute_if_parking FLOAT DEFAULT 2.00
 );
 
 DROP TABLE IF EXISTS simulate;

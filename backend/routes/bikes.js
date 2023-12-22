@@ -33,6 +33,12 @@ router.put("/id/:bike_id", (req, res) => {
     bikes.updateBike(req, res, bike_id);
 });
 
+//Update ONLY position for bike
+router.put("/position/:bike_id", (req, res) => {
+    let bike_id = req.params.bike_id;
+    bikes.updatePosition(req, res, bike_id);
+});
+
 //Delete bike
 router.delete("/id/:bike_id", (req, res) => {
     let bike_id = req.params.bike_id;

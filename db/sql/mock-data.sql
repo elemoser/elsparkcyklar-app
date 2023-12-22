@@ -38,22 +38,101 @@ VALUES
     (5, 5, 2101040004, 18.75, "pending");
 
 -- Inserting data into the Parking Table
-INSERT INTO parking (id, city_id, name, bounds, number_of_chargers)
+INSERT INTO parking (city_id, name, center, radius, number_of_chargers)
 VALUES
-    (1, 1, 'Område 1', '59.370, 17.966, 59.350, 17.986', 10),
-    (2, 1, 'Område 2', '59.332, 17.937, 59.312, 17.957', 8),
-    (3, 1, 'Område 3', '59.398, 17.902, 59.378, 17.922', 12),
-    (4, 1, 'Område 4', '59.358, 17.873, 59.338, 17.893', 15),
-    (5, 1, 'Område 5', '59.418, 17.834, 59.398, 17.854', 5);
+    (1, 'Centralstationen', '59.3293, 18.0686', 500, 10),
+    (1, 'Gamla Stan', '59.3346, 18.0632', 500, 8),
+    (1, 'Djurgården', '59.3472, 18.0823', 500, 12),
+    (1, 'Södermalm', '59.3389, 18.0312', 500, 15),
+    (1, 'Kungsträdgården', '59.3290, 18.0402', 500, 5),
+
+    (2, 'Avenyn', '57.7011, 11.9739', 400, 10),
+    (2, 'Liseberg', '57.6954, 11.9839', 400, 15),
+    (2, 'Haga', '57.6963, 11.9787', 400, 12),
+    (2, 'Slottsskogen', '57.6847, 11.9510', 400, 15),
+    (2, 'Linné', '57.6968, 11.9534', 400, 6),
+
+    (3, 'Triangeln', '55.5945, 13.0025', 300, 8),
+    (3, 'Emporia', '55.5420, 12.9727', 300, 15),
+    (3, 'Västra Hamnen', '55.6095, 12.9780', 300, 8),
+    (3, 'Folkets Park', '55.5854, 13.0156', 300, 10),
+    (3, 'Möllevången', '55.5937, 13.0004', 300, 5);
+
 
 -- Inserting data into the Charger Table
-INSERT INTO charger (id, parking_id, bike_id, status)
+INSERT INTO charger (parking_id, bike_id, status)
 VALUES
-    (1, 1, 0, 'available'),
-    (2, 2, 2, 'occupied'),
-    (3, 3, 0, 'available'),
-    (4, 4, 4, 'occupied'),
-    (5, 5, 0, 'available');
+
+(1, 0, 'available'), (1, 0, 'available'), (1, 0, 'available'),
+(1, 0, 'available'), (1, 0, 'available'), (1, 0, 'available'),
+(1, 0, 'available'), (1, 0, 'available'), (1, 0, 'available'),
+(1, 0, 'available'),
+
+(2, 0, 'available'), (2, 0, 'available'), (2, 0, 'available'),
+(2, 0, 'available'), (2, 0, 'available'), (2, 0, 'available'),
+(2, 0, 'available'), (2, 0, 'available'),
+
+(3, 0, 'available'), (3, 0, 'available'), (3, 0, 'available'),
+(3, 0, 'available'), (3, 0, 'available'), (3, 0, 'available'),
+(3, 0, 'available'), (3, 0, 'available'), (3, 0, 'available'),
+(3, 0, 'available'), (3, 0, 'available'), (3, 0, 'available'),
+
+(4, 0, 'available'), (4, 0, 'available'), (4, 0, 'available'),
+(4, 0, 'available'), (4, 0, 'available'), (4, 0, 'available'),
+(4, 0, 'available'), (4, 0, 'available'), (4, 0, 'available'),
+(4, 0, 'available'), (4, 0, 'available'), (4, 0, 'available'),
+(4, 0, 'available'), (4, 0, 'available'), (4, 0, 'available'),
+
+(5, 0, 'available'), (5, 0, 'available'), (5, 0, 'available'),
+(5, 0, 'available'), (5, 0, 'available'),
+
+(6, 0, 'available'), (6, 0, 'available'), (6, 0, 'available'),
+(6, 0, 'available'), (6, 0, 'available'), (6, 0, 'available'),
+(6, 0, 'available'), (6, 0, 'available'), (6, 0, 'available'),
+(6, 0, 'available'),
+
+(7, 0, 'available'), (7, 0, 'available'), (7, 0, 'available'),
+(7, 0, 'available'), (7, 0, 'available'), (7, 0, 'available'),
+(7, 0, 'available'), (7, 0, 'available'), (7, 0, 'available'),
+(7, 0, 'available'), (7, 0, 'available'), (7, 0, 'available'),
+(7, 0, 'available'), (7, 0, 'available'), (7, 0, 'available'),
+
+(8, 0, 'available'), (8, 0, 'available'), (8, 0, 'available'),
+(8, 0, 'available'), (8, 0, 'available'), (8, 0, 'available'),
+(8, 0, 'available'), (8, 0, 'available'), (8, 0, 'available'),
+(8, 0, 'available'), (8, 0, 'available'), (8, 0, 'available'),
+
+(9, 0, 'available'), (9, 0, 'available'), (9, 0, 'available'),
+(9, 0, 'available'), (9, 0, 'available'), (9, 0, 'available'),
+(9, 0, 'available'), (9, 0, 'available'), (9, 0, 'available'),
+(9, 0, 'available'), (9, 0, 'available'), (9, 0, 'available'),
+(9, 0, 'available'), (9, 0, 'available'), (9, 0, 'available'),
+
+(10, 0, 'available'), (10, 0, 'available'), (10, 0, 'available'),
+(10, 0, 'available'), (10, 0, 'available'), (10, 0, 'available'),
+
+(11, 0, 'available'), (11, 0, 'available'), (11, 0, 'available'),
+(11, 0, 'available'), (11, 0, 'available'), (11, 0, 'available'),
+(11, 0, 'available'), (11, 0, 'available'),
+
+(12, 0, 'available'), (12, 0, 'available'), (12, 0, 'available'),
+(12, 0, 'available'), (12, 0, 'available'), (12, 0, 'available'),
+(12, 0, 'available'), (12, 0, 'available'), (12, 0, 'available'),
+(12, 0, 'available'), (12, 0, 'available'), (12, 0, 'available'),
+(12, 0, 'available'), (12, 0, 'available'), (12, 0, 'available'),
+
+(13, 0, 'available'), (13, 0, 'available'), (13, 0, 'available'),
+(13, 0, 'available'), (13, 0, 'available'), (13, 0, 'available'),
+(13, 0, 'available'), (13, 0, 'available'),
+
+(14, 0, 'available'), (14, 0, 'available'), (14, 0, 'available'),
+(14, 0, 'available'), (14, 0, 'available'), (14, 0, 'available'),
+(14, 0, 'available'), (14, 0, 'available'), (14, 0, 'available'),
+(14, 0, 'available'),
+
+(15, 0, 'available'), (15, 0, 'available'), (15, 0, 'available'),
+(15, 0, 'available'), (15, 0, 'available');
+
 
 -- Inserting data into the Price Table
 INSERT INTO price (id)

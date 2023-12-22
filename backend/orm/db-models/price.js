@@ -17,15 +17,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       defaultValue: 3.00
     },
-    free_parking_fee: {
+    cost_per_minute_if_parking: {
       type: DataTypes.FLOAT,
       allowNull: true,
-      defaultValue: 20.00
-    },
-    start_free_park_discount: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      defaultValue: 0.5
+      defaultValue: 2.00
     }
   }, {
     sequelize,

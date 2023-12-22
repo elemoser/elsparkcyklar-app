@@ -2,7 +2,10 @@ const Booking = require("../orm/model-router.js")("booking");
 const Bike = require("../orm/model-router.js")("bike");
 const User = require("../orm/model-router.js")("user");
 const Invoice = require("../orm/model-router.js")("invoice");
-const { getRandomInt } = require("./utils.js");
+const Parking = require("../orm/model-router.js")("parking");
+const Charger = require("../orm/model-router.js")("charger");
+
+const { getRandomInt, isParked } = require("./utils.js");
 const Price = require("../orm/model-router.js")("price");
 
 const { Op } = require("sequelize");
@@ -131,13 +134,41 @@ const booking = {
                 price: parseFloat(price),
             });
 
-            let bikeSpeed = getRandomInt(5, 25);
-
-            //Uppdatera status och hastighet för den uthyrda cykeln
-            checkBike.update({
-                state: "occupied",
-                speed: parseFloat(bikeSpeed),
+            const isBikeCharging = await Charger.findOne({
+                where: {
+                    bike_id: checkBike.id,
+                    status: "occupied",
+                },
             });
+
+            let bikeSpeed = getRandomInt(5, 25);
+            let getChargedBattery = getRandomInt(5, 50);
+            let battery = checkBike.battery + getChargedBattery;
+
+            if (battery > 100) {
+                battery = 100;
+            }
+
+            if (isBikeCharging) {
+                await Promise.all([
+                    isBikeCharging.update({
+                        status: "available",
+                        bike_id: 0,
+                    }),
+
+                    checkBike.update({
+                        state: "occupied",
+                        speed: parseFloat(bikeSpeed),
+                        battery: parseFloat(battery),
+                    }),
+                ]);
+            } else {
+                // Uppdatera status och hastighet för den uthyrda cykeln när den inte är på laddning
+                await checkBike.update({
+                    state: "occupied",
+                    speed: parseFloat(bikeSpeed),
+                });
+            }
 
             res.status(200).json({
                 message: "Booking created successfully",
@@ -214,13 +245,6 @@ const booking = {
             const tripLengthInSeconds = stopTimeUnix - startTimeUnix;
             const convertToMinutes = tripLengthInSeconds / 60;
 
-            //hämta priset från pris-tabellen
-            const getPrice = await Price.findOne();
-
-            //slutpriset (ursprungspriset + (antal minuter gånger minutpriset)
-            const calculatePrice =
-                price + convertToMinutes * getPrice.cost_per_minute;
-
             //hämta aktuell cykel samt justera batteri-nivån och tillgänglighet
             const existingBike = await Bike.findByPk(bikeId);
 
@@ -230,7 +254,7 @@ const booking = {
             //Om batteriet är mindre än 20 får cykeln panik och varnar (läskigt)
             if (batteryLevel < 20) {
                 await existingBike.update({
-                    low_battery: true,
+                    low_battery: 1,
                 });
             }
 
@@ -247,6 +271,48 @@ const booking = {
                     battery: batteryLevel,
                     speed: 0,
                 });
+            }
+
+            const bikePosition = existingBooking.bike.position;
+
+            // Hämta alla parkeringsområden
+            const parkingAreas = await Parking.findAll();
+
+            //hämta priset från pris-tabellen
+            const getPrice = await Price.findOne();
+
+            let calculatePrice;
+
+            // Användning
+            const isParkedInParkingArea = await isParked(
+                bikePosition,
+                parkingAreas
+            );
+
+            if (isParkedInParkingArea) {
+                // Justera slutpriset efter vart man parkerar
+
+                calculatePrice =
+                    price +
+                    convertToMinutes * getPrice.cost_per_minute_if_parking;
+
+                const findCharger = await Charger.findOne({
+                    where: {
+                        parking_id: isParkedInParkingArea.id,
+                        status: "available",
+                    },
+                });
+
+                //sätt c
+                if (findCharger) {
+                    await findCharger.update({
+                        bike_id: bikeId,
+                        status: "occupied",
+                    });
+                }
+            } else {
+                calculatePrice =
+                    price + convertToMinutes * getPrice.cost_per_minute;
             }
 
             //skapa faktura för aktuell användare
@@ -272,7 +338,7 @@ const booking = {
                 message: "Booking successfully updated. Trip is now stopped",
             });
         } catch (err) {
-            console.error("Error in deleteBooking:", err);
+            console.error("Error in endTrip:", err);
             res.status(500).json({ error: err.message });
         }
     },
