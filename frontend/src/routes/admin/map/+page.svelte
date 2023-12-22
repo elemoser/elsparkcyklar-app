@@ -7,8 +7,10 @@
     let mapElement;
 	let map;
 	let bikeLayer;
+	let parkingLayer;
 	// let scooterIcon;
 	let showBikes = false;
+	let showParkings = false;
 
     onMount(async () => {
         // Create a map
@@ -30,6 +32,7 @@
 
 			// Create a layer for markers
 			bikeLayer = L.layerGroup().addTo(map);
+			parkingLayer = L.layerGroup().addTo(map);
 
 			if (data.props.data.city) {
 				let cities = data.props.data.city;
@@ -55,10 +58,7 @@
 					}
 
 					// Create polygon
-					let polygon = L.polygon(sortedLatLon, { color: '#9747ff', weight: 1, fill: false }).addTo(map);
-
-					// Add polygon to map
-					map.fitBounds(polygon.getBounds());
+					L.polygon(sortedLatLon, { color: '#9747ff', weight: 1, fill: false }).addTo(map);
 					}
 			}
 
@@ -83,7 +83,6 @@
 			// 	// iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
 			// 	// popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 			// });
-
 			if (data.props.data.bike) {
 				let coordinates = [];
 				let text = '';
@@ -100,6 +99,39 @@
 			bikeLayer.clearLayers();
 		}
 	}
+
+	function toggleParking() {
+		showParkings = !showParkings;
+		
+		if (showParkings) {
+			let	parkingIcon = L.icon({
+				iconUrl: "/parking-area.png",
+				iconSize:     [30, 35], // size of the icon
+				// iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+				// popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+			});
+
+			if (data.props.data.parking) {
+				let coordinates = [];
+				let text = '';
+				let rectangle;
+
+				for (let key in data.props.data.parking) {
+					coordinates = data.props.data.parking[key].bounds.split(', ');
+					coordinates = coordinates.map((x) => parseFloat(x));
+					text = `${data.props.data.parking[key].name} (${data.props.data.parking[key].number_of_chargers} laddare)`;
+					// Create rectangle
+					rectangle = L.rectangle([[coordinates[0],coordinates[1]],[coordinates[2],coordinates[3]]], {color: 'yellow', weight: 1, fill: false}).addTo(parkingLayer);
+					// Create marker in center of rectangle
+					coordinates = rectangle.getCenter();
+					L.marker([coordinates.lat, coordinates.lng], {icon: parkingIcon}).addTo(parkingLayer).bindPopup(text);
+				}
+			}
+		} else {
+			parkingLayer.clearLayers();
+		}
+	}
+
 
 	function zoomIn(e) {
 		e.preventDefault();
@@ -127,7 +159,16 @@
 	<input type="checkbox" on:click={toggleBikes}>
 	cyklar
 </label>
+<label>
+	<input type="checkbox" on:click={toggleParking}>
+	parkeringar
+</label>
 <div class="map" bind:this={mapElement} />
+
+<div>
+	<a href="https://www.flaticon.com/free-icons/map-and-location" title="map and location icons">Map and location icons created by ono_tono - Flaticon</a>
+	<a href="https://www.flaticon.com/free-icons/parking" title="parking icons">Parking icons created by ono_tono - Flaticon</a>
+</div>
 
 <style>
 	@import 'leaflet/dist/leaflet.css';
@@ -138,9 +179,5 @@
 	.custom-form {
 		display: flex;
 		flex-direction: row;
-	}
-
-	p {
-			color: white;
 	}
 </style>

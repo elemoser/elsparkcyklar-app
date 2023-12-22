@@ -26,6 +26,18 @@ export async function load({ fetch }) {
 			data['error'] = responseCities.statusText;
 		}
 
+		const responseParking = await fetch(`http://localhost:1338/v1/parking`, {
+			method: 'GET',
+			credentials: 'include'
+		});
+
+		if (responseParking.status == '200') {
+			const parking = await responseParking.json();
+			data['parking'] = parking.parking;
+		} else {
+			data['error'] = responseParking.statusText;
+		}
+
 		return { props: { data } };
 	} catch (error) {
 		console.error('Fetch error:', error.message);
