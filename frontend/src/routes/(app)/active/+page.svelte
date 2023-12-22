@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import LeafletMap from '$lib/components/LeafletMap.svelte';
+	import { updateUser } from '$lib/stores/user.js';
 	export let data;
 
 	const { active } = data;
@@ -12,6 +13,7 @@
 		});
 
 		if (endResponse.status === 200) {
+			updateUser({ active: false });
 			goto('/profile/invoice');
 		}
 	}
@@ -21,10 +23,7 @@
 		markers: {
 			0: {
 				text: `Bike ${active.bike_id}`,
-				coordinates: [
-					coords[0],
-					coords[1]
-				]
+				coordinates: [coords[0], coords[1]]
 			}
 		}
 	};

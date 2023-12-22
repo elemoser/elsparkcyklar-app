@@ -47,9 +47,3 @@
 	aspernatur illum tempora delectus blanditiis facilis accusantium voluptatem officiis, quo animi
 	recusandae perferendis est dicta, voluptas voluptates odit omnis? Qui, illo ex.
 </p>
-
-<style lang="scss">
-	form {
-		margin-bottom: $calculated-line-height;
-	}
-</style>

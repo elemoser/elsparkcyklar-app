@@ -1,58 +1,75 @@
 <script>
 	import { goto } from '$app/navigation';
-    export let data;
-    const { user } = data;
+	import { updateUser } from '$lib/stores/user.js';
+	export let data;
+	const { user } = data;
 
-    async function handleSubmit(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const userId = user.id
-    const userObj = {
-        role: user.role,
-        balance: formData.get('balance')
-    };
+	async function handleSubmit(e) {
+		e.preventDefault();
+		const formData = new FormData(e.target);
+		let formBalance = Number(formData.get('balance'));
 
-    const response = await fetch(`http://localhost:1338/v1/users/id/${userId}`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userObj)
-    });
-    const res = await response.json();
+		//Add 0 if value is not numeric or less than 1.
+		formBalance = isNaN(formBalance) || formBalance < 0 ? 0 : formBalance;
 
-    res.error ? console.log('Something went wrong.') : goto('/profile');
-}
+		let userBalance = user.balance;
+		const userObj = {
+			role: user.role,
+			balance: userBalance + formBalance
+		};
+
+		const response = await fetch(`http://localhost:1338/v1/users/id/${user.id}`, {
+			method: 'PUT',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(userObj)
+		});
+
+		if (response.status === 200) {
+			const updateBalance = { balance: parseFloat(userObj.balance).toFixed(2) };
+			updateUser(updateBalance);
+
+			goto('/profile');
+		} else {
+			console.log('Add credit failed.');
+		}
+	}
 </script>
 
 <div class="update-container">
-    <h1>Payment</h1>
-    <form on:submit={handleSubmit}>
-        <input id="id" name="id" type="hidden" value={user.id} required />
+	<h1>Payment</h1>
+	<form on:submit={handleSubmit}>
+		<input id="id" name="id" type="hidden" value={user.id} required />
 
-        <label for="balance">Add Balance</label>
-        <input id="balance" name="balance" type="number" placeholder={user.balance} />
+		<label for="balance">Add Balance</label>
+		<input
+			id="balance"
+			name="balance"
+			type="number"
+			placeholder={parseFloat(user.balance).toFixed(2)}
+		/>
 
-        <input type="submit" value="Add" />
-        <a href="/profile">Back</a>
-    </form>
+		<input type="submit" value="Add" />
+		<a href="/profile">Back</a>
+	</form>
 </div>
 
 <style lang="scss">
-    .update-container {
+	.update-container {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 	}
 
-    label {
+	label {
 		font-size: $base-font-size;
 		font-family: $text-font;
 		font-weight: 600;
 	}
 
-    input {
+	input {
 		display: block;
 		font-size: $base-font-size;
 		padding: 0.2em 0.3em;
@@ -90,8 +107,8 @@
 			}
 		}
 
-        a {
-            align-self: flex-start;
-        }
+		a {
+			align-self: flex-start;
+		}
 	}
 </style>

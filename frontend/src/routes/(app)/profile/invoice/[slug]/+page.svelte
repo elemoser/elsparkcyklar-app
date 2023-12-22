@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { updateUser } from '$lib/stores/user.js';
 	export let data;
 	const { invoice } = data;
 	const { user } = data;
@@ -8,7 +9,7 @@
 	async function handleSubmit(e) {
 		e.preventDefault();
 
-		user.balance >= invoice.total_price ? payInvoice() : err = 'Insufficient funds';
+		user.balance >= invoice.total_price ? payInvoice() : (err = 'Insufficient funds');
 	}
 
 	async function payInvoice() {
@@ -28,9 +29,8 @@
 			},
 			body: JSON.stringify(invoiceObj)
 		});
-		const resInvoice = await responseInvoice.json();
 
-		const response = await fetch(`http://localhost:1338/v1/users/id/${user.id}`, {
+		const responseUpdate = await fetch(`http://localhost:1338/v1/users/id/${user.id}`, {
 			method: 'PUT',
 			credentials: 'include',
 			headers: {
@@ -38,9 +38,11 @@
 			},
 			body: JSON.stringify(userObj)
 		});
-		const res = await response.json();
 
-		res.error || resInvoice.error ? console.log('Something went wrong with the user.') : goto('/profile/invoice');
+		if (responseInvoice.status === 200 && responseUpdate.status === 200) {
+			updateUser(userObj);
+			goto('/profile/invoice');
+		}
 	}
 </script>
 
@@ -51,7 +53,7 @@
 	<p>Status: {invoice.status}</p>
 	<button class="button" on:click={handleSubmit}>Pay</button>
 	{#if err}
-	<p class="error">{err}</p>
+		<p class="error">{err}</p>
 	{/if}
 {:else}
 	<p>Något väldigt fel har inträffat.</p>

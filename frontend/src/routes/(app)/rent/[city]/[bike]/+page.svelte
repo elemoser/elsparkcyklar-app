@@ -8,25 +8,21 @@
 	const { bike } = data;
 	let userData;
 
-	const unsubscribe = user.subscribe(val => {
+	const unsubscribe = user.subscribe((val) => {
 		userData = val;
-	})
+	});
 
 	const coords = bike.position.split(', ');
 	const mapData = {
 		markers: {
 			0: {
 				text: `Bike ${bike.id}`,
-				coordinates: [
-					coords[0],
-					coords[1]
-				]
+				coordinates: [coords[0], coords[1]]
 			}
 		}
-	}
+	};
 
 	async function rentBike() {
-
 		const bookingObj = {
 			bike_id: bike.id,
 			user_id: userData.id

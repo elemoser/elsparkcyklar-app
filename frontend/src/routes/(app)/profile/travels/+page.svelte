@@ -17,7 +17,7 @@
 			rowTracker = null;
 		} else {
 			rowTracker = rowId;
-			let specificTravel = history.find(e => e.id === rowId);
+			let specificTravel = history.find((e) => e.id === rowId);
 
 			const startCoords = specificTravel.start_location.split(', ');
 			const stopCoords = specificTravel.stop_location.split(', ');
@@ -26,27 +26,21 @@
 				markers: {
 					0: {
 						text: `Start`,
-						coordinates: [
-							startCoords[0],
-							startCoords[1]
-						]
+						coordinates: [startCoords[0], startCoords[1]]
 					},
 					1: {
 						text: `Stop`,
-						coordinates: [
-							stopCoords[0],
-							stopCoords[1]
-						]
+						coordinates: [stopCoords[0], stopCoords[1]]
 					}
 				}
-			}
+			};
 		}
 	}
 </script>
 
 <div class="log-wrapper">
 	<h1>Travel history</h1>
-	{#if history}
+	{#if history && history.length > 0}
 		{#each history as log}
 			<div class="row-box">
 				<div class="log-row">

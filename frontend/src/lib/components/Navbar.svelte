@@ -1,46 +1,29 @@
 <script>
 	import { app_name } from '$lib/index.js';
-	import { user } from '$lib/stores/user';
-	import { onDestroy } from 'svelte';
+	export let userData;
 
-	let userData;
-
-	const unsubscribe = user.subscribe(val => {
-		userData = val;
-	})
-
-	const navLinksAdm = [
-		{ name: 'Rent', url: '/rent' },
-		{ name: 'Profile', url: '/profile' },
-		{ name: 'Admin', url: '/admin' }
+	$: navLinks = [
+		userData.active ? { name: 'Active', url: '/active' } : { name: 'Rent', url: '/rent' },
+		{ name: 'Profile', url: '/profile' }
 	];
-
-	const navLinks = [
-		{ name: 'Rent', url: '/rent' },
-		{ name: 'Profile', url: '/profile' },
-		{ name: 'Admin', url: '/admin' }
-	];
-
-	onDestroy(() => {
-		unsubscribe();
-	});
 </script>
 
 {#if userData && userData.role === 'admin'}
 	<nav>
 		<div class="logo">
-			<p>{app_name}</p>
+			<a href="/"><p>{app_name}</p></a>
 		</div>
 		<ul>
-			{#each navLinksAdm as link}
+			{#each navLinks as link}
 				<li><a class="button" href={link.url}>{link.name}</a></li>
 			{/each}
+			<li><a class="button" href="/admin">Admin</a></li>
 		</ul>
 	</nav>
 {:else}
 	<nav>
 		<div class="logo">
-			<p>{app_name}</p>
+			<a href="/"><p>{app_name}</p></a>
 		</div>
 		<ul>
 			{#each navLinks as link}
@@ -51,6 +34,10 @@
 {/if}
 
 <style lang="scss">
+	a {
+		text-decoration: none;
+	}
+
 	nav {
 		background-color: $dark-color;
 		display: flex;
