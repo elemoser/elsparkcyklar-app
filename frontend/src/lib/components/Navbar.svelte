@@ -1,27 +1,43 @@
 <script>
 	import { app_name } from '$lib/index.js';
+	export let userData;
 
-	const navLinks = [
-		{ name: 'Home', url: '/' },
-		{ name: 'About', url: '/about' },
-		{ name: 'Profile', url: '/profile' },
-		{ name: 'Rent', url: '/rent' },
-		{ name: 'Admin', url: '/admin' }
+	$: navLinks = [
+		userData.active ? { name: 'Active', url: '/active' } : { name: 'Rent', url: '/rent' },
+		{ name: 'Profile', url: '/profile' }
 	];
 </script>
 
-<nav>
-	<div class="logo">
-		<p>{app_name}</p>
-	</div>
-	<ul>
-		{#each navLinks as link}
-			<li><a class="button" href={link.url}>{link.name}</a></li>
-		{/each}
-	</ul>
-</nav>
+{#if userData && userData.role === 'admin'}
+	<nav>
+		<div class="logo">
+			<a href="/"><p>{app_name}</p></a>
+		</div>
+		<ul>
+			{#each navLinks as link}
+				<li><a class="button" href={link.url}>{link.name}</a></li>
+			{/each}
+			<li><a class="button" href="/admin">Admin</a></li>
+		</ul>
+	</nav>
+{:else}
+	<nav>
+		<div class="logo">
+			<a href="/"><p>{app_name}</p></a>
+		</div>
+		<ul>
+			{#each navLinks as link}
+				<li><a class="button" href={link.url}>{link.name}</a></li>
+			{/each}
+		</ul>
+	</nav>
+{/if}
 
 <style lang="scss">
+	a {
+		text-decoration: none;
+	}
+
 	nav {
 		background-color: $dark-color;
 		display: flex;
@@ -58,6 +74,7 @@
 		}
 
 		ul {
+			z-index: 9999; //force ontop of maps
 			padding: 1em;
 			background-color: $dark-color;
 			justify-content: space-evenly;

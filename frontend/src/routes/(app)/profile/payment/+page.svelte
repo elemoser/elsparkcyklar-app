@@ -7,13 +7,15 @@
 	async function handleSubmit(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
+		let formBalance = Number(formData.get('balance'));
 
-		const username = formData.get('username') === '' ? user.username : formData.get('username');
+		//Add 0 if value is not numeric or less than 1.
+		formBalance = isNaN(formBalance) || formBalance < 0 ? 0 : formBalance;
 
+		let userBalance = user.balance;
 		const userObj = {
-			username: username,
 			role: user.role,
-			balance: user.balance
+			balance: userBalance + formBalance
 		};
 
 		const response = await fetch(`http://localhost:1338/v1/users/id/${user.id}`, {
@@ -26,27 +28,31 @@
 		});
 
 		if (response.status === 200) {
-			updateUser(userObj);
+			const updateBalance = { balance: parseFloat(userObj.balance).toFixed(2) };
+			updateUser(updateBalance);
+
 			goto('/profile');
 		} else {
-			console.log('Post a new username');
+			console.log('Add credit failed.');
 		}
 	}
 </script>
 
 <div class="update-container">
-	<h1>Update user</h1>
+	<h1>Payment</h1>
 	<form on:submit={handleSubmit}>
-		<label for="username">Username</label>
-		<input id="username" name="username" type="text" placeholder={user.username} />
+		<input id="id" name="id" type="hidden" value={user.id} required />
 
-		<label for="phone">Phone</label>
-		<input id="phone" name="phone" type="tel" placeholder={user.phone} disabled />
+		<label for="balance">Add Balance</label>
+		<input
+			id="balance"
+			name="balance"
+			type="number"
+			placeholder={parseFloat(user.balance).toFixed(2)}
+		/>
 
-		<label for="email">Mail</label>
-		<input id="email" name="email" type="email" placeholder={user.mail} disabled />
-
-		<input type="submit" value="Update" />
+		<input type="submit" value="Add" />
+		<a href="/profile">Back</a>
 	</form>
 </div>
 
@@ -93,12 +99,16 @@
 				margin-bottom: $calculated-line-height;
 			}
 
-			&:last-child {
+			&[type='submit'] {
 				align-self: flex-end;
 				&:hover {
 					background-color: darken(#f0f0f0, 5%); //temp color for effect.
 				}
 			}
+		}
+
+		a {
+			align-self: flex-start;
 		}
 	}
 </style>

@@ -10,7 +10,7 @@
 
 	onMount(async () => {
 		// Get data via SSE
-		// eventSource = new EventSource('http://localhost:1338/v1/simulate');
+		eventSource = new EventSource('http://localhost:1338/v1/simulate');
 
 		// Create a map
 		if (browser) {
@@ -34,48 +34,24 @@
 		}
 	});
 
-	function newEventSource() {
-		// Get data via SSE
-		eventSource = new EventSource('http://localhost:1338/v1/simulate');
-	}
-
 	function startUpdates() {
-		// Remove markers from map if any
-		markerLayer.clearLayers();
-
-		// Start EventSource
-		if (!eventSource || eventSource.readyState === 2) {
-			newEventSource();
-			console.log('Sim started');
-		}
-
-		let data = {};
-		let simulationDone = false;
+		console.log('Sim started');
 		let marker;
-		let markers = {};
-		let lat = 0;
-		let lon = 0;
-
-		// Function triggered at each eventSource message
+		let lat;
+		let lon;
 		eventSource.onmessage = function (event) {
-			data = JSON.parse(event.data);
-			simulationDone = data['simulationDone'] ? data['simulationDone'] : false;
-
-			if (simulationDone) {
+			console.log(event.data);
+			if (event.data.includes('finished')) {
 				stopUpdates();
 			} else {
-				console.log(data);
-				for (let key in data) {
-					lat = parseFloat(data[key].lat);
-					lon = parseFloat(data[key].lon);
+				// The data is a string!
+				lat = parseFloat(event.data.split(',')[0].slice(7));
+				lon = parseFloat(event.data.split(',')[1].slice(6, -1));
 
-					if (markers[key]) {
-						marker = markers[key];
-						marker.setLatLng([lat, lon]);
-					} else {
-						marker = L.marker([lat, lon]).addTo(markerLayer);
-						markers[key] = marker;
-					}
+				if (marker) {
+					marker.setLatLng([lat, lon]);
+				} else {
+					marker = L.marker([lat, lon]).addTo(map);
 				}
 			}
 		};
