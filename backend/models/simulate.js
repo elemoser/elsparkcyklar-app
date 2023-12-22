@@ -2,7 +2,7 @@ const Simulate = require("../orm/model-router.js")("simulate");
 const User = require("../orm/model-router.js")("user");
 const Bike = require("../orm/model-router.js")("bike");
 const { Op } = require("sequelize");
-
+const baseUrl = "http://localhost:1338"
 const simUsersOnlyBelowThis = 9005001 // used to get all simulator users as they start on 900001
 
 const simulate = {
@@ -10,7 +10,7 @@ const simulate = {
     /**
      * @description Getting all bikes from sqlite db
      */
-    startSimulation: async function startSimulation(req, res, totalBikesToRun = 50) {
+    startSimulation: async function startSimulation(req, res, totalBikesToRun = 750, simSpeed = 1500) {
         let intervalId;
         // Set how many simulationtrips you want to 
         // const totalBikesToRun = 6;
@@ -32,76 +32,68 @@ const simulate = {
 
             await this.createBooking(simBikes, simUsers, totalBikesToRun)
             const activeBookings = await this.getActiveBookings()
-            intervalId = setInterval(async () => {
-            
-                // Set counter of total bikes (-1 to match arrays)
-                let finishedCounter = trips.length - 1
 
-                // Loop the new positons to see if they have a next position. If they dont they will return finished: true
-                if (loop < 2) {
-                    console.log("🚀 ~ file: simulate.js:42 ~ intervalId=setInterval ~ loop:", loop)
-
-                    console.log("🚀 ~ file: simulate.js:44 ~ intervalId=setInterval ~ activeBookings.length:", activeBookings.length)
-                    for (let i = 0; i < activeBookings.length; i++) {
-                        console.log("Pos:",i)
-                        if (trips[i].route[loop] !== undefined) {
-                            console.log("ASDASD\n",i,trips[i].id,"\n\n\n");
-                        }
-                        // console.log("🚀 ~ file: simulate.js:43 ~ intervalId=setInterval ~ trips[i].route:", trips)
-                        // console.log("🚀 ~ file: simulate.js:44 ~ intervalId=setInterval ~ trip.route:", trip.route)
-                    }
+        intervalId = setInterval(async () => {
+            // Set counter of total bikes (-1 to match arrays)
+            let finishedCounter = trips.length - 1;
+        
+            let newPosition = [];
+            for (const trip of trips) {
+                let nextPos = {
+                    id: trip.id,
+                    lat: trip.route[trip.route.length - 1][1],
+                    lon: trip.route[trip.route.length - 1][0],
+                    finished: true
+                };
+        
+                const id = parseInt(nextPos.id) + 10000; // Id for finding a matching trip.
+                if (trip.route[loop] !== undefined) {
+                    nextPos = {
+                        id: trip.id,
+                        city: trip.city,
+                        lat: trip.route[loop][1],
+                        lon: trip.route[loop][0],
+                        finished: false
+                    };
+                    finishedCounter--;
                 }
 
-                let newPosition = await trips.map(trip => {
-                    let nextPos = {
-                        id: trip.id,
-                        lat: trip.route[trip.route.length - 1][1],
-                        lon: trip.route[trip.route.length - 1][0],
-                        finished: true
-                        }
-
-                    // If they have a next pos they are still active in the simulation
-                    // If finishCounter remains unchanged all bikes are done and the sim should be over
-                    if (trip.route[loop] !== undefined) {
-                        nextPos = {
-                            id: trip.id,
-                            city: trip.city,
-                            lat: trip.route[loop][1],
-                            lon: trip.route[loop][0],
-                            finished: false
-                            }
-                            finishedCounter --;
-                    }
-                    return nextPos
-                })
-                // SSE must send text/string
-                let jsonData = JSON.stringify(newPosition);
-                if (finishedCounter === trips.length - 1) {
-                    jsonData = JSON.stringify({simulationDone: true})
+                if (nextPos.finished && !activeBookings[`${id}`].isFinished) {
+                    await this.updateBikePosition(
+                        id,
+                        nextPos.lat, 
+                        nextPos.lon
+                    );
+                    await this.endTrip(activeBookings[`${id}`].bookingId);
+                    activeBookings[`${id}`].isFinished = true;
+                }
+         
+                newPosition.push(nextPos);
+            }
+        
+            // SSE must send text/string
+            let jsonData = JSON.stringify(newPosition);
+            if (finishedCounter === trips.length - 1) {
+                jsonData = JSON.stringify({simulationDone: true})
+                clearInterval(intervalId);
+            }
+            res.on('close', async () => {
+                console.log('Client closed the connection');
+                if (intervalId) {
                     clearInterval(intervalId);
                 }
-                res.on('close', async () => {
-                    console.log('Client closed the connection');
-                    if (intervalId) {
-                        clearInterval(intervalId);
-                    }
-                    await this.destroySimulationBikes(simBikeStartIds)
-                });
-                res.write(`data: ${jsonData}\n\n`);   
-
-                if (trips.length - 1 == finishedCounter) {
-                if (trips.length - 1 == finishedCounter) {
-                    res.end();
-                    console.log("\n\n\nSLUUUUT\n\n");
-                    await this.destroySimulationBikes(simBikeStartIds)
-                    console.log("\n\n\nSLUUUUT\n\n");
-                    await this.destroySimulationBikes(simBikeStartIds)
-                }
-
-
-                loop++; // Increment to next position value
-            },1000);
-            },1000);
+                // await this.destroySimulationBikes(simBikeStartIds)
+            });
+            res.write(`data: ${jsonData}\n\n`);   
+        
+            if (trips.length - 1 == finishedCounter) {
+                // await this.destroySimulationBikes(simBikeStartIds)
+                res.end();
+                console.log("\n\n\nSLUUUUT\n\n");
+            }
+        
+            loop++; // Increment to next position value
+        }, simSpeed);
         } catch (err) {
             console.error("Error in simulate:", err);
             if (intervalId) {
@@ -199,7 +191,7 @@ const simulate = {
                 let booking
                 for (let i = 0; i < numberSimsToRun; i++) {
                     
-                    booking = await fetch("http://localhost:1338/v1/booking", {
+                    booking = await fetch(`${baseUrl}/v1/booking`, {
                         method: "POST",
                         body: JSON.stringify({
                             bike_id: simBikes[i].dataValues.id,
@@ -218,32 +210,38 @@ const simulate = {
         },
         getActiveBookings: async function getActiveBookings() {
             try {
-                const response = await fetch("http://localhost:1338/v1/booking/ongoing", {
+                const response = await fetch(`${baseUrl}/v1/booking/ongoing`, {
                     method: "GET",
                     headers: {
                         "Content-type": "application/json; charset=UTF-8"
                     }
                 });
                 const activeBookings = await response.json();
-                const filteredActiveBookings = activeBookings.booking.map( (aBooking) => {
+                const filteredActiveBookings = activeBookings.booking.reduce((acc, aBooking) => {
                     if (aBooking.user_id < simUsersOnlyBelowThis) {
-                        return {[aBooking.bike_id]: {bookingId: aBooking.id, isFinished: false}}
-                    } return null
-                }).filter(item => item);
-                return  filteredActiveBookings
+                        acc[aBooking.bike_id] = { bookingId: aBooking.id, isFinished: false };
+                    }
+                    return acc;
+                }, {});
+                
+                return filteredActiveBookings;
+                // const activeBookings = await response.json();
+                // const filteredActiveBookings = activeBookings.booking.map( (aBooking) => {
+                //     if (aBooking.user_id < simUsersOnlyBelowThis) {
+                //         return {[aBooking.bike_id]: {bookingId: aBooking.id, isFinished: false}}
+                //     } return null
+                // }).filter(item => item);
+                // return  filteredActiveBookings
             } catch (err) {
                 console.error("Error in getActiveBookings:", err);
                 return err ;
             }
         },
-        endTrip: async function endTrip(bikeId, userId) {
+        endTrip: async function endTrip(bookingId) {
             try {
-                const booking = await fetch("http://localhost:1338/v1/booking", {
+                console.log("🚀 ~ file: simulate.js:255 ~ endTrip ~ bookingId:", bookingId)
+                const booking = await fetch(`${baseUrl}/v1/booking/id/${bookingId}`, {
                     method: "PUT",
-                    body: JSON.stringify({
-                        bike_id: bikeId,
-                        user_id: userId
-                    }),
                     headers: {
                         "Content-type": "application/json; charset=UTF-8"
                     }
@@ -254,6 +252,99 @@ const simulate = {
                 return err ;
             }
         },
+        updateBikePosition: async function updateBikePosition(bikeId, lat, lon) {
+            try {
+                console.log("\n\n🚀 ~ file: simulate.js:262 ~ updateBikePosition ~ `${lat}, ${lon}`:", `${lat}, ${lon}\n\n\n\n`)
+                const bikeUpdatedPos = await fetch(`${baseUrl}/v1/bikes/id/${bikeId}`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        position: `${lat}, ${lon}`
+                    }),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                }).then(response => {
+                    console.log('Status Code:', response.status); // Logs the status code
+                    return response.json(); // Assuming the response is in JSON format
+                })
+                .then(data => {
+                    console.log('Response Data:', data); // Logs the response data
+                })
+                .catch(error => {
+                    console.error('Error:', error); // Logs any error that occurred during the fetch
+                });
+                // console.log("🚀 ~ file: simulate.js:265 ~ updateBikePosition ~ bikeUpdatedPos:", bikeUpdatedPos)
+                return bikeUpdatedPos
+            } catch (err) {
+                console.error("Error in updateBikePosition:", err);
+                return err ;
+            }
+        },
 }
 
 module.exports = simulate;
+
+// Sparas kortsiktigt!!
+        //     intervalId = setInterval(async () => {
+        
+        //         // Set counter of total bikes (-1 to match arrays)
+        //         let finishedCounter = trips.length - 1
+
+        //         let newPosition = await trips.map(trip => {
+        //             let nextPos = {
+        //                 id: trip.id,
+        //                 lat: trip.route[trip.route.length - 1][1],
+        //                 lon: trip.route[trip.route.length - 1][0],
+        //                 finished: true
+        //                 }
+                        
+        //                 // If they have a next pos they are still active in the simulation
+        //                 // If finishCounter remains unchanged all bikes are done and the sim should be over
+        //                 const id = parseInt(nextPos.id) + 10000 // Id for finding a matching trip.
+        //                 if (trip.route[loop] !== undefined) {
+        //                     nextPos = {
+        //                     id: trip.id,
+        //                     city: trip.city,
+        //                     lat: trip.route[loop][1],
+        //                     lon: trip.route[loop][0],
+        //                     finished: false
+        //                 }
+        //                 finishedCounter --;
+        //             }
+        //             console.log("🚀 ~ file: simulate.js:63 ~ newPosition ~ activeBookings[`${id}`].isFinished:", id)
+        //             if (nextPos.finished && !activeBookings[`${id}`].isFinished) {
+        //             // if (nextPos.finished) {
+        //                 // console.log("🚀 ~ file: simulate.js:69 ~ newPosition ~ activeBookings:", activeBookings)
+        //                 this.updateBikePosition(
+        //                     id,
+        //                     nextPos.lat, 
+        //                     nextPos.lon
+        //                     )
+        //                 this.endTrip(activeBookings[`${id}`].bookingId);
+        //                 activeBookings[`${id}`].isFinished = true
+        //             }
+        //             return nextPos
+        //         })
+        //         // SSE must send text/string
+        //         let jsonData = JSON.stringify(newPosition);
+        //         if (finishedCounter === trips.length - 1) {
+        //             jsonData = JSON.stringify({simulationDone: true})
+        //             clearInterval(intervalId);
+        //         }
+        //         res.on('close', async () => {
+        //             console.log('Client closed the connection');
+        //             if (intervalId) {
+        //                 clearInterval(intervalId);
+        //             }
+        //             await this.destroySimulationBikes(simBikeStartIds)
+        //         });
+        //         res.write(`data: ${jsonData}\n\n`);   
+
+        //         if (trips.length - 1 == finishedCounter) {
+        //             await this.destroySimulationBikes(simBikeStartIds)
+        //             res.end();
+        //             console.log("\n\n\nSLUUUUT\n\n");
+        //         }
+
+        //         loop++; // Increment to next position value
+        // },1000);
