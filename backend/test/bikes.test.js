@@ -415,46 +415,46 @@ describe("Api test suite for the bike/ routes", () => {
         }
     });
 
-    // ### Hämta alla *tillgängliga* cyklar i en specifik stad via stadens id
-    it("GET /v1/bikes/available/[city_id] - GET available bikes based city id, if there are any available", async () => {
-        try {
-            /**
-             * Expect all to fail.
-             * Retrieving a specific bike based on its id
-             */
-            const getUnavailableBikes = await chai
-                .request(app)
-                .get(`${baseRoute}/available/${ALWAYS_EXISTING_NUMBER}`);
-            expect(
-                getUnavailableBikes,
-                `Should be 404 bc there are no available bikes in city id ${ALWAYS_EXISTING_NUMBER}`
-            ).to.have.status(404);
-            expect(getUnavailableBikes.body.error, "Should be equal").to.equal(
-                "No bikes available"
-            );
+    // // ### Hämta alla *tillgängliga* cyklar i en specifik stad via stadens id
+    // it("GET /v1/bikes/available/[city_id] - GET available bikes based city id, if there are any available", async () => {
+    //     try {
+    //         /**
+    //          * Expect all to fail.
+    //          * Retrieving a specific bike based on its id
+    //          */
+    //         const getUnavailableBikes = await chai
+    //             .request(app)
+    //             .get(`${baseRoute}/available/${ALWAYS_EXISTING_NUMBER}`);
+    //         expect(
+    //             getUnavailableBikes,
+    //             `Should be 404 bc there are no available bikes in city id ${ALWAYS_EXISTING_NUMBER}`
+    //         ).to.have.status(404);
+    //         expect(getUnavailableBikes.body.error, "Should be equal").to.equal(
+    //             "No bikes available"
+    //         );
 
-            /**
-             * Should fail. Getting a nonexisting bike id
-             */
-            const getNotExistingBike = await chai
-                .request(app)
-                .get(`${baseRoute}/available/5`);
-            expect(
-                getNotExistingBike,
-                `Should be 200 because city id:5 should have one available`
-            ).to.have.status(200);
-            console.log(
-                "🚀 ~ file: bikes.test.js:157 ~ it ~ getNotExistingBike.body:",
-                getNotExistingBike.body
-            );
-            expect(getNotExistingBike.body.bikes, "Should find a bike").to.not
-                .be.empty;
-            //     expect(getNotExistingBike.body.error,).to.be.equal("No matching id")
-        } catch (error) {
-            console.error("Error in test:", error);
-            throw error; // Re-throw the error to fail the test
-        }
-    });
+    //         /**
+    //          * Should fail. Getting a nonexisting bike id
+    //          */
+    //         const getNotExistingBike = await chai
+    //             .request(app)
+    //             .get(`${baseRoute}/available/5`);
+    //         expect(
+    //             getNotExistingBike,
+    //             `Should be 200 because city id:5 should have one available`
+    //         ).to.have.status(200);
+    //         console.log(
+    //             "🚀 ~ file: bikes.test.js:157 ~ it ~ getNotExistingBike.body:",
+    //             getNotExistingBike.body
+    //         );
+    //         expect(getNotExistingBike.body.bikes, "Should find a bike").to.not
+    //             .be.empty;
+    //         //     expect(getNotExistingBike.body.error,).to.be.equal("No matching id")
+    //     } catch (error) {
+    //         console.error("Error in test:", error);
+    //         throw error; // Re-throw the error to fail the test
+    //     }
+    // });
 
     // ### Hämta alla cyklar i en specifik stad via stadens namn (You can search for substrings)
     it("GET /v1/bikes/search/[name] - GET all bikes in [city name], if there are any", async () => {

@@ -34,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: "\"available\""
     },
     low_battery: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.INTEGER,
       allowNull: true
     }
   }, {

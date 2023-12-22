@@ -165,11 +165,9 @@ const users = {
             }
 
             if (role !== "customer" && role !== "admin") {
-                return res
-                    .status(404)
-                    .json({
-                        error: "Role must be either 'customer' or 'admin'",
-                    });
+                return res.status(404).json({
+                    error: "Role must be either 'customer' or 'admin'",
+                });
             }
 
             if (!balance) {
@@ -225,24 +223,18 @@ const users = {
                 const usernameExists = await User.findOne({
                     where: { username: username },
                 });
-    
+
                 if (usernameExists) {
                     return res.status(400).json({
                         error: "Username already exists!",
                     });
                 }
-
-                else {
-                    username = username;
-                }
             }
 
             if (role !== "customer" && role !== "admin") {
-                return res
-                    .status(404)
-                    .json({
-                        error: "Role must be either 'customer' or 'admin'",
-                    });
+                return res.status(404).json({
+                    error: "Role must be either 'customer' or 'admin'",
+                });
             }
 
             if (isNaN(balance)) {

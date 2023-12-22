@@ -1,11 +1,6 @@
-// const { coordinatesPattern } = require("./bikes.js");
-
 //const { Op } = require("sequelize");
 const Parking = require("../orm/model-router.js")("parking");
 const City = require("../orm/model-router.js")("city");
-const { isValidCoordinates } = require("./utils.js");
-const coordinatesPattern =
-    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)(,\s*[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?))*$/;
 
 const parking = {
     /**
@@ -54,22 +49,22 @@ const parking = {
     createParking: async function createParking(req, res) {
         try {
             /* Hämta attribut från req.body */
-            let { city_id, name, bounds, number_of_chargers } = req.body;
+            let { city_id, name, center, radius, number_of_chargers } =
+                req.body;
 
-            if (!city_id || !name || !bounds) {
+            if (!city_id || !name || !center) {
                 return res
                     .status(400)
                     .json({ error: "Missing required fields" });
             }
 
             number_of_chargers = number_of_chargers || 0;
+            radius = radius || 500;
 
-            if (isNaN(city_id) || isNaN(number_of_chargers)) {
-                return res
-                    .status(400)
-                    .json({
-                        error: "Id, city_id and number_of_chargers must be numbers",
-                    });
+            if (isNaN(city_id) || isNaN(number_of_chargers) || isNaN(radius)) {
+                return res.status(400).json({
+                    error: "Id, city_id and number_of_chargers must be numbers",
+                });
             }
 
             const findCity = await City.findByPk(city_id);
@@ -77,14 +72,12 @@ const parking = {
             if (!findCity) {
                 return res.status(400).json({ error: "City doesn't exist!" });
             }
-            if (
-                isValidCoordinates(bounds, coordinatesPattern) &&
-                bounds.length === 30
-            ) {
+            if (center.length >= 14 && center.length <= 18) {
                 const newParking = await Parking.create({
                     city_id: parseInt(city_id),
                     name: name,
-                    bounds: bounds,
+                    center: center,
+                    radius: parseInt(radius),
                     number_of_chargers: parseInt(number_of_chargers),
                 });
 
@@ -108,7 +101,7 @@ const parking = {
     updateParking: async function updateParking(req, res, parking_id) {
         try {
             /* Hämta attribut från req.body */
-            let { name, bounds, number_of_chargers } = req.body;
+            let { name, center, radius, number_of_chargers } = req.body;
 
             const existingParking = await Parking.findByPk(parking_id);
 
@@ -120,22 +113,21 @@ const parking = {
 
             //Optional parameter
             name = name || existingParking.name;
-            bounds = bounds || existingParking.bounds;
+            center = center || existingParking.center;
+            radius = radius || existingParking.radius;
             number_of_chargers =
                 number_of_chargers || existingParking.number_of_chargers;
 
-            if (isNaN(number_of_chargers)) {
-                return res
-                    .status(400)
-                    .json({ error: "'number_of_chargers' must be a number" });
+            if (isNaN(number_of_chargers) || isNaN(radius)) {
+                return res.status(400).json({
+                    error: "'number_of_chargers' and 'radius' must be a number",
+                });
             }
-            if (
-                isValidCoordinates(bounds, coordinatesPattern) &&
-                bounds.length === 30
-            ) {
+            if (center.length >= 14 && center.length <= 18) {
                 const updateParking = await existingParking.update({
                     name: name,
-                    bounds: bounds,
+                    center: center,
+                    radius: parseInt(radius),
                     number_of_chargers: parseInt(number_of_chargers),
                 });
 

@@ -25,26 +25,19 @@ const price = {
             const existingPrice = await Price.findByPk(1);
 
             /* Hämta attribut från req.body */
-            let {
-                start_fee,
-                cost_per_minute,
-                free_parking_fee,
-                start_free_park_discount,
-            } = req.body;
+            let { start_fee, cost_per_minute, cost_per_minute_if_parking } =
+                req.body;
 
             start_fee = start_fee || existingPrice.start_fee;
             cost_per_minute = cost_per_minute || existingPrice.cost_per_minute;
-            free_parking_fee =
-                free_parking_fee || existingPrice.free_parking_fee;
-            start_free_park_discount =
-                start_free_park_discount ||
-                existingPrice.start_free_park_discount;
+            cost_per_minute_if_parking =
+                cost_per_minute_if_parking ||
+                existingPrice.cost_per_minute_if_parking;
 
             const tableContent = [
                 start_fee,
                 cost_per_minute,
-                free_parking_fee,
-                start_free_park_discount,
+                cost_per_minute_if_parking,
             ];
 
             for (const element of tableContent) {
@@ -62,8 +55,9 @@ const price = {
             await existingPrice.update({
                 start_fee: parseFloat(start_fee),
                 cost_per_minute: parseFloat(cost_per_minute),
-                free_parking_fee: parseFloat(free_parking_fee),
-                start_free_park_discount: parseFloat(start_free_park_discount),
+                cost_per_minute_if_parking: parseFloat(
+                    cost_per_minute_if_parking
+                ),
             });
 
             res.status(200).json({ message: "Price updated successfully" });
