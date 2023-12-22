@@ -2,9 +2,8 @@ const { Op } = require("sequelize");
 
 const City = require("../orm/model-router.js")("city");
 const Bike = require("../orm/model-router.js")("bike");
-const { upperFirst, isValidCoordinates } = require("./utils.js");
-const coordinatesPattern =
-    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+const { upperFirst } = require("./utils.js");
+
 const bike = {
     //regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
 
@@ -55,16 +54,13 @@ const bike = {
                 });
             }
 
-            let low_battery = false;
+            let low_battery = 0;
 
             if (battery < 20) {
-                low_battery = true;
+                low_battery = 1;
             }
 
-            if (
-                isValidCoordinates(position, coordinatesPattern) &&
-                position.length === 16
-            ) {
+            if (position.length >= 14 && position.length <= 18) {
                 const newBike = await Bike.create({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
@@ -139,13 +135,10 @@ const bike = {
             // regex för att kontrollera formatet på cykelns koordinater. Endast: '59.3293, 18.0686'-format bör passera
 
             if (battery < 20) {
-                low_battery = true;
+                low_battery = 1;
             }
 
-            if (
-                isValidCoordinates(position, coordinatesPattern) &&
-                position.length === 16
-            ) {
+            if (position.length >= 14 && position.length <= 18) {
                 await existingBike.update({
                     battery: parseInt(battery),
                     city_id: parseInt(city_id),
@@ -156,6 +149,42 @@ const bike = {
                 });
 
                 res.status(200).json({ message: "Bike updated successfully" });
+            } else {
+                return res
+                    .status(400)
+                    .json({ error: "'position' is not formatted correctly" });
+            }
+        } catch (err) {
+            console.error("Error in updateBike:", err);
+            res.status(500).json({ error: err.message });
+        }
+    },
+
+    /**
+     * @description Uppdatera cykels position
+     *
+     */
+    updatePosition: async function updatePosition(req, res, bike_id) {
+        try {
+            /* Kontrollera om cykeln finns via primary key (PK) */
+            const existingBike = await Bike.findByPk(bike_id);
+
+            if (!existingBike) {
+                return res.status(404).json({ error: "Bike doesn't exist" });
+            }
+
+            let position = req.body.position;
+
+            position = position || existingBike.position;
+
+            if (position.length >= 14 && position.length <= 18) {
+                await existingBike.update({
+                    position,
+                });
+
+                res.status(200).json({
+                    message: "Bike position updated successfully",
+                });
             } else {
                 return res
                     .status(400)

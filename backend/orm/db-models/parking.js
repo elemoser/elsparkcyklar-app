@@ -19,8 +19,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    bounds: {
+    center: {
       type: DataTypes.TEXT,
+      allowNull: true
+    },
+    radius: {
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     number_of_chargers: {
