@@ -26,6 +26,7 @@
 		<a class={currentPath === '/admin/users' ? 'active' : ''} href="/admin/users">Kunder</a>
 		<a class={currentPath === '/admin/bikes' ? 'active' : ''} href="/admin/bikes">Cyklar</a>
 		<a class={currentPath === '/admin/cities' ? 'active' : ''} href="/admin/cities">Städer</a>
+		<a class={currentPath === '/admin/parking' ? 'active' : ''} href="/admin/parking">Parkering</a>
 		<a class={currentPath === '/admin/map' ? 'active' : ''} href="/admin/map">Karta</a>
 		<a class={currentPath === '/admin/pricing' ? 'active' : ''} href="/admin/pricing">Priser</a>
 		<a class={currentPath === '/admin/bookings' ? 'active' : ''} href="/admin/bookings">Bokningar</a>
