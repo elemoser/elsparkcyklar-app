@@ -10,12 +10,11 @@ const simulate = {
     /**
      * @description Getting all bikes from sqlite db
      */
-    startSimulation: async function startSimulation(req, res, totalBikesToRun = 750, simSpeed = 1500) {
+    startSimulation: async function startSimulation(req, res, totalBikesToRun = 800, simSpeed = 2000) {
         let intervalId;
-        // Set how many simulationtrips you want to 
-        // const totalBikesToRun = 6;
         try {
-
+            simSpeed = simSpeed < 300 ? 300 : simSpeed // Set simSpeed max speed at 300 ms
+            totalBikesToRun = totalBikesToRun > 765 ? 765 : totalBikesToRun // Set max simbikes, atm its 765
             res.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
@@ -27,8 +26,17 @@ const simulate = {
             
             
             let trips = await this.getTrips(totalBikesToRun);
-            let simBikes = await this.createSimulationBikes(trips, simBikeStartIds); // Create and return bikes for the sim
-            let simUsers = await this.getSimulationCustomers() 
+            let simBikes;
+            try {
+                await this.createSimulationBikes(trips, simBikeStartIds); // Create and return bikes for the sim
+            } finally {
+                simBikes = await Bike.findAll({where: {
+                    id: {
+                        [Op.between]: [simBikeStartIds,simBikeStartIds + totalBikesToRun]
+                    }
+                }});
+            }
+            let simUsers = await this.getSimulationCustomers(parseInt(totalBikesToRun)) 
 
             await this.createBooking(simBikes, simUsers, totalBikesToRun)
             const activeBookings = await this.getActiveBookings()
@@ -51,13 +59,13 @@ const simulate = {
                     nextPos = {
                         id: trip.id,
                         city: trip.city,
-                        lat: trip.route[loop][1],
+                        lat: trip.route[loop][1],   
                         lon: trip.route[loop][0],
                         finished: false
                     };
                     finishedCounter--;
                 }
-
+                // console.log("\n\n\n\n",activeBookings);
                 if (nextPos.finished && !activeBookings[`${id}`].isFinished) {
                     await this.updateBikePosition(
                         id,
@@ -67,7 +75,6 @@ const simulate = {
                     await this.endTrip(activeBookings[`${id}`].bookingId);
                     activeBookings[`${id}`].isFinished = true;
                 }
-         
                 newPosition.push(nextPos);
             }
         
@@ -122,11 +129,11 @@ const simulate = {
     /**
      * @description Getting all generated simulation trips from sqlite db
      */
-        getSimulationCustomers: async function getSimulationCustomers(req, res) {
+        getSimulationCustomers: async function getSimulationCustomers(customers) {
             try {
                 const users = await User.findAll({where: {
                     id: {
-                        [Op.lte]: simUsersOnlyBelowThis
+                        [Op.lte]: 9000000 + customers
                     }
                 }
                 },);
@@ -153,10 +160,13 @@ const simulate = {
                         position:  `${trip.route[0][1]}, ${trip.route[0][0]}`,
                         battery: Math.ceil((Math.random() * (100 - 60) + 60)),
                         speed: 10,
-                        state: "available"
+                        state: "available",
+                        low_battery: 0
                     }
                 })  
-                const bikes = await Bike.bulkCreate(simulationBikes);
+                const bikes = await Bike.bulkCreate(simulationBikes, {
+                    ignoreDuplicates: true
+                });
 
                 return bikes
             } catch (err) {
@@ -201,7 +211,8 @@ const simulate = {
                             "Content-type": "application/json; charset=UTF-8"
                         }
                     });
-                }
+                }   const ress = await booking.json();
+                    console.log("\n\nasdas\n",ress)
                     return booking
             } catch (err) {
                 console.error("Error in createBooking:", err);
@@ -223,15 +234,7 @@ const simulate = {
                     }
                     return acc;
                 }, {});
-                
                 return filteredActiveBookings;
-                // const activeBookings = await response.json();
-                // const filteredActiveBookings = activeBookings.booking.map( (aBooking) => {
-                //     if (aBooking.user_id < simUsersOnlyBelowThis) {
-                //         return {[aBooking.bike_id]: {bookingId: aBooking.id, isFinished: false}}
-                //     } return null
-                // }).filter(item => item);
-                // return  filteredActiveBookings
             } catch (err) {
                 console.error("Error in getActiveBookings:", err);
                 return err ;
@@ -239,7 +242,6 @@ const simulate = {
         },
         endTrip: async function endTrip(bookingId) {
             try {
-                console.log("🚀 ~ file: simulate.js:255 ~ endTrip ~ bookingId:", bookingId)
                 const booking = await fetch(`${baseUrl}/v1/booking/id/${bookingId}`, {
                     method: "PUT",
                     headers: {
@@ -254,8 +256,7 @@ const simulate = {
         },
         updateBikePosition: async function updateBikePosition(bikeId, lat, lon) {
             try {
-                console.log("\n\n🚀 ~ file: simulate.js:262 ~ updateBikePosition ~ `${lat}, ${lon}`:", `${lat}, ${lon}\n\n\n\n`)
-                const bikeUpdatedPos = await fetch(`${baseUrl}/v1/bikes/id/${bikeId}`, {
+                const bikeUpdatedPos = await fetch(`${baseUrl}/v1/bikes/position/${bikeId}`, {
                     method: "PUT",
                     body: JSON.stringify({
                         position: `${lat}, ${lon}`
@@ -273,7 +274,6 @@ const simulate = {
                 .catch(error => {
                     console.error('Error:', error); // Logs any error that occurred during the fetch
                 });
-                // console.log("🚀 ~ file: simulate.js:265 ~ updateBikePosition ~ bikeUpdatedPos:", bikeUpdatedPos)
                 return bikeUpdatedPos
             } catch (err) {
                 console.error("Error in updateBikePosition:", err);
@@ -311,10 +311,8 @@ module.exports = simulate;
         //                 }
         //                 finishedCounter --;
         //             }
-        //             console.log("🚀 ~ file: simulate.js:63 ~ newPosition ~ activeBookings[`${id}`].isFinished:", id)
         //             if (nextPos.finished && !activeBookings[`${id}`].isFinished) {
         //             // if (nextPos.finished) {
-        //                 // console.log("🚀 ~ file: simulate.js:69 ~ newPosition ~ activeBookings:", activeBookings)
         //                 this.updateBikePosition(
         //                     id,
         //                     nextPos.lat, 
