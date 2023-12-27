@@ -60,7 +60,10 @@
 {#if data.props.data.error}
 	<p>{data.props.data.error}</p>
 {:else}
-	<h2>Detaljer för kund {data.props.target}</h2>
+	<div class="table-top-bar">
+		<h2>Detaljer för kund {data.props.target}</h2>
+		<a class="btn-link" href="/admin/users"><button>x</button></a>
+	</div>
 	<form class="submit-form" on:submit={updateUser}>
 		<label for="id"
 			>Kund id
@@ -111,19 +114,34 @@
 		{/if}
 	</form>
 	{#if check}
-		<p>Är du säker på att du vill ta bort denna användare från databasen?</p>
-		<button on:click={removeUser(user.id)}>Radera</button>
-		<button on:click={() => (check = false)}>Avbryt</button>
+		<button class="btn-light" on:click={removeUser(user.id)}>Radera</button>
+		<div class="check">
+			<p>Är du säker på att du vill ta bort denna användare från databasen?</p>
+			<button class="btn-dark" on:click={() => (check = false)}>Avbryt</button>
+		</div>
 	{:else if edit}
-		<button on:click={() => (edit = false)}>Avbryt</button>
+	<div class="check">
+		<p>Är du säker på att du vill spara dina ändringar databasen?</p>
+		<button class="btn-dark" on:click={() => (edit = false)}>Avbryt</button>
+	</div>
 	{:else}
-		<button on:click={() => (check = true)}>Ta bort</button>
-		<button on:click={() => (edit = true)}>Redigera</button>
-		<button><a href="/admin/users">Avbryt</a></button>
+		<div>
+			<button class="btn-dark" on:click={() => (edit = true)}>Redigera</button>
+			<button class="btn-light" on:click={() => (check = true)}>Ta bort</button>
+		</div>
 	{/if}
 {/if}
+
 <style lang="scss">
-	h2 {
+	h2,
+	p {
 		color: white;
+	}
+
+	.check {
+		text-align: center;
+		p {
+			font-size: 1rem;
+		}
 	}
 </style>

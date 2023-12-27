@@ -51,7 +51,11 @@
 	}
 </script>
 
-<h2>Skapa en ny cykel</h2>
+<div class="table-top-bar">
+	<h2>Skapa en ny cykel</h2>
+	<a class="btn-link" href="/admin/bikes"><button>x</button></a>
+</div>
+
 <form class="submit-form" on:submit={createBike}>
 	<label for="battery"
 		>Batteri
@@ -83,8 +87,6 @@
 	</label>
 	<input type="submit" value="Spara" />
 </form>
-
-<button><a href="/admin/bikes">Avbryt</a></button>
 
 <style lang="scss">
 	h2 {

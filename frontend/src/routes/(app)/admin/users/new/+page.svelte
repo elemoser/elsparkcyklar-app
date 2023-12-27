@@ -28,7 +28,11 @@
 		}
 	}
 </script>
-<h2>Skapa en ny användare</h2>
+
+<div class="table-top-bar">
+	<h2>Skapa en ny användare</h2>
+	<a class="btn-link" href="/admin/users"><button>x</button></a>
+</div>
 <form class="submit-form" on:submit={createUser}>
 	<label for="id"
 		>Kund id
@@ -51,10 +55,10 @@
 	<label for="balance"
 		>Saldo
 		<input id="balance" name="balance" type="number" value="0" min="0" max="10000" step="0.01" />
-		<input type="submit" value="Spara" />
 	</label>
+	<input type="submit" value="Spara" />
 </form>
-<button><a href="/admin/users">Avbryt</a></button>
+
 <style lang="scss">
 	h2 {
 		color: white;

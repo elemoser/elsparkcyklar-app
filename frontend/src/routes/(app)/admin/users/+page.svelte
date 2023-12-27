@@ -54,9 +54,9 @@
 			<input name="search_word" type="text" maxlength="20" />
 			<input type="submit" value="Sök" />
 		</form>
-		<button class="btn-reset" on:click={resetData}>Reset</button>
+		<button class="btn-light" on:click={resetData}>Reset</button>
 		</div>
-	<a class="btn-add" href="/admin/users/new"><button>+</button></a>
+	<a class="btn-link" href="/admin/users/new"><button>+</button></a>
 	</div>
 
 	{#if Object.keys(users.body).length}

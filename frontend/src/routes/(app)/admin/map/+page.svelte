@@ -122,7 +122,7 @@
 	}
 </script>
 
-<form class="custom-form" on:submit={zoomIn}>
+<form class="submit-form-online" on:submit={zoomIn}>
 	<label>
 		Zoom
 		<input name="lat" type="text" placeholder="lat, lon" required>
@@ -131,14 +131,17 @@
 	<input type="submit" value="Ta mig dit">
 </form>
 
-<label>
-	<input type="checkbox" on:click={toggleBikes}>
-	cyklar
-</label>
-<label>
-	<input type="checkbox" on:click={toggleParking}>
-	parkeringar
-</label>
+<div class="box-oneline">
+	<label>
+		<input type="checkbox" on:click={toggleBikes}>
+		cyklar
+	</label>
+	<label>
+		<input type="checkbox" on:click={toggleParking}>
+		parkeringar
+	</label>
+</div>
+
 <div class="map" bind:this={mapElement} />
 <div>
 	<a href="https://www.flaticon.com/free-icons/map-and-location" title="map and location icons">Map and location icons created by ono_tono - Flaticon</a>
@@ -150,8 +153,10 @@
 	.map {
 		height: 500px;
 	}
-	.custom-form {
+
+	.box-oneline {
 		display: flex;
 		flex-direction: row;
+		gap: 1rem;
 	}
 </style>

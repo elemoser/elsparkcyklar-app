@@ -28,14 +28,16 @@
 {#if data.props.data.error}
 	<p>{data.props.data.error}</p>
 {:else}
-	<h2>Detaljer för parkering {data.props.target}</h2>
+	<div class="table-top-bar">
+		<h2>Detaljer för parkering {data.props.target}</h2>
+		<a class="btn-link" href="/admin/parking"><button>x</button></a>
+	</div>
 	<form class="submit-form">
 		<label for="id"
 			>Parkering id
 			<input id="id" name="id" type="text" value={parking.id} readonly />
 		</label>
 	</form>
-	<button><a href="/admin/parking">Avbryt</a></button>
 	<h2>Laddstationer</h2>
 	<Table data={changersTable} />
 {/if}

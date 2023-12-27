@@ -18,7 +18,10 @@
 {#if data.props.data.error}
 	<p>{data.props.data.error}</p>
 {:else}
-	<h2>Detaljer för Stad {data.props.target}</h2>
+	<div class="table-top-bar">
+		<h2>Detaljer för Stad {data.props.target}</h2>
+		<a class="btn-link" href="/admin/cities"><button>x</button></a>
+	</div>
 	<form class="submit-form" method="POST">
 		<label for="id"
 			>Id
@@ -29,7 +32,6 @@
 			<input id="name" name="name" type="text" value={data.props.data.name} readonly />
 		</label>
 	</form>
-	<button><a href="/admin/cities">Gå tillbaka</a></button>
 	<LeafletMap data={mapData} />
 {/if}
 
