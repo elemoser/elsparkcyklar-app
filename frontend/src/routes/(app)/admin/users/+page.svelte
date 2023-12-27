@@ -1,6 +1,7 @@
 <script>
 	import Table from '$lib/components/Table.svelte';
-	import { parse } from 'svelte/compiler';
+	import { filterData } from '$lib/modules.js';
+
 	//TODO update after oauth in place
 	export let data;
 	let users = {};
@@ -29,29 +30,11 @@
 		return dict;
 	}
 
-	function filterData(inputData, filter) {
-		// TODO Here I could transform the data so string to filter numbers as well
-		if (parseInt(filter) || parseInt(filter) === 0) {
-			filter = parseInt(filter);
-		}
-
-		console.log(filter)
-
-		for (let key in inputData.body) {
-			if (!inputData.body[key].includes(filter)) {
-				delete inputData.body[key];
-				delete inputData.links[key];
-			}
-		}
-
-		return inputData;
-	}
-
 	function filterUsers(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const searchWord = formData.get('search_word').toLowerCase();
-		// TODO create more elaborate search criteria
+
 		if (searchWord) {
 			resetData();
 			let tempUsers = users;
@@ -64,14 +47,18 @@
 	}
 </script>
 
-<form on:submit={filterUsers}>
-	<input name="search_word" type="text" maxlength="20" />
-	<input type="submit" value="Sök" />
-</form>
-<button on:click={resetData}>Reset</button>
-
 {#if users}
-	<button><a href="/admin/users/new">+</a></button>
+	<div class="table-top-bar">
+		<div>
+		<form class="submit-form-online" on:submit={filterUsers}>
+			<input name="search_word" type="text" maxlength="20" />
+			<input type="submit" value="Sök" />
+		</form>
+		<button class="btn-reset" on:click={resetData}>Reset</button>
+		</div>
+	<a class="btn-add" href="/admin/users/new"><button>+</button></a>
+	</div>
+
 	{#if Object.keys(users.body).length}
 		<Table data={users} />
 	{:else}

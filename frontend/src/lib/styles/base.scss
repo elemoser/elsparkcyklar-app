@@ -81,4 +81,70 @@ html {
 	select:focus {
 		outline: none;
 	}
+
+	input[type=submit] {
+		text-decoration: none;
+		cursor: pointer;
+		background-color: $light-color;
+		color: $text-color;
+		border: none;
+		border-radius: 5px;
+		margin-left: 0.2rem;
+		padding: 0.2rem 0.4rem;
+		
+	}
+
+	input:hover[type=submit] {
+		background-color: $contrast-color;
+	}
+}
+
+
+.table-top-bar {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
+
+	div {
+		display: flex;
+		flex-direction: row;
+		width: fit-content;
+		gap: 0.5rem;
+	}
+}
+
+.btn-add {
+	text-decoration: none;
+	margin: 0;
+	padding: 0;
+	
+	button {
+		cursor: pointer;
+		margin: 0;
+		padding: 0.4rem 0.6rem;
+		background-color: $contrast-color;
+		color: $text-color;
+		border: none;
+		border-radius: 5px;
+	}
+
+	button:hover {
+	background-color: darken($contrast-color, 10%);
+	}	
+}
+
+.btn-reset {
+	text-decoration: none;
+	cursor: pointer;
+	background-color: $light-color;
+	color: $text-color;
+	border: none;
+	border-radius: 5px;
+	margin-left: 0.2rem;
+	padding: 0.2rem 0.4rem;
+}
+
+.btn-reset:hover {
+	background-color: $contrast-color;
 }
