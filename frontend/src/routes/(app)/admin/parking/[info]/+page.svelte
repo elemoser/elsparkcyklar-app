@@ -1,15 +1,26 @@
 <script>
 	// import { goto } from '$app/navigation';
-	// import LeafletMap from '$lib/components/LeafletMap.svelte';
+	import LeafletMap from '$lib/components/LeafletMap.svelte';
 	import Table from '$lib/components/Table.svelte';
+
 	/** @type {import('./$types').PageData} */
 	export let data;
-	console.log(data);
 	let parking = {}
 	let changersTable = {};
+	let mapData = {};
+	let showChargers = false;
+	let showMap = false;
+
 	if (data.props.data.parking) {
 		parking = data.props.data.parking;
+		mapData['markers'] = {
+			0: {
+				text: parking.name,
+				coordinates: parking.center.split(', ')
+			}
+		}
 	}
+
 	if (data.props.data.chargers) {
 		let body = {};
 		
@@ -21,8 +32,16 @@
 		changersTable['header'] = Object.keys(data.props.data.chargers[0]);
 		changersTable['body'] = body;
 		changersTable['links'] = {};
-		console.log(changersTable);
 	}
+
+	function toggleTable() {
+		showChargers = !showChargers;
+	}
+
+	function toggleMap() {
+		showMap = !showMap;
+	}
+
 </script>
 
 {#if data.props.data.error}
@@ -35,15 +54,46 @@
 	<form class="submit-form">
 		<label for="id"
 			>Parkering id
-			<input id="id" name="id" type="text" value={parking.id} readonly />
+			<input id="id" name="id" type="number" value={parking.id} readonly />
+		</label>
+		<label for="name"
+			>Namn
+			<input id="name" name="name" type="text" value={parking.name} readonly />
+		</label>
+		<label for="city_id"
+			>Stad id
+			<input id="city_id" name="city_id" type="number" value={parking.city_id} readonly />
+		</label>
+		<label for="number_of_chargers"
+			>Antal laddare
+			<input id="number_of_chargers" name="number_of_chargers" type="number" value={parking.number_of_chargers} readonly />
 		</label>
 	</form>
-	<h2>Laddstationer</h2>
-	<Table data={changersTable} />
+
+	<div>
+		<label>
+			<input type="checkbox" on:click={toggleMap}>
+			visa på kartan
+		</label>
+		<label>
+			<input type="checkbox" on:click={toggleTable}>
+			visa all laddare
+		</label>
+	</div>
+
+	{#if showChargers}
+		<h3>Laddstationer</h3>
+		<Table data={changersTable} />
+	{/if}
+
+	{#if showMap}
+		<LeafletMap data={mapData} />
+	{/if}
 {/if}
 
 <style lang="scss">
-	h2 {
+	h2,
+	h3 {
 		color: white;
 	}
 </style>
