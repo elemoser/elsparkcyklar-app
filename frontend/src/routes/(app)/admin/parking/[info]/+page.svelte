@@ -16,7 +16,8 @@
 		mapData['markers'] = {
 			0: {
 				text: parking.name,
-				coordinates: parking.center.split(', ')
+				coordinates: parking.center.split(', '),
+				radius: parking.radius
 			}
 		}
 	}
@@ -77,7 +78,7 @@
 		</label>
 		<label>
 			<input type="checkbox" on:click={toggleTable}>
-			visa all laddare
+			visa alla laddare
 		</label>
 	</div>
 

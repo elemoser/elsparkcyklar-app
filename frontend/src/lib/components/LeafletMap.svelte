@@ -8,7 +8,8 @@
 	//     markers: {
 	//         0: {
 	// 			text: "point A",
-	// 			coordinates: ["lat", "lon"]
+	// 			coordinates: ["lat", "lon"],
+	//			radius: 500
 	// 		},
 	//         1: {
 	// 			text: "point B",
@@ -28,8 +29,8 @@
 			const L = await import('leaflet');
 
 			// Coordinates for the maps view
-			let lat = data.markers ? data.markers[0].coordinates[0] : 59.3293;
-			let lon = data.markers ? data.markers[0].coordinates[1] : 18.0686;
+			let lat = data.markers ? parseFloat(data.markers[0].coordinates[0]) : 59.3293;
+			let lon = data.markers ? parseFloat(data.markers[0].coordinates[1]) : 18.0686;
 
 			map = L.map(mapElement).setView([lat, lon], 10);
 
@@ -76,9 +77,13 @@
 
 			if (data.markers) {
 				for (const key in data.markers) {
-					lat = data.markers[key].coordinates[0];
-					lon = data.markers[key].coordinates[1];
+					lat = parseFloat(data.markers[key].coordinates[0]);
+					lon = parseFloat(data.markers[key].coordinates[1]);
 					L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text);
+
+					if (data.markers[key].radius) {
+						L.circle([lat, lon], data.markers[key].radius).addTo(map);
+					}
 				}
 			}
 		}
