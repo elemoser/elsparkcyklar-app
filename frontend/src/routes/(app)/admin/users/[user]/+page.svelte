@@ -1,16 +1,49 @@
 <script>
-	// TODO remove?
-	// import Form from '$lib/components/Form.svelte';
 	import { goto } from '$app/navigation';
+	import Table from '$lib/components/Table.svelte';
+
 	/** @type {import('./$types').PageData} */
 	export let data;
 	let user = {};
+	let invoices = {};
+	let bookings = {};
 	let edit = false;
 	let check = false;
 	let roleOptions = ['customer', 'admin'];
+
 	if (data.props.data.user) {
 		user = data.props.data.user;
+
+		if (data.props.data.booking) {
+			bookings = getDataWithUserId(user.id, data.props.data.booking);
+		}
+
+		if (data.props.data.invoice) {
+			invoices = getDataWithUserId(user.id, data.props.data.invoice);
+		}
 	}
+
+	function getDataWithUserId(userId, inputData) {
+		let dict = {};
+		let body = {};
+		let header = {};
+
+		for (let key in inputData) {
+			if (inputData[key].user_id === userId) {
+				body[key] = Object.values(inputData[key]);
+			}
+		}
+
+		if (Object.keys(body).length > 0) {
+			header = Object.keys(inputData[0]);
+			dict["body"] = body;
+			dict["header"] = header;
+			dict["links"] = {};
+		}
+
+		return dict;
+	}
+
 	async function updateUser(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
@@ -130,10 +163,26 @@
 			<button class="btn-light" on:click={() => (check = true)}>Ta bort</button>
 		</div>
 	{/if}
+
+	{#if Object.keys(bookings).length}
+		<div class="table-top-bar">
+			<h3>Bokningar för kund {data.props.target}</h3>
+			<a class="btn-link" href="/admin/bookings"><button>&#8599;</button></a>
+		</div>
+		<Table data={bookings}/>
+	{/if}
+	{#if Object.keys(invoices).length}
+		<div class="table-top-bar">
+			<h3>Fakturor för kund {data.props.target}</h3>
+			<a class="btn-link" href="/admin/invoices"><button>&#8599;</button></a>
+		</div>
+		<Table data={invoices}/>
+	{/if}
 {/if}
 
 <style lang="scss">
 	h2,
+	h3,
 	p {
 		color: white;
 	}
