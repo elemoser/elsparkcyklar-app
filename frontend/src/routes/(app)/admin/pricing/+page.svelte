@@ -1,20 +1,12 @@
 <script>
 	export let data;
 	let edit = false;
-	let price = {
-		id: 0,
-		start_fee: 0,
-		start_free_park_discount: 0,
-		free_parking_fee: 0,
-		cost_per_minute: 0
-	};
+	let price = {};
+
 	if (data.props.data.price) {
-		price['id'] = data.props.data.price.id;
-		price['start_fee'] = data.props.data.price.start_fee;
-		price['start_free_park_discount'] = data.props.data.price.start_free_park_discount;
-		price['free_parking_fee'] = data.props.data.price.free_parking_fee;
-		price['cost_per_minute'] = data.props.data.price.cost_per_minute;
+		price = data.props.data.price;
 	}
+
 	async function updatePricing(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
@@ -22,8 +14,7 @@
 		const data = {
 			start_fee: formData.get('start_fee'),
 			cost_per_minute: formData.get('cost_per_minute'),
-			free_parking_fee: formData.get('free_parking_fee'),
-			start_free_park_discount: formData.get('start_free_park_discount')
+			free_parking_fee: formData.get('cost_per_minute_if_parking')
 		};
 		const response = await fetch(`http://localhost:1338/v1/price`, {
 			method: 'PUT',
@@ -33,6 +24,9 @@
 			},
 			body: JSON.stringify(data)
 		});
+
+		console.log(response);
+
 		if (response.status === 200) {
 			console.log(response);
 			edit = false;
@@ -55,31 +49,33 @@
 			Kostnad per minut
 			<input type="number" value={price.cost_per_minute} readonly={!edit} />
 		</label>
-		<label id="free_parking_fee">
-			Fri parkering avgift
-			<input type="number" value={price.free_parking_fee} readonly={!edit} />
-		</label>
-		<label id="start_free_park_discount">
-			Fri parkering rabatt
-			<input
-				type="number"
-				value={price.start_free_park_discount}
-				min="0"
-				max="1"
-				step="0.1"
-				readonly={!edit}
-			/>
+		<label id="cost_per_minute_if_parking">
+			Kostnad per minut om parkerad
+			<input type="number" value={price.cost_per_minute_if_parking} readonly={!edit} />
 		</label>
 		{#if edit}
 			<input type="submit" value="Spara" />
 		{/if}
 	</form>
 	{#if edit}
-		<button on:click={() => (edit = false)}>Avbryta</button>
+		<div class="check">
+			<p>Är du säker på att du vill spara dina ändringar i databasen?</p>
+			<button class="btn-dark" on:click={() => (edit = false)}>Avbryt</button>
+		</div>
 	{:else}
-		<button on:click={() => (edit = true)}>Redigera</button>
+		<button class="btn-light" on:click={() => (edit = true)}>Redigera</button>
 	{/if}
 {/if}
+
 <style lang="scss">
-	// More style
+	p {
+		color: white;
+	}
+
+	.check {
+		text-align: center;
+		p {
+			font-size: 1rem;
+		}
+	}
 </style>
