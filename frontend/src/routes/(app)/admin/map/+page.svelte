@@ -76,7 +76,7 @@
 				for (let key in data.props.data.bike) {
 					coordinates = data.props.data.bike[key].position.split(', ');
 					coordinates = coordinates.map((x) => parseFloat(x));
-					text = `Cykel ${data.props.data.bike[key].id} (${data.props.data.bike[key].battery}%)`;
+					text = `Cykel ${data.props.data.bike[key].id} (${data.props.data.bike[key].battery}%, ${data.props.data.bike[key].state})`;
 					L.marker(coordinates).addTo(bikeLayer).bindPopup(text);
 				}
 			}
