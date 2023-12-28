@@ -3,13 +3,18 @@
 	import { app_name } from '$lib/index.js';
 	import { page } from '$app/stores';
 
+	let windowLimit = 920;
 	let currentPath;
 
 	// Subscribe to changes in the $page store
 	$: {
 		currentPath = $page.url.pathname;
 	}
+
+	$: innerWidth = 0;
 </script>
+
+<svelte:window bind:innerWidth/>
 
 <nav>
 	<div class="logo">
@@ -21,6 +26,16 @@
 </nav>
 
 <div class="wrapper">
+	{#if innerWidth < windowLimit}
+		<div class="info">
+			<span>
+				OBS!
+				Din nuvarande fönsterbredd på {innerWidth} px är för liten.
+				För att kunna visa alla tabeller korrekt på adminsidan,
+				se till att du besöker sidan med en enhet med en fönsterbredd på minst {windowLimit}px.
+			</span>
+		</div>
+	{:else}
 	<div class="admin-nav">
 		<a class={currentPath === '/admin/map' ? 'active' : ''} href="/admin/map">Karta</a>
 		<a class={currentPath === '/admin/bikes' ? 'active' : ''} href="/admin/bikes">Cyklar</a>
@@ -31,6 +46,7 @@
 		<a class={currentPath === '/admin/invoices' ? 'active' : ''} href="/admin/invoices">Fakturor</a>
 		<a class={currentPath === '/admin/pricing' ? 'active' : ''} href="/admin/pricing">Priser</a>
 	</div>
+	{/if}
 	<div class="admin-main">
 		<slot />
 	</div>
@@ -110,6 +126,21 @@
 		flex-direction: column;
 		gap: 1rem;
 		min-height: 65vh;
+	}
+
+	.info {
+		width: 80%;
+		margin: 0.5rem auto;
+		padding: 0.2rem 0.4rem;
+		text-align: center;
+		border: 1px solid darken($contrast-color, 50%);
+		border-radius: 5px;
+		background-color: $contrast-color;
+		
+		span {
+			font-size: 0.9rem;
+			color: $text-color;
+		}
 	}
 
 	@media screen and (max-width: 400px) {
