@@ -91,3 +91,9 @@
 		<p>Inga resultat</p>
 	{/if}
 {/if}
+
+<style lang="scss">
+	p {
+		color: white;
+	}
+</style>

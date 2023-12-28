@@ -121,7 +121,7 @@
 		</div>
 	{:else if edit}
 	<div class="check">
-		<p>Är du säker på att du vill spara dina ändringar databasen?</p>
+		<p>Är du säker på att du vill spara dina ändringar i databasen?</p>
 		<button class="btn-dark" on:click={() => (edit = false)}>Avbryt</button>
 	</div>
 	{:else}
