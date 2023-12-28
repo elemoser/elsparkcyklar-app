@@ -1,55 +1,68 @@
 <script>
 	import Table from '$lib/components/Table.svelte';
+	import {filterData} from '$lib/modules.js';
+
 	export let data;
 	let bookings = {};
+
 	if (data.props.data.bookings) {
-		let bookingData = data.props.data.bookings;
+		bookings = formatTableData(data.props.data.bookings);
+
+	}
+
+	function formatTableData(inputData) {
+		let dict = {};
 		let body = {};
 		let links = {};
-		let content = [];
-		let city_id;
-		let name;
+
 		// Create table headers
-		content = Object.keys(bookingData[0]);
-		// content.splice(2, 1, 'city'); // replace city_id header
-		bookings['header'] = content;
+		dict['header'] = Object.keys(inputData[0]);
+
 		// Create table content
-		for (const row in bookingData) {
-			if (bookingData[row].stop_time === '') {
-				bookingData[row].stop_time = 'ongoing';
+		for (const row in inputData) {
+			if (inputData[row].stop_time === '') {
+				inputData[row].stop_time = 'ongoing';
 			}
-			content = Object.values(bookingData[row]);
-			// Replace city id with name
-			// if (data.props.data.city) {
-			// 	city_id = content.splice(2, 1);
-			// 	name = getCityName(data.props.data.city, city_id);
-			// 	content.splice(2, 0, name);
-			// }
-			body[row] = content;
-			links[row] = [`/admin/users/${bookingData[row].user_id}`, 'visa kund'];
+
+			body[row] = Object.values(inputData[row]);
+			links[row] = [`/admin/users/${inputData[row].user_id}`, 'visa kund'];
 		}
-		bookings['body'] = body;
-		bookings['links'] = links;
+	
+		dict['body'] = body;
+		dict['links'] = links;
+
+		return dict;
 	}
-	// Function to retrieve the city name
-	function getCityName(object, id) {
-		let name = '';
-		for (let item in object) {
-			if (object[item].id == id) {
-				name = object[item].name;
-			}
+
+	function filterBookings(e) {
+		e.preventDefault();
+		const formData = new FormData(e.target);
+		const searchWord = formData.get('search_word').toLowerCase();
+
+		if (searchWord) {
+			resetData();
+			let temp = bookings;
+			bookings = filterData(temp, searchWord);
 		}
-		return name;
 	}
-	//TODO enable searching the table
+
+	function resetData() {
+		bookings = formatTableData(data.props.data.bookings);
+	}
 </script>
+
 {#if data.props.data.error}
 	<p>{data.props.data.error}</p>
 {:else}
-	<!-- <form method="POST">
-        <input name="search_input" type="text">
-        <input type="submit" value='Sök'>
-    </form> -->
-	<!-- <button><a href="/admin/bikes/new">+</a></button> -->
+	<div class="table-top-bar">
+		<div>
+			<form class="submit-form-online" on:submit={filterBookings}>
+				<input name="search_word" type="text" maxlength="20" />
+				<input type="submit" value="Sök" />
+			</form>
+			<button class="btn-light" on:click={resetData}>Reset</button>
+		</div>
+		<!-- <a class="btn-link" href=""><button>+</button></a> -->
+	</div>
 	<Table data={bookings} />
 {/if}
