@@ -12,6 +12,7 @@
 	// TODO add control for valid position within city
 
 	// Delete given row from db
+	//TODO error because bike id are linked in other table in db
 	async function removeBike(id) {
 		// Note that localhost instead of server needs to be used here
 		const response = await fetch(`http://localhost:1338/v1/bikes/id/${id}`, {
@@ -24,7 +25,7 @@
 			goto('/admin/bikes');
 		} else {
 			console.log(`Failed to delete bike ${id}:`, response.statusText);
-			//TODO error handling
+			data.props.data.error = `Failed to delete bike ${bikeId}: ${response.statusText}`;
 		}
 	}
 
@@ -77,7 +78,7 @@
 			goto('/admin/bikes/');
 		} else {
 			console.log(`Failed to update bike ${bikeId}:`, response.statusText);
-			//TODO error handling
+			data.props.data.error = `Failed to update bike ${bikeId}: ${response.statusText}`;
 		}
 	}
 </script>
@@ -180,7 +181,7 @@
 	{:else}
 		<div>
 			<button class="btn-dark" on:click={() => (edit = true)}>Redigera</button>
-			<button class="btn-light" on:click={() => (check = true)}>Ta bort</button>
+			<!-- <button class="btn-light" on:click={() => (check = true)}>Ta bort</button> -->
 		</div>
 	{/if}
 	<LeafletMap data={mapData} />
