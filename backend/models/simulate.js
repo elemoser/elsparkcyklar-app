@@ -10,7 +10,7 @@ const simulate = {
     /**
      * @description Getting all bikes from sqlite db
      */
-    startSimulation: async function startSimulation(req, res, totalBikesToRun = 800, simSpeed = 2000) {
+    startSimulation: async function startSimulation(req, res, totalBikesToRun = 100, simSpeed = 1000) {
         let intervalId;
         try {
             simSpeed = simSpeed < 300 ? 300 : simSpeed // Set simSpeed max speed at 300 ms
