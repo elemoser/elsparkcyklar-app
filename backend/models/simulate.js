@@ -4,7 +4,7 @@ const Bike = require("../orm/model-router.js")("bike");
 const { Op } = require("sequelize");
 const baseUrl = "http://localhost:1338";
 const simUsersOnlyBelowThis = 9005001; // used to get all simulator users as they start on 900001
-const maxSimBikes = 1000
+const maxSimBikes = 1000;
 const simulate = {
     /**
      * @description Getting all bikes from sqlite db
@@ -12,13 +12,14 @@ const simulate = {
     startSimulation: async function startSimulation(
         req,
         res,
-        totalBikesToRun = 2000,
-        simSpeed = 2300
+        totalBikesToRun = 1000,
+        simSpeed = 2500
     ) {
         let intervalId;
         try {
             simSpeed = simSpeed < 300 ? 300 : simSpeed; // Set simSpeed max speed at 300 ms
-            totalBikesToRun = totalBikesToRun > maxSimBikes ? maxSimBikes : totalBikesToRun; // Set max simbikes for sim
+            totalBikesToRun =
+                totalBikesToRun > maxSimBikes ? maxSimBikes : totalBikesToRun; // Set max simbikes for sim
 
             // Open SSE connection
             res.writeHead(200, {
@@ -33,10 +34,11 @@ const simulate = {
             let trips = await this.getTrips(totalBikesToRun);
             let simBikes;
             try {
-                 // Create bikes for the sim if the bike, if already created the id will be skipped and create next
+                // Create bikes for the sim if the bike, if already created the id will be skipped and create next
                 await this.createSimulationBikes(trips, simBikeStartIds);
             } finally {
-                simBikes = await Bike.findAll({ // Get all bikes needed for sim
+                simBikes = await Bike.findAll({
+                    // Get all bikes needed for sim
                     where: {
                         id: {
                             [Op.between]: [
@@ -112,7 +114,7 @@ const simulate = {
                 if (trips.length - 1 == finishedCounter) {
                     // await this.destroySimulationBikes(simBikeStartIds)
                     res.end();
-                    console.log("\n\n\nSLUUUUT\n\n");
+                    console.log("\n\nEND OF SIMULATION\n\n");
                 }
 
                 loop++; // Increment to next position value
