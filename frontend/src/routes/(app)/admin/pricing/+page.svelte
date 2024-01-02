@@ -11,11 +11,13 @@
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		// const id = formData.get('id');
+
 		const data = {
 			start_fee: formData.get('start_fee'),
 			cost_per_minute: formData.get('cost_per_minute'),
 			free_parking_fee: formData.get('cost_per_minute_if_parking')
 		};
+
 		const response = await fetch(`http://localhost:1338/v1/price`, {
 			method: 'PUT',
 			credentials: 'include',
@@ -25,12 +27,16 @@
 			body: JSON.stringify(data)
 		});
 
-		console.log(response);
+		const responseUpdated = await fetch(`http://localhost:1338/v1/price`, {
+			method: 'GET',
+			credentials: 'include'
+		});
 
-		if (response.status === 200) {
-			console.log(response);
+		if (response.status === 200 && responseUpdated.status === 200) {
+			const dataUpdated = await responseUpdated.json();
+			
+			price = dataUpdated.price;
 			edit = false;
-			// TODO check why values go back to before after refreshing
 		} else {
 			console.log(`Failed to update price:`, response.statusText);
 			//TODO error handling
@@ -40,18 +46,18 @@
 
 {#if data.props.data.price}
 	<form class="submit-form" on:submit={updatePricing}>
-		<input type="number" value={price.id} hidden />
+		<input type="number" name="id" value={price.id} hidden />
 		<label id="start_fee">
 			Startavgift
-			<input type="number" value={price.start_fee} readonly={!edit} />
+			<input type="number" name="start_fee" value={price.start_fee} readonly={!edit} />
 		</label>
 		<label id="cost_per_minute">
 			Kostnad per minut
-			<input type="number" value={price.cost_per_minute} readonly={!edit} />
+			<input type="number" name="cost_per_minute" value={price.cost_per_minute} readonly={!edit} />
 		</label>
 		<label id="cost_per_minute_if_parking">
 			Kostnad per minut om parkerad
-			<input type="number" value={price.cost_per_minute_if_parking} readonly={!edit} />
+			<input type="number" name="cost_per_minute_if_parking" value={price.cost_per_minute_if_parking} readonly={!edit} />
 		</label>
 		{#if edit}
 			<input type="submit" value="Spara" />
