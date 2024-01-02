@@ -10,6 +10,7 @@
 	let edit = false;
 	let check = false;
 	let roleOptions = ['customer', 'admin'];
+	let notDeletable = Object.keys(bookings).length && Object.keys(invoices).length;
 
 	if (data.props.data.user) {
 		user = data.props.data.user;
@@ -47,16 +48,26 @@
 	async function updateUser(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
-		const userId = formData.get('id');
-		const data = {
-			username: formData.get('username'),
-			role: formData.get('role'),
-			balance: parseFloat(formData.get('balance'))
-		};
+		const id = formData.get('id');
+		const username =  formData.get('username');
+		const role = formData.get('role');
+		const balance =formData.get('balance');
+		const data = {};
 
-        console.log(data);
-        //TODO not working fix!
-		const response = await fetch(`http://localhost:1338/v1/users/id/${userId}`, {
+		if (username !== user.username) {
+			data['username'] = username;
+		}
+
+		if (role !== user.role) {
+			data['role'] = role;
+		}
+		
+
+		if (balance !== user.balance) {
+			data['balance'] = balance;
+		}
+
+		const response = await fetch(`http://localhost:1338/v1/users/id/${id}`, {
 			method: 'PUT',
 			credentials: 'include',
 			headers: {
@@ -65,14 +76,12 @@
 			body: JSON.stringify(data)
 		});
 
-        console.log(response)
-
 		if (response.status === 200) {
             // redirect
-			goto('/admin/users/');
+			goto('/admin/users');
 		} else {
-			console.log(`Failed to update user ${userId}:`, response.statusText);
-			//TODO error handling
+			console.log(`Failed to update user ${id}:`, response.statusText);
+			data.props.data.error = `Failed to delete user ${id}: ${response.statusText}`;
 		}
 	}
 	async function removeUser(id) {
@@ -81,12 +90,13 @@
 			method: 'DELETE',
 			credentials: 'include'
 		});
+
 		if (response.status === 200) {
 			// redirect
 			goto('/admin/users');
 		} else {
 			console.log(`Failed to delete user ${id}:`, response.statusText);
-			//TODO error handling
+			data.props.data.error = `Failed to delete user ${id}: ${response.statusText}`;
 		}
 	}
 </script>
@@ -147,11 +157,18 @@
 		{/if}
 	</form>
 	{#if check}
+		{#if notDeletable }
 		<button class="btn-light" on:click={removeUser(user.id)}>Radera</button>
 		<div class="check">
 			<p>Är du säker på att du vill ta bort denna användare från databasen?</p>
 			<button class="btn-dark" on:click={() => (check = false)}>Avbryt</button>
 		</div>
+		{:else}
+		<div class="check">
+			<p>Denna användare är kopplade till bokningar och/eller fakturor. Du kan inte ta bort den.</p>
+			<button class="btn-dark" on:click={() => (check = false)}>Ok</button>
+		</div>
+		{/if}
 	{:else if edit}
 	<div class="check">
 		<p>Är du säker på att du vill spara dina ändringar i databasen?</p>
@@ -160,7 +177,9 @@
 	{:else}
 		<div>
 			<button class="btn-dark" on:click={() => (edit = true)}>Redigera</button>
+			{#if user.role !== 'admin'}
 			<button class="btn-light" on:click={() => (check = true)}>Ta bort</button>
+			{/if}
 		</div>
 	{/if}
 
