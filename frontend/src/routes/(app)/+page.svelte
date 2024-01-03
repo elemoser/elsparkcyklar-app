@@ -61,11 +61,14 @@
 	// console.log(mapData);
 </script>
 
-<h3>Välkommen till {app_name} - din bästa kompanjon för elsparkcykeläventyr med Svenska Elsparkcyklar AB! 🚴‍♂️💨</h3>
+<h3>Välkommen till {app_name} - det bästa valet för ditt elsparkcykeläventyr! 🚴‍♂️💨</h3>
 <p> Den här webbappen är din biljett till en smidig cykelupplevelse.
 	Låna och lämna tillbaka cykeln, håll koll på senaste resan och dyk ner i din reshistorik - allt på språng!
 	Våra intelligenta cyklar har koll på allt - från att vara på eller av, justera hastighet, visa position, och till och med signalera när den behöver lite laddning.
 	Sätt på hjälmen, dra på dig cykelhandskarna och låt {app_name} ta dig med på en rullande fest av elsparkcyklar! 
 </p>
 
+<p>Letar du efter en cykel? Här finns alla tillgängliga cyklar och parkeringsplatser för dig på en karta 😉</p>
 <LeafletMap data={mapData}/>
+
+<p>&#169; Svenska Elsparkcyklar AB</p>
