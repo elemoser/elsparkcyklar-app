@@ -2,12 +2,11 @@
 	import Table from '$lib/components/Table.svelte';
 	import { filterData } from '$lib/modules.js';
 
-	//TODO update after oauth in place
 	export let data;
-	let users = {};
+	let invoices = {};
 
-	if (data && data.props.data.users) {
-		users = formatTableData(data.props.data.users);
+	if (data.props.data.invoices) {
+		invoices = formatTableData(data.props.data.invoices);
 	}
 
 	function formatTableData(inputData) {
@@ -15,13 +14,13 @@
 		let body = {};
 		let links = {};
 
-		// Save headers
+		// Create table headers
 		dict['header'] = Object.keys(inputData[0]);
 
-		// Save table content
+		// Create table content
 		for (const row in inputData) {
 			body[row] = Object.values(inputData[row]);
-			links[row] = [`/admin/users/${inputData[row].id}`, 'view'];
+			links[row] = [`/admin/users/${inputData[row].user_id}`, 'visa kund'];
 		}
 
 		dict['body'] = body;
@@ -30,44 +29,35 @@
 		return dict;
 	}
 
-	function filterUsers(e) {
+	function filterInvoices(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const searchWord = formData.get('search_word').toLowerCase();
 
 		if (searchWord) {
 			resetData();
-			let tempUsers = users;
-			users = filterData(tempUsers, searchWord);
+			let temp = invoices;
+			invoices = filterData(temp, searchWord);
 		}
 	}
 
 	function resetData() {
-		users = formatTableData(data.props.data.users);
+		invoices = formatTableData(data.props.data.invoices);
 	}
 </script>
 
-{#if users}
+{#if data.props.data.error}
+	<p>{data.props.data.error}</p>
+{:else}
 	<div class="table-top-bar">
 		<div>
-			<form class="submit-form-online" on:submit={filterUsers}>
+			<form class="submit-form-online" on:submit={filterInvoices}>
 				<input name="search_word" type="text" maxlength="20" />
 				<input type="submit" value="Sök" />
 			</form>
 			<button class="btn-light" on:click={resetData}>Reset</button>
 		</div>
-		<a class="btn-link" href="/admin/users/new"><button>+</button></a>
+		<!-- <a class="btn-link" href=""><button>+</button></a> -->
 	</div>
-
-	{#if Object.keys(users.body).length}
-		<Table data={users} />
-	{:else}
-		<p>Inga resultat</p>
-	{/if}
+	<Table data={invoices} />
 {/if}
-
-<style lang="scss">
-	p {
-		color: white;
-	}
-</style>

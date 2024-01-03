@@ -1,7 +1,20 @@
 <script>
 	import '$lib/styles/main.scss';
 	import { app_name } from '$lib/index.js';
+	import { page } from '$app/stores';
+
+	let windowLimit = 920;
+	let currentPath;
+
+	// Subscribe to changes in the $page store
+	$: {
+		currentPath = $page.url.pathname;
+	}
+
+	$: innerWidth = 0;
 </script>
+
+<svelte:window bind:innerWidth />
 
 <nav>
 	<div class="logo">
@@ -13,13 +26,31 @@
 </nav>
 
 <div class="wrapper">
-	<div class="admin-nav">
-		<!-- <div><a href="/admin/users">Kunder</a></div> -->
-		<div><a href="/admin/bikes">Cyklar</a></div>
-		<div><a href="/admin/cities">Städer</a></div>
-		<div><a href="/admin/map">Karta</a></div>
-		<div><a href="/admin/pricing">Priser</a></div>
-	</div>
+	{#if innerWidth < windowLimit}
+		<div class="info">
+			<span>
+				OBS! Din nuvarande fönsterbredd på {innerWidth} px är för liten. För att kunna visa alla tabeller
+				korrekt på adminsidan, se till att du besöker sidan med en enhet med en fönsterbredd på minst
+				{windowLimit}px.
+			</span>
+		</div>
+	{:else}
+		<div class="admin-nav">
+			<a class={currentPath === '/admin/map' ? 'active' : ''} href="/admin/map">Karta</a>
+			<a class={currentPath === '/admin/bikes' ? 'active' : ''} href="/admin/bikes">Cyklar</a>
+			<a class={currentPath === '/admin/cities' ? 'active' : ''} href="/admin/cities">Städer</a>
+			<a class={currentPath === '/admin/parking' ? 'active' : ''} href="/admin/parking">Parkering</a
+			>
+			<a class={currentPath === '/admin/users' ? 'active' : ''} href="/admin/users">Kunder</a>
+			<a class={currentPath === '/admin/bookings' ? 'active' : ''} href="/admin/bookings"
+				>Bokningar</a
+			>
+			<a class={currentPath === '/admin/invoices' ? 'active' : ''} href="/admin/invoices"
+				>Fakturor</a
+			>
+			<a class={currentPath === '/admin/pricing' ? 'active' : ''} href="/admin/pricing">Priser</a>
+		</div>
+	{/if}
 	<div class="admin-main">
 		<slot />
 	</div>
@@ -74,34 +105,46 @@
 	.admin-nav {
 		display: flex;
 		flex-direction: row;
-		position: relative;
-		top: 0.5rem;
 
-		div {
-			background-color: $dark-color;
-			border-radius: 5px;
-			margin: 1rem 1rem 0rem 0rem;
-		}
-
-		div a {
-			color: white;
+		a {
+			color: $text-color;
 			text-decoration: none;
+			background-color: $contrast-color;
+			border-radius: 5px 5px 0px 0px;
+			margin: 1rem 1rem 0rem 0rem;
+			padding: 0.4rem 0.6rem 0.6rem;
 		}
+	}
 
-		div,
-		div a {
-			padding: 0.4rem 0.6rem 1rem;
-		}
+	.active {
+		background-color: $dark-color !important;
+		color: white !important;
 	}
 
 	.admin-main {
 		background-color: $dark-color;
 		color: white;
-		border-radius: 5px;
+		border-radius: 0px 5px 5px;
 		padding: 3rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+		min-height: 65vh;
+	}
+
+	.info {
+		width: 80%;
+		margin: 0.5rem auto;
+		padding: 0.2rem 0.4rem;
+		text-align: center;
+		border: 1px solid darken($contrast-color, 50%);
+		border-radius: 5px;
+		background-color: $contrast-color;
+
+		span {
+			font-size: 0.9rem;
+			color: $text-color;
+		}
 	}
 
 	@media screen and (max-width: 400px) {

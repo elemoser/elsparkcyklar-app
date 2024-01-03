@@ -12,6 +12,7 @@
 	// TODO add control for valid position within city
 
 	// Delete given row from db
+	//TODO error because bike id are linked in other table in db
 	async function removeBike(id) {
 		// Note that localhost instead of server needs to be used here
 		const response = await fetch(`http://localhost:1338/v1/bikes/id/${id}`, {
@@ -24,7 +25,7 @@
 			goto('/admin/bikes');
 		} else {
 			console.log(`Failed to delete bike ${id}:`, response.statusText);
-			//TODO error handling
+			data.props.data.error = `Failed to delete bike ${id}: ${response.statusText}`;
 		}
 	}
 
@@ -77,7 +78,7 @@
 			goto('/admin/bikes/');
 		} else {
 			console.log(`Failed to update bike ${bikeId}:`, response.statusText);
-			//TODO error handling
+			data.props.data.error = `Failed to update bike ${bikeId}: ${response.statusText}`;
 		}
 	}
 </script>
@@ -85,8 +86,11 @@
 {#if data.props.data.error}
 	<p>{data.props.data.error}</p>
 {:else}
-	<h2>Detaljer för cykeln {data.props.target}</h2>
-	<form on:submit={updateBike}>
+	<div class="table-top-bar">
+		<h2>Detaljer för cykeln {data.props.target}</h2>
+		<a class="btn-link" href="/admin/bikes"><button>x</button></a>
+	</div>
+	<form class="submit-form" on:submit={updateBike}>
 		<label for="id"
 			>Cykel id
 			<input id="id" name="id" type="text" value={data.props.data.id} readonly />
@@ -164,42 +168,35 @@
 		{/if}
 	</form>
 	{#if check}
-		<p>Är du säker på att du vill ta bort denna cykeln från databasen?</p>
-		<button on:click={removeBike(data.props.data.id)}>Radera</button>
-		<button on:click={() => (check = false)}>Avbryt</button>
+		<button class="btn-light" on:click={removeBike(data.props.data.id)}>Radera</button>
+		<div class="check">
+			<p>Är du säker på att du vill ta bort denna cykeln från databasen?</p>
+			<button class="btn-dark" on:click={() => (check = false)}>Avbryt</button>
+		</div>
 	{:else if edit}
-		<button on:click={() => (edit = false)}>Avbryt</button>
+		<div class="check">
+			<p>Är du säker på att du vill spara dina ändringar i databasen?</p>
+			<button class="btn-dark" on:click={() => (edit = false)}>Avbryt</button>
+		</div>
 	{:else}
-		<button on:click={() => (check = true)}>Ta bort</button>
-		<button on:click={() => (edit = true)}>Redigera</button>
-		<button><a href="/admin/bikes">Avbryt</a></button>
+		<div>
+			<button class="btn-dark" on:click={() => (edit = true)}>Redigera</button>
+			<!-- <button class="btn-light" on:click={() => (check = true)}>Ta bort</button> -->
+		</div>
 	{/if}
 	<LeafletMap data={mapData} />
 {/if}
 
 <style lang="scss">
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
+	h2,
+	p {
+		color: white;
+	}
 
-		input,
-		select {
-			width: fit-content;
-			margin-left: 0.2rem;
-			padding: 0.2rem 0.4rem;
-			border-radius: 5px;
-		}
-
-		option:disabled,
-		input:read-only:not([type='submit']) {
-			color: $dark-color;
-			border: none;
-		}
-
-		input:focus,
-		select:focus {
-			outline: none;
+	.check {
+		text-align: center;
+		p {
+			font-size: 1rem;
 		}
 	}
 </style>

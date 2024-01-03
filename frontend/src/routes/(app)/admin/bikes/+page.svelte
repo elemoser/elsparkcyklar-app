@@ -1,10 +1,16 @@
 <script>
 	import Table from '$lib/components/Table.svelte';
+	import { filterData } from '$lib/modules.js';
+
 	export let data;
 	let bikes = {};
 
 	if (data.props.data.bike) {
-		let bikeData = data.props.data.bike;
+		bikes = formatTableData(data.props.data.bike);
+	}
+
+	function formatTableData(bikeData) {
+		let dict = {};
 		let body = {};
 		let links = {};
 		let content = [];
@@ -14,7 +20,8 @@
 		// Create table headers
 		content = Object.keys(bikeData[0]);
 		content.splice(2, 1, 'city'); // replace city_id header
-		bikes['header'] = content;
+		dict['header'] = content;
+
 		// Create table content
 		for (const row in bikeData) {
 			content = Object.values(bikeData[row]);
@@ -27,8 +34,11 @@
 			body[row] = content;
 			links[row] = [`/admin/bikes/${bikeData[row].id}`, 'view'];
 		}
-		bikes['body'] = body;
-		bikes['links'] = links;
+
+		dict['body'] = body;
+		dict['links'] = links;
+
+		return dict;
 	}
 
 	// Function to retrieve the city name
@@ -43,16 +53,47 @@
 
 		return name;
 	}
-	//TODO enable searching the table
+
+	function filterBikes(e) {
+		e.preventDefault();
+		const formData = new FormData(e.target);
+		const searchWord = formData.get('search_word');
+
+		if (searchWord) {
+			resetData();
+			let temp = bikes;
+			bikes = filterData(temp, searchWord);
+		}
+	}
+
+	function resetData() {
+		bikes = formatTableData(data.props.data.bike);
+	}
 </script>
 
 {#if data.props.data.error}
 	<p>{data.props.data.error}</p>
 {:else}
-	<!-- <form method="POST">
-        <input name="search_input" type="text">
-        <input type="submit" value='Sök'>
-    </form> -->
-	<button><a href="/admin/bikes/new">+</a></button>
-	<Table data={bikes} />
+	<div class="table-top-bar">
+		<div>
+			<form class="submit-form-online" on:submit={filterBikes}>
+				<input name="search_word" type="text" maxlength="20" />
+				<input type="submit" value="Sök" />
+			</form>
+			<button class="btn-light" on:click={resetData}>Reset</button>
+		</div>
+		<a class="btn-link" href="/admin/bikes/new"><button>+</button></a>
+	</div>
+
+	{#if Object.keys(bikes.body).length}
+		<Table data={bikes} />
+	{:else}
+		<p>Inga resultat</p>
+	{/if}
 {/if}
+
+<style lang="scss">
+	p {
+		color: white;
+	}
+</style>
