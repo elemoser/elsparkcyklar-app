@@ -8,11 +8,13 @@
 
 	if (data.props.data.bounds) {
 		mapData['polygon'] = {
-			text: data.props.data.name,
-			coordinates: data.props.data.bounds
+			0: {
+				text: data.props.data.name,
+				coordinates: data.props.data.bounds,
+				focus: true
+			}
 		};
 	}
-	//TODO Add reshistorik, invoices, whether or not has rented a bike atm
 </script>
 
 {#if data.props.data.error}

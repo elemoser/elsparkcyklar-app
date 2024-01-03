@@ -32,11 +32,12 @@
 	if (data.props.data.position) {
 		mapData['markers'] = {
 			0: {
-				text: `Bike ${data.props.data.id}`,
+				text: `Bike ${data.props.data.id} (${data.props.data.state})`,
 				coordinates: [
 					data.props.data.position.split(', ')[0],
 					data.props.data.position.split(', ')[1]
-				]
+				],
+				state: data.props.data.state
 			}
 		};
 	}
