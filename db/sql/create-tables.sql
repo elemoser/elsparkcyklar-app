@@ -19,7 +19,7 @@ CREATE TABLE city (
 -- Bike Table
 DROP TABLE IF EXISTS bike;
 CREATE TABLE bike (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     battery INTEGER,
     city_id INTEGER,
     speed REAL DEFAULT 0.00,
@@ -102,4 +102,13 @@ CREATE TABLE price (
     start_fee FLOAT DEFAULT 20.00,
     cost_per_minute FLOAT DEFAULT 3.00,
     cost_per_minute_if_parking FLOAT DEFAULT 2.00
+);
+
+DROP TABLE IF EXISTS simulate;
+CREATE TABLE simulate (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    city_id,
+    bike_route TEXT NOT NULL,
+
+    FOREIGN KEY (city_id) REFERENCES city(id)
 );

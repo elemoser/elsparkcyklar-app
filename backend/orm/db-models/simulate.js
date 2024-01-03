@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define(
-        "price",
+        "simulate",
         {
             id: {
                 autoIncrement: true,
@@ -9,25 +9,22 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: true,
                 primaryKey: true,
             },
-            start_fee: {
-                type: DataTypes.FLOAT,
+            city_id: {
+                type: "",
                 allowNull: true,
-                defaultValue: 20.0,
+                references: {
+                    model: "city",
+                    key: "id",
+                },
             },
-            cost_per_minute: {
-                type: DataTypes.FLOAT,
-                allowNull: true,
-                defaultValue: 3.0,
-            },
-            cost_per_minute_if_parking: {
-                type: DataTypes.FLOAT,
-                allowNull: true,
-                defaultValue: 2.0,
+            bike_route: {
+                type: DataTypes.TEXT,
+                allowNull: false,
             },
         },
         {
             sequelize,
-            tableName: "price",
+            tableName: "simulate",
             timestamps: false,
         }
     );

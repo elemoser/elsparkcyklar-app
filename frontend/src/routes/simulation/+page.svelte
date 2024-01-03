@@ -6,6 +6,7 @@
 	let L;
 	let mapElement;
 	let map;
+	let markerLayer;
 
 	onMount(async () => {
 		// Get data via SSE
@@ -20,13 +21,16 @@
 			let lat = 59.33808;
 			let lon = 18.08996;
 
-			map = L.map(mapElement).setView([lat, lon], 14);
+			map = L.map(mapElement).setView([lat, lon], 12);
 
 			// Create the map
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				attribution:
 					'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
+
+			// Create a layer for markers
+			markerLayer = L.layerGroup().addTo(map);
 		}
 	});
 
