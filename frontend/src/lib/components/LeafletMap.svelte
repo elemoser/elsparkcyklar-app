@@ -23,6 +23,7 @@
 	// }
 	let mapElement;
 	let map;
+	let customIcon;
 
 	onMount(async () => {
 		if (browser) {
@@ -42,52 +43,103 @@
 
 			// Draw polygon if data exists
 			if (data.polygon) {
-				// Transform the incomming string of coordinates into arrays
-				let boundsArray = eval(data.polygon.coordinates);
-
-				// Adjust for formatting
-				if (data.polygon.text === 'Linköping') {
-					boundsArray = boundsArray[0];
+				for (let key in data.polygon) {
+					addPolygoneToMap(data.polygon[key]);
 				}
-
-				if (data.polygon.text === 'Uppsala') {
-					boundsArray = boundsArray[1];
-				}
-
-				// Sort the coordinates in the right order for leaflet
-				let sortedLatLon = [];
-
-				for (let pair of boundsArray[0]) {
-					sortedLatLon.push([pair[1], pair[0]]);
-				}
-
-				// Create polygon
-				let polygon = L.polygon(sortedLatLon, { color: 'red' }).addTo(map);
-				// Get the lat and lon for the center of the polygone
-				// let coordinates = polygon.getCenter();
-
-				// Add polygon to map
-				map.fitBounds(polygon.getBounds());
-				// Add a marker at the center of the polygon containing the name
-				// L.marker([coordinates.lat, coordinates.lng])
-				// 	.addTo(map)
-				// 	.bindPopup(data.polygon.text)
-				// 	.openPopup();
 			}
 
 			if (data.markers) {
 				for (const key in data.markers) {
 					lat = parseFloat(data.markers[key].coordinates[0]);
 					lon = parseFloat(data.markers[key].coordinates[1]);
-					L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text);
+
+					if (data.markers[key].state === 'available') {
+						customIcon = new L.Icon({
+							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconSize: [25, 41],
+							iconAnchor: [12, 41],
+							popupAnchor: [1, -34],
+							shadowSize: [41, 41]
+							});
+						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+					} else if (data.markers[key].state === 'occupied') {
+						customIcon = new L.Icon({
+							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconSize: [25, 41],
+							iconAnchor: [12, 41],
+							popupAnchor: [1, -34],
+							shadowSize: [41, 41]
+							});
+						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+					} else if (data.markers[key].state === 'disabled') {
+						customIcon = new L.Icon({
+							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconSize: [25, 41],
+							iconAnchor: [12, 41],
+							popupAnchor: [1, -34],
+							shadowSize: [41, 41]
+							});
+						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+					} else if (data.markers[key].radius) {
+						customIcon = new L.Icon({
+							iconUrl: '/parking-area.png',
+							iconSize: [30, 35]
+						});
+						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+					} else {
+						L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text);
+					}
 
 					if (data.markers[key].radius) {
-						L.circle([lat, lon], data.markers[key].radius).addTo(map);
+						L.circle([lat, lon], data.markers[key].radius,{
+						stroke: false,
+						color: 'orange'
+					}).addTo(map);
 					}
 				}
 			}
 		}
 	});
+
+	function addPolygoneToMap(polygoneData) {
+		// Transform the incomming string of coordinates into arrays
+		let boundsArray = eval(polygoneData.coordinates);
+
+		// Adjust for formatting
+		if (polygoneData.text === 'Linköping') {
+			boundsArray = boundsArray[0];
+		}
+
+		if (polygoneData.text === 'Uppsala') {
+			boundsArray = boundsArray[1];
+		}
+
+		// Sort the coordinates in the right order for leaflet
+		let sortedLatLon = [];
+
+		for (let pair of boundsArray[0]) {
+			sortedLatLon.push([pair[1], pair[0]]);
+		}
+
+		// Create polygon
+		let polygon = L.polygon(sortedLatLon, { color: 'red', weight: 1, fill: false }).addTo(map);
+
+		// Add polygon to map
+		if (polygoneData.focus) {
+			map.fitBounds(polygon.getBounds());
+		}
+		
+		// // Get the lat and lon for the center of the polygone
+		// // Add a marker at the center of the polygon containing the name
+		// let coordinates = polygon.getCenter();
+		// L.marker([coordinates.lat, coordinates.lng])
+		// 	.addTo(map)
+		// 	.bindPopup(polygoneData.text)
+		// 	.openPopup();
+	}
 
 	onDestroy(async () => {
 		if (map) {
