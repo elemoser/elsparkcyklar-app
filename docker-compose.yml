@@ -37,6 +37,21 @@ services:
       - cyckelwebb
     restart: "always"
 
+  # start server in dev-test mode (with nodemon)
+  dev-server-test:
+    image: node:20
+    container_name: "server"
+    ports:
+      - "1338:1338"
+    volumes:
+      - "./backend:/server"
+      - "./db:/db"
+    working_dir: /server
+    command:  bash -c "npm install && ./sequelize.db.bash && npm run start-dev-test"
+    networks:
+      - cyckelwebb
+    restart: "always"
+
   # A database will be created from db/sql/setup.sql
   # create db with: docker compose up sqlite-db
   sqlite-db:

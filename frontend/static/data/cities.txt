@@ -1,6 +1,0 @@
-nomintaim api: https://nominatim.openstreetmap.org/lookup?osm_ids=<OSM_ID>&polygon_geojson=1&format=json
-Stockholm: R398021
-Göteborg: R935611
-Malmö: R10663667
-Uppsala: R305455
-Linköping: R935467

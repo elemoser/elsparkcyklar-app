@@ -6,6 +6,8 @@ name: Node.js CI
 on:
   push:
     branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
 
 jobs:
   build:
@@ -29,6 +31,20 @@ jobs:
       run: npm install
       working-directory: ./backend
 
-    - run: npm run test
+    - name: Run SQLite Setup Script
+      run: |
+        chmod +x ./setup.db.bash
+        ./setup.db.bash
+      working-directory: ./db
+
+    - name: Run tests
+      run: npm run test
       working-directory: ./backend
 
+    - name: Run ESLint
+      run: npm run lint:check
+      working-directory: ./backend
+
+    - name: Run Prettier
+      run: npm run format:check
+      working-directory: ./backend

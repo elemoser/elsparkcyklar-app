@@ -3,11 +3,6 @@ const router = express.Router();
 
 const charger = require("../models/charger.js");
 
-const isAuthenticated = require("../auth-utils.js");
-
-// Middleware för att skydda alla underliggande rutter
-router.use(isAuthenticated);
-
 //Get all Chargers
 router.get("/", (req, res) => charger.getChargers(req, res));
 

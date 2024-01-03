@@ -11,6 +11,7 @@ fi
 # Auto generate models from bikr.db for sequelize ( using sequelize-auto )
 node node_modules/sequelize-auto/bin/sequelize-auto -o "$DBMODELS" -d ../db/bikr.db -e sqlite
 chmod 777 $DBMODELS
+chmod 777 $DBMODELS/*.js
 
 if [ $? -eq 0 ]; then
     echo "$THISFILENAME executed successfully."

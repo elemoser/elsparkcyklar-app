@@ -213,6 +213,7 @@ Please note that "id" can't be updated.
 Optional parameters:
 
 ```
+username
 role
 balance
 ```
@@ -227,6 +228,7 @@ Possible errors (besides from db-errors):
 
 ```
 status(404) 'User doesn't exist'
+status(404) "Username already exists!"
 status(404) "'Balance' must be a number!"
 status(404) "Role must be either 'customer' or 'admin'"
 ```
@@ -405,7 +407,7 @@ Result:
             "speed": 25,
             "position": "59.3293, 18.0686",
             "state": "occupied",
-            "low_battery": false
+            "low_battery": 0
         },
         {
             "id": 2,
@@ -414,7 +416,7 @@ Result:
             "speed": 0,
             "position": "59.3099, 18.0752",
             "state": "disabled",
-            "low_battery": false
+            "low_battery": 0
         },
     ...
     ]
@@ -492,6 +494,30 @@ status(400) 'position' is not formatted correctly'
 status(400) 'state' must be one of: "occupied", "available", "disabled"'
 ```
 
+### Uppdatera en cykels position (BARA POS)
+
+```
+PUT /v1/bikes/position/[bike_id]
+```
+
+Optional parameters:
+
+```
+position
+```
+
+Result:
+
+```
+status(200) - 'Bike updated successfully'
+```
+
+Possible errors:
+
+```
+status(400) 'position' is not formatted correctly'
+```
+
 ### Hämta EN cykel via id
 
 ```
@@ -509,7 +535,7 @@ Result for "4":
         "speed": 20,
         "position": "59.8586, 17.6389",
         "state": "occupied",
-        "low_battery": false
+        "low_battery": 0
     }
 }
 ```
@@ -532,7 +558,7 @@ Result for "5":
             "speed": 0,
             "position": "58.4108, 15.6214",
             "state": "available",
-            "low_battery": false
+            "low_battery": 0
         }
     ]
 }
@@ -863,8 +889,7 @@ En prisgrupp har följande attribut:
 id,
 start_fee,
 cost_per_minute,
-free_parking_fee,
-start_free_park_discount
+cost_per_minute_if_parking
 ```
 
 ### Hämta priser
@@ -877,15 +902,12 @@ Result:
 
 ```
 {
-    "price": [
-        {
-            "id": 1,
-            "start_fee": 20,
-            "cost_per_minute": 3,
-            "free_parking_fee": 20,
-            "start_free_park_discount": 0.5
-        }
-    ]
+    "price": {
+        "id": 1,
+        "start_fee": 20,
+        "cost_per_minute": 3,
+        "cost_per_minute_if_parking": 2
+    }
 }
 ```
 
@@ -900,8 +922,7 @@ Optional parameters:
 ```
 start_fee,
 cost_per_minute,
-free_parking_fee,
-start_free_park_discount
+cost_per_minute_if_parking
 ```
 
 Result:
@@ -925,7 +946,8 @@ En parkering har följande attribut:
 id,
 city_id
 name,
-bounds,
+center,
+radius,
 number_of_chargers
 ```
 
@@ -941,18 +963,20 @@ Result:
 {
     "parking": [
         {
-            "id": 2,
+            "id": 1,
             "city_id": 1,
-            "name": "Område 2",
-            "bounds": "59.332, 17.937, 59.312, 17.957",
-            "number_of_chargers": 8
+            "name": "Centralstationen",
+            "center": "59.3293, 18.0686",
+            "radius": 500,
+            "number_of_chargers": 10
         },
         {
-            "id": 3,
+            "id": 2,
             "city_id": 1,
-            "name": "Område 3",
-            "bounds": "59.398, 17.902, 59.378, 17.922",
-            "number_of_chargers": 12
+            "name": "Gamla Stan",
+            "center": "59.3346, 18.0632",
+            "radius": 500,
+            "number_of_chargers": 8
         },
     ...
     ]
@@ -972,8 +996,9 @@ Result for "2":
     "parking": {
         "id": 2,
         "city_id": 1,
-        "name": "Område 2",
-        "bounds": "59.332, 17.937, 59.312, 17.957",
+        "name": "Gamla Stan",
+        "center": "59.3346, 18.0632",
+        "radius": 500,
         "number_of_chargers": 8
     }
 }
@@ -990,8 +1015,14 @@ Required parameters:
 ```
 city_id,
 name,
-bounds,
+center
+```
+
+Optional parameters:
+
+```
 number_of_chargers
+radius
 ```
 
 Result:
@@ -1003,7 +1034,7 @@ status(200) "Parking created successfully"
 Possible errors (besides from db-errors):
 
 ```
-status(400) "City_id and number_of_chargers must be numbers"
+status(400) "City_id, radius and number_of_chargers must be numbers"
 status(400) "Invalid coordinates format"
 status(400) "City doesn't exist!"
 ```
@@ -1018,7 +1049,8 @@ Optional parameters:
 
 ```
 name,
-bounds,
+center,
+radius,
 number_of_chargers,
 ```
 
@@ -1032,7 +1064,7 @@ Possible errors (besides from db-errors):
 
 ```
 status(400) "Parking doesn't exist!"
-status(400) "'number_of_chargers' must be a number"
+status(400) "'number_of_chargers' and 'radius' must be a number"
 status(400) "Invalid coordinates format"
 ```
 
