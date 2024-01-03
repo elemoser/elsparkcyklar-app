@@ -79,20 +79,24 @@
 					coordinates = data.props.data.bike[key].position.split(', ');
 					coordinates = coordinates.map((x) => parseFloat(x));
 					text = `Cykel ${data.props.data.bike[key].id} (${data.props.data.bike[key].battery}%, ${data.props.data.bike[key].state})`;
-					
+
 					if (data.props.data.bike[key].state === 'available') {
 						bikeIcon = new L.Icon({
-							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconUrl:
+								'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+							shadowUrl:
+								'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 							iconSize: [25, 41],
 							iconAnchor: [12, 41],
 							popupAnchor: [1, -34],
 							shadowSize: [41, 41]
-							});
+						});
 					} else if (data.props.data.bike[key].state === 'occupied') {
 						bikeIcon = new L.Icon({
-							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconUrl:
+								'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+							shadowUrl:
+								'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 							iconSize: [25, 41],
 							iconAnchor: [12, 41],
 							popupAnchor: [1, -34],
@@ -100,8 +104,10 @@
 						});
 					} else {
 						bikeIcon = new L.Icon({
-							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconUrl:
+								'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+							shadowUrl:
+								'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 							iconSize: [25, 41],
 							iconAnchor: [12, 41],
 							popupAnchor: [1, -34],
@@ -109,7 +115,7 @@
 						});
 					}
 
-					L.marker(coordinates, {icon: bikeIcon}).addTo(bikeLayer).bindPopup(text);
+					L.marker(coordinates, { icon: bikeIcon }).addTo(bikeLayer).bindPopup(text);
 				}
 			}
 		} else {

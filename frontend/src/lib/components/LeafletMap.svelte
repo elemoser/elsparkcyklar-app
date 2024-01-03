@@ -24,10 +24,11 @@
 	let mapElement;
 	let map;
 	let customIcon;
+	let L;
 
 	onMount(async () => {
 		if (browser) {
-			const L = await import('leaflet');
+			L = await import('leaflet');
 
 			// Coordinates for the maps view
 			let lat = data.markers ? parseFloat(data.markers[0].coordinates[0]) : 59.3293;
@@ -55,49 +56,55 @@
 
 					if (data.markers[key].state === 'available') {
 						customIcon = new L.Icon({
-							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconUrl:
+								'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+							shadowUrl:
+								'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 							iconSize: [25, 41],
 							iconAnchor: [12, 41],
 							popupAnchor: [1, -34],
 							shadowSize: [41, 41]
-							});
-						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+						});
+						L.marker([lat, lon], { icon: customIcon }).addTo(map).bindPopup(data.markers[key].text);
 					} else if (data.markers[key].state === 'occupied') {
 						customIcon = new L.Icon({
-							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconUrl:
+								'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+							shadowUrl:
+								'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 							iconSize: [25, 41],
 							iconAnchor: [12, 41],
 							popupAnchor: [1, -34],
 							shadowSize: [41, 41]
-							});
-						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+						});
+						L.marker([lat, lon], { icon: customIcon }).addTo(map).bindPopup(data.markers[key].text);
 					} else if (data.markers[key].state === 'disabled') {
 						customIcon = new L.Icon({
-							iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-							shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+							iconUrl:
+								'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+							shadowUrl:
+								'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 							iconSize: [25, 41],
 							iconAnchor: [12, 41],
 							popupAnchor: [1, -34],
 							shadowSize: [41, 41]
-							});
-						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+						});
+						L.marker([lat, lon], { icon: customIcon }).addTo(map).bindPopup(data.markers[key].text);
 					} else if (data.markers[key].radius) {
 						customIcon = new L.Icon({
 							iconUrl: '/parking-area.png',
 							iconSize: [30, 35]
 						});
-						L.marker([lat, lon], {icon: customIcon}).addTo(map).bindPopup(data.markers[key].text);
+						L.marker([lat, lon], { icon: customIcon }).addTo(map).bindPopup(data.markers[key].text);
 					} else {
 						L.marker([lat, lon]).addTo(map).bindPopup(data.markers[key].text);
 					}
 
 					if (data.markers[key].radius) {
-						L.circle([lat, lon], data.markers[key].radius,{
-						stroke: false,
-						color: 'orange'
-					}).addTo(map);
+						L.circle([lat, lon], data.markers[key].radius, {
+							stroke: false,
+							color: 'orange'
+						}).addTo(map);
 					}
 				}
 			}
@@ -131,7 +138,7 @@
 		if (polygoneData.focus) {
 			map.fitBounds(polygon.getBounds());
 		}
-		
+
 		// // Get the lat and lon for the center of the polygone
 		// // Add a marker at the center of the polygon containing the name
 		// let coordinates = polygon.getCenter();

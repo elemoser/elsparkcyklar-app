@@ -18,12 +18,12 @@
 		// }
 		let cities = data.props.data.city;
 		let polygons = {};
-		
+
 		for (let key in cities) {
 			polygons[key] = {
 				text: cities[key].name,
 				coordinates: cities[key].bounds
-			}
+			};
 		}
 
 		mapData['polygon'] = polygons;
@@ -37,7 +37,7 @@
 				text: `${parking[key].name} (${parking[key].number_of_chargers} laddare)`,
 				coordinates: parking[key].center.split(', '),
 				radius: parking[key].radius
-			}
+			};
 		}
 	}
 
@@ -51,7 +51,7 @@
 					text: `Bike ${bikes[key].id} (battery level: ${bikes[key].battery}%, ${bikes[key].state})`,
 					coordinates: bikes[key].position.split(', '),
 					state: bikes[key].state
-				}
+				};
 				nextKey += 1;
 			}
 		}
@@ -62,13 +62,18 @@
 </script>
 
 <h3>Välkommen till {app_name} - det bästa valet för ditt elsparkcykeläventyr! 🚴‍♂️💨</h3>
-<p> Den här webbappen är din biljett till en smidig cykelupplevelse.
-	Låna och lämna tillbaka cykeln, håll koll på senaste resan och dyk ner i din reshistorik - allt på språng!
-	Våra intelligenta cyklar har koll på allt - från att vara på eller av, justera hastighet, visa position, och till och med signalera när den behöver lite laddning.
-	Sätt på hjälmen, dra på dig cykelhandskarna och låt {app_name} ta dig med på en rullande fest av elsparkcyklar! 
+<p>
+	Den här webbappen är din biljett till en smidig cykelupplevelse. Låna och lämna tillbaka cykeln,
+	håll koll på senaste resan och dyk ner i din reshistorik - allt på språng! Våra intelligenta
+	cyklar har koll på allt - från att vara på eller av, justera hastighet, visa position, och till
+	och med signalera när den behöver lite laddning. Sätt på hjälmen, dra på dig cykelhandskarna och
+	låt {app_name} ta dig med på en rullande fest av elsparkcyklar!
 </p>
 
-<p>Letar du efter en cykel? Här finns alla tillgängliga cyklar och parkeringsplatser för dig på en karta 😉</p>
-<LeafletMap data={mapData}/>
+<p>
+	Letar du efter en cykel? Här finns alla tillgängliga cyklar och parkeringsplatser för dig på en
+	karta 😉
+</p>
+<LeafletMap data={mapData} />
 
 <p>&#169; Svenska Elsparkcyklar AB</p>
