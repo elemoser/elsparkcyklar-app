@@ -25,7 +25,7 @@
 			goto('/admin/bikes');
 		} else {
 			console.log(`Failed to delete bike ${id}:`, response.statusText);
-			data.props.data.error = `Failed to delete bike ${bikeId}: ${response.statusText}`;
+			data.props.data.error = `Failed to delete bike ${id}: ${response.statusText}`;
 		}
 	}
 

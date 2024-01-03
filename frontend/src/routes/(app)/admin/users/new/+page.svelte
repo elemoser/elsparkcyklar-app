@@ -1,11 +1,13 @@
 <script>
 	import { goto } from '$app/navigation';
 	let roleOptions = ['customer', 'admin'];
+
 	async function createUser(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
+		const id = formData.get('id');
 		const data = {
-			id: formData.get('id'),
+			id: id,
 			username: formData.get('username'),
 			role: formData.get('role'),
 			balance: formData.get('balance')

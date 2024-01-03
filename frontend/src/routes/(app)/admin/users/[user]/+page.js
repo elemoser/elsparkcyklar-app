@@ -44,7 +44,7 @@ export async function load({ params, fetch }) {
 			}
 		} catch (error) {
 			console.error('Fetch error:', error.message);
-			data['error'] = response.statusText;
+			data['error'] = error.message;
 		}
 	} else {
 		// Error if the condition is not met
