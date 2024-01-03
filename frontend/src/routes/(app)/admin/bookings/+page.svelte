@@ -1,13 +1,12 @@
 <script>
 	import Table from '$lib/components/Table.svelte';
-	import {filterData} from '$lib/modules.js';
+	import { filterData } from '$lib/modules.js';
 
 	export let data;
 	let bookings = {};
 
 	if (data.props.data.bookings) {
 		bookings = formatTableData(data.props.data.bookings);
-
 	}
 
 	function formatTableData(inputData) {
@@ -27,7 +26,7 @@
 			body[row] = Object.values(inputData[row]);
 			links[row] = [`/admin/users/${inputData[row].user_id}`, 'visa kund'];
 		}
-	
+
 		dict['body'] = body;
 		dict['links'] = links;
 

@@ -34,7 +34,7 @@
 
 		if (response.status === 200 && responseUpdated.status === 200) {
 			const dataUpdated = await responseUpdated.json();
-			
+
 			price = dataUpdated.price;
 			edit = false;
 		} else {
@@ -57,7 +57,12 @@
 		</label>
 		<label id="cost_per_minute_if_parking">
 			Kostnad per minut om parkerad
-			<input type="number" name="cost_per_minute_if_parking" value={price.cost_per_minute_if_parking} readonly={!edit} />
+			<input
+				type="number"
+				name="cost_per_minute_if_parking"
+				value={price.cost_per_minute_if_parking}
+				readonly={!edit}
+			/>
 		</label>
 		{#if edit}
 			<input type="submit" value="Spara" />

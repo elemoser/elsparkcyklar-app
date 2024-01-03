@@ -42,7 +42,6 @@ export async function load({ params, fetch }) {
 			} else {
 				data['error'] = responseInvoice.statusText;
 			}
-
 		} catch (error) {
 			console.error('Fetch error:', error.message);
 			data['error'] = response.statusText;

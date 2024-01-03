@@ -21,7 +21,7 @@
 		content = Object.keys(bikeData[0]);
 		content.splice(2, 1, 'city'); // replace city_id header
 		dict['header'] = content;
-	
+
 		// Create table content
 		for (const row in bikeData) {
 			content = Object.values(bikeData[row]);
@@ -53,7 +53,7 @@
 
 		return name;
 	}
-	
+
 	function filterBikes(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);

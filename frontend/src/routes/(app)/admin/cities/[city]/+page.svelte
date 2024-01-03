@@ -5,7 +5,7 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 	let mapData = {};
-	
+
 	if (data.props.data.bounds) {
 		mapData['polygon'] = {
 			text: data.props.data.name,
@@ -36,7 +36,7 @@
 {/if}
 
 <style lang="scss">
-		h2 {
+	h2 {
 		color: white;
 	}
 </style>

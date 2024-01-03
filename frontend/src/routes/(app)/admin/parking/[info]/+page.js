@@ -17,7 +17,7 @@ export async function load({ fetch, params }) {
 				data['error'] = response.statusText;
 			}
 
-            const responseCharger = await fetch(`http://localhost:1338/v1/charger`, {
+			const responseCharger = await fetch(`http://localhost:1338/v1/charger`, {
 				method: 'GET',
 				credentials: 'include'
 			});
@@ -33,7 +33,7 @@ export async function load({ fetch, params }) {
 		}
 	} else {
 		// Error if the condition is not met
-        data['error'] = 'Invalid parameter';
+		data['error'] = 'Invalid parameter';
 	}
 
 	return {

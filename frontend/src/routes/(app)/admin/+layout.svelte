@@ -14,7 +14,7 @@
 	$: innerWidth = 0;
 </script>
 
-<svelte:window bind:innerWidth/>
+<svelte:window bind:innerWidth />
 
 <nav>
 	<div class="logo">
@@ -29,23 +29,27 @@
 	{#if innerWidth < windowLimit}
 		<div class="info">
 			<span>
-				OBS!
-				Din nuvarande fönsterbredd på {innerWidth} px är för liten.
-				För att kunna visa alla tabeller korrekt på adminsidan,
-				se till att du besöker sidan med en enhet med en fönsterbredd på minst {windowLimit}px.
+				OBS! Din nuvarande fönsterbredd på {innerWidth} px är för liten. För att kunna visa alla tabeller
+				korrekt på adminsidan, se till att du besöker sidan med en enhet med en fönsterbredd på minst
+				{windowLimit}px.
 			</span>
 		</div>
 	{:else}
-	<div class="admin-nav">
-		<a class={currentPath === '/admin/map' ? 'active' : ''} href="/admin/map">Karta</a>
-		<a class={currentPath === '/admin/bikes' ? 'active' : ''} href="/admin/bikes">Cyklar</a>
-		<a class={currentPath === '/admin/cities' ? 'active' : ''} href="/admin/cities">Städer</a>
-		<a class={currentPath === '/admin/parking' ? 'active' : ''} href="/admin/parking">Parkering</a>
-		<a class={currentPath === '/admin/users' ? 'active' : ''} href="/admin/users">Kunder</a>
-		<a class={currentPath === '/admin/bookings' ? 'active' : ''} href="/admin/bookings">Bokningar</a>
-		<a class={currentPath === '/admin/invoices' ? 'active' : ''} href="/admin/invoices">Fakturor</a>
-		<a class={currentPath === '/admin/pricing' ? 'active' : ''} href="/admin/pricing">Priser</a>
-	</div>
+		<div class="admin-nav">
+			<a class={currentPath === '/admin/map' ? 'active' : ''} href="/admin/map">Karta</a>
+			<a class={currentPath === '/admin/bikes' ? 'active' : ''} href="/admin/bikes">Cyklar</a>
+			<a class={currentPath === '/admin/cities' ? 'active' : ''} href="/admin/cities">Städer</a>
+			<a class={currentPath === '/admin/parking' ? 'active' : ''} href="/admin/parking">Parkering</a
+			>
+			<a class={currentPath === '/admin/users' ? 'active' : ''} href="/admin/users">Kunder</a>
+			<a class={currentPath === '/admin/bookings' ? 'active' : ''} href="/admin/bookings"
+				>Bokningar</a
+			>
+			<a class={currentPath === '/admin/invoices' ? 'active' : ''} href="/admin/invoices"
+				>Fakturor</a
+			>
+			<a class={currentPath === '/admin/pricing' ? 'active' : ''} href="/admin/pricing">Priser</a>
+		</div>
 	{/if}
 	<div class="admin-main">
 		<slot />
@@ -136,7 +140,7 @@
 		border: 1px solid darken($contrast-color, 50%);
 		border-radius: 5px;
 		background-color: $contrast-color;
-		
+
 		span {
 			font-size: 0.9rem;
 			color: $text-color;

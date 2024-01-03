@@ -37,9 +37,9 @@
 
 		if (Object.keys(body).length > 0) {
 			header = Object.keys(inputData[0]);
-			dict["body"] = body;
-			dict["header"] = header;
-			dict["links"] = {};
+			dict['body'] = body;
+			dict['header'] = header;
+			dict['links'] = {};
 		}
 
 		return dict;
@@ -49,9 +49,9 @@
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const id = formData.get('id');
-		const username =  formData.get('username');
+		const username = formData.get('username');
 		const role = formData.get('role');
-		const balance =formData.get('balance');
+		const balance = formData.get('balance');
 		const data = {};
 
 		if (username !== user.username) {
@@ -61,7 +61,6 @@
 		if (role !== user.role) {
 			data['role'] = role;
 		}
-		
 
 		if (balance !== user.balance) {
 			data['balance'] = balance;
@@ -77,7 +76,7 @@
 		});
 
 		if (response.status === 200) {
-            // redirect
+			// redirect
 			goto('/admin/users');
 		} else {
 			console.log(`Failed to update user ${id}:`, response.statusText);
@@ -100,6 +99,7 @@
 		}
 	}
 </script>
+
 {#if data.props.data.error}
 	<p>{data.props.data.error}</p>
 {:else}
@@ -157,28 +157,30 @@
 		{/if}
 	</form>
 	{#if check}
-		{#if notDeletable }
-		<button class="btn-light" on:click={removeUser(user.id)}>Radera</button>
-		<div class="check">
-			<p>Är du säker på att du vill ta bort denna användare från databasen?</p>
-			<button class="btn-dark" on:click={() => (check = false)}>Avbryt</button>
-		</div>
+		{#if notDeletable}
+			<button class="btn-light" on:click={removeUser(user.id)}>Radera</button>
+			<div class="check">
+				<p>Är du säker på att du vill ta bort denna användare från databasen?</p>
+				<button class="btn-dark" on:click={() => (check = false)}>Avbryt</button>
+			</div>
 		{:else}
-		<div class="check">
-			<p>Denna användare är kopplade till bokningar och/eller fakturor. Du kan inte ta bort den.</p>
-			<button class="btn-dark" on:click={() => (check = false)}>Ok</button>
-		</div>
+			<div class="check">
+				<p>
+					Denna användare är kopplade till bokningar och/eller fakturor. Du kan inte ta bort den.
+				</p>
+				<button class="btn-dark" on:click={() => (check = false)}>Ok</button>
+			</div>
 		{/if}
 	{:else if edit}
-	<div class="check">
-		<p>Är du säker på att du vill spara dina ändringar i databasen?</p>
-		<button class="btn-dark" on:click={() => (edit = false)}>Avbryt</button>
-	</div>
+		<div class="check">
+			<p>Är du säker på att du vill spara dina ändringar i databasen?</p>
+			<button class="btn-dark" on:click={() => (edit = false)}>Avbryt</button>
+		</div>
 	{:else}
 		<div>
 			<button class="btn-dark" on:click={() => (edit = true)}>Redigera</button>
 			{#if user.role !== 'admin'}
-			<button class="btn-light" on:click={() => (check = true)}>Ta bort</button>
+				<button class="btn-light" on:click={() => (check = true)}>Ta bort</button>
 			{/if}
 		</div>
 	{/if}
@@ -188,14 +190,14 @@
 			<h3>Bokningar för kund {data.props.target}</h3>
 			<a class="btn-link" href="/admin/bookings"><button>&#8599;</button></a>
 		</div>
-		<Table data={bookings}/>
+		<Table data={bookings} />
 	{/if}
 	{#if Object.keys(invoices).length}
 		<div class="table-top-bar">
 			<h3>Fakturor för kund {data.props.target}</h3>
 			<a class="btn-link" href="/admin/invoices"><button>&#8599;</button></a>
 		</div>
-		<Table data={invoices}/>
+		<Table data={invoices} />
 	{/if}
 {/if}
 

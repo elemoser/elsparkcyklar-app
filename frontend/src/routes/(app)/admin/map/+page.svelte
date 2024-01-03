@@ -1,23 +1,23 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
-    import { browser } from '$app/environment';
+	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/environment';
 
 	export let data;
-    let L;
-    let mapElement;
+	let L;
+	let mapElement;
 	let map;
 	let bikeLayer;
 	let parkingLayer;
 	let showBikes = false;
 	let showParkings = false;
 
-    onMount(async () => {
-        // Create a map
-        if (browser) {
+	onMount(async () => {
+		// Create a map
+		if (browser) {
 			L = await import('leaflet');
 
 			// Coordinates for the maps view
-            // For the current example (zoom on Östermalm)
+			// For the current example (zoom on Östermalm)
 			let lat = 59.33808;
 			let lon = 18.08996;
 
@@ -36,7 +36,7 @@
 			if (data.props.data.city) {
 				let cities = data.props.data.city;
 				let bounds;
-				
+
 				for (let key in cities) {
 					bounds = eval(cities[key].bounds);
 					// Adjust for formatting
@@ -53,18 +53,18 @@
 					}
 					// Create polygon
 					L.polygon(sortedLatLon, { color: 'red', weight: 1, fill: false }).addTo(map);
-					}
+				}
 			}
 			map.setView([lat, lon], 5);
 		}
-    });
+	});
 
-    onDestroy(async () => {
+	onDestroy(async () => {
 		if (map) {
 			// console.log('Unloading Leaflet map.');
 			map.remove();
 		}
-	});	
+	});
 
 	function toggleBikes() {
 		showBikes = !showBikes;
@@ -87,10 +87,10 @@
 
 	function toggleParking() {
 		showParkings = !showParkings;
-		
+
 		if (showParkings) {
-			let	parkingIcon = L.icon({
-				iconUrl: "/parking-area.png",
+			let parkingIcon = L.icon({
+				iconUrl: '/parking-area.png',
 				iconSize: [30, 35]
 			});
 			if (data.props.data.parking) {
@@ -100,8 +100,13 @@
 				for (let key in data.props.data.parking) {
 					coordinates = data.props.data.parking[key].center.split(', ');
 					text = `${data.props.data.parking[key].name} (${data.props.data.parking[key].number_of_chargers} laddare)`;
-					L.marker([coordinates[0], coordinates[1]], {icon: parkingIcon}).addTo(parkingLayer).bindPopup(text);
-					L.circle([coordinates[0], coordinates[1]], data.props.data.parking[key].radius, { stroke: false, color: 'orange' }).addTo(parkingLayer);
+					L.marker([coordinates[0], coordinates[1]], { icon: parkingIcon })
+						.addTo(parkingLayer)
+						.bindPopup(text);
+					L.circle([coordinates[0], coordinates[1]], data.props.data.parking[key].radius, {
+						stroke: false,
+						color: 'orange'
+					}).addTo(parkingLayer);
 				}
 			}
 		} else {
@@ -123,25 +128,29 @@
 <form class="submit-form-online" on:submit={zoomIn}>
 	<label>
 		Zoom
-		<input name="lat_lon" type="text" placeholder="lat, lon" required>
+		<input name="lat_lon" type="text" placeholder="lat, lon" required />
 	</label>
-	<input type="submit" value="Ta mig dit">
+	<input type="submit" value="Ta mig dit" />
 </form>
 
 <div class="box-oneline">
 	<label>
-		<input type="checkbox" on:click={toggleBikes}>
+		<input type="checkbox" on:click={toggleBikes} />
 		cyklar
 	</label>
 	<label>
-		<input type="checkbox" on:click={toggleParking}>
+		<input type="checkbox" on:click={toggleParking} />
 		parkeringar
 	</label>
 </div>
 
 <div class="map" bind:this={mapElement} />
 <div>
-	<a href="https://www.flaticon.com/free-icon/parking-area_4979378?related_id=4979378" target=”_blank” title="parking icons">Parking icons created by ono_tono - Flaticon</a>
+	<a
+		href="https://www.flaticon.com/free-icon/parking-area_4979378?related_id=4979378"
+		target="”_blank”"
+		title="parking icons">Parking icons created by ono_tono - Flaticon</a
+	>
 </div>
 
 <style>

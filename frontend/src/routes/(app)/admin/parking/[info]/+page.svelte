@@ -5,7 +5,7 @@
 
 	/** @type {import('./$types').PageData} */
 	export let data;
-	let parking = {}
+	let parking = {};
 	let changersTable = {};
 	let mapData = {};
 	let showChargers = false;
@@ -19,12 +19,12 @@
 				coordinates: parking.center.split(', '),
 				radius: parking.radius
 			}
-		}
+		};
 	}
 
 	if (data.props.data.chargers) {
 		let body = {};
-		
+
 		for (let key in data.props.data.chargers) {
 			if (data.props.data.chargers[key].parking_id === parking.id) {
 				body[key] = Object.values(data.props.data.chargers[key]);
@@ -42,7 +42,6 @@
 	function toggleMap() {
 		showMap = !showMap;
 	}
-
 </script>
 
 {#if data.props.data.error}
@@ -67,17 +66,23 @@
 		</label>
 		<label for="number_of_chargers"
 			>Antal laddare
-			<input id="number_of_chargers" name="number_of_chargers" type="number" value={parking.number_of_chargers} readonly />
+			<input
+				id="number_of_chargers"
+				name="number_of_chargers"
+				type="number"
+				value={parking.number_of_chargers}
+				readonly
+			/>
 		</label>
 	</form>
 
 	<div>
 		<label>
-			<input type="checkbox" on:click={toggleMap}>
+			<input type="checkbox" on:click={toggleMap} />
 			visa på kartan
 		</label>
 		<label>
-			<input type="checkbox" on:click={toggleTable}>
+			<input type="checkbox" on:click={toggleTable} />
 			visa alla laddare
 		</label>
 	</div>

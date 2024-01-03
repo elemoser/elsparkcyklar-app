@@ -57,7 +57,7 @@ html {
 		outline: none;
 	}
 
-	input[type=submit] {
+	input[type='submit'] {
 		text-decoration: none;
 		cursor: pointer;
 		background-color: $light-color;
@@ -66,10 +66,9 @@ html {
 		border-radius: 5px;
 		margin-left: 0.2rem;
 		padding: 0.2rem 0.4rem;
-		
 	}
 
-	input:hover[type=submit] {
+	input:hover[type='submit'] {
 		background-color: $contrast-color;
 	}
 }
@@ -98,7 +97,7 @@ html {
 		outline: none;
 	}
 
-	input[type=submit] {
+	input[type='submit'] {
 		text-decoration: none;
 		cursor: pointer;
 		background-color: $light-color;
@@ -107,14 +106,12 @@ html {
 		border-radius: 5px;
 		margin-left: 0.2rem;
 		padding: 0.2rem 0.4rem;
-		
 	}
 
-	input:hover[type=submit] {
+	input:hover[type='submit'] {
 		background-color: $contrast-color;
 	}
 }
-
 
 .table-top-bar {
 	display: flex;
@@ -134,7 +131,7 @@ html {
 	text-decoration: none;
 	margin: 0;
 	padding: 0;
-	
+
 	button {
 		cursor: pointer;
 		margin: 0;
@@ -146,8 +143,8 @@ html {
 	}
 
 	button:hover {
-	background-color: darken($contrast-color, 10%);
-	}	
+		background-color: darken($contrast-color, 10%);
+	}
 }
 
 .btn-light,

@@ -27,7 +27,6 @@ export async function load({ fetch }) {
 		// }
 
 		return { props: { data } };
-
 	} catch (error) {
 		console.error('Fetch error:', error.message);
 		data['error'] = error.message;

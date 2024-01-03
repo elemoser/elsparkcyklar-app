@@ -7,7 +7,6 @@
 
 	if (data && data.props.data.parking) {
 		parking = formatTableData(data.props.data.parking);
-
 	}
 
 	function formatTableData(inputData) {
@@ -30,9 +29,9 @@
 		dict['body'] = body;
 		dict['links'] = links;
 
-		return dict
+		return dict;
 	}
-	
+
 	function filterParking(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
