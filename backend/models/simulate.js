@@ -4,7 +4,7 @@ const Bike = require("../orm/model-router.js")("bike");
 const { Op } = require("sequelize");
 const baseUrl = "http://localhost:1338";
 const simUsersOnlyBelowThis = 9005001; // used to get all simulator users as they start on 900001
-const maxSimBikes = 1000;
+const maxSimBikes = 2000;
 const simulate = {
     /**
      * @description Getting all bikes from sqlite db
@@ -12,8 +12,8 @@ const simulate = {
     startSimulation: async function startSimulation(
         req,
         res,
-        totalBikesToRun = 1000,
-        simSpeed = 2500
+        totalBikesToRun = 200,
+        simSpeed = 1000
     ) {
         let intervalId;
         try {
@@ -34,8 +34,14 @@ const simulate = {
             let trips = await this.getTrips(totalBikesToRun);
             let simBikes;
             try {
-                // Create bikes for the sim if the bike, if already created the id will be skipped and create next
-                await this.createSimulationBikes(trips, simBikeStartIds);
+                // Get bike with highest id
+                const bikeExists = await Bike.findByPk(simBikeStartIds + totalBikesToRun)
+
+                // If it doesnt exist bikes will be created within given range
+                if (!bikeExists) {
+                    // Create bikes for the sim if the bike, if already created the id will be skipped and create next
+                    await this.createSimulationBikes(trips, simBikeStartIds);
+                }
             } finally {
                 simBikes = await Bike.findAll({
                     // Get all bikes needed for sim
@@ -107,12 +113,10 @@ const simulate = {
                     if (intervalId) {
                         clearInterval(intervalId);
                     }
-                    // await this.destroySimulationBikes(simBikeStartIds)
                 });
                 res.write(`data: ${jsonData}\n\n`);
 
                 if (trips.length - 1 == finishedCounter) {
-                    // await this.destroySimulationBikes(simBikeStartIds)
                     res.end();
                     console.log("\n\nEND OF SIMULATION\n\n");
                 }
