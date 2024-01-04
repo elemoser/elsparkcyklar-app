@@ -12,8 +12,8 @@ const simulate = {
     startSimulation: async function startSimulation(
         req,
         res,
-        totalBikesToRun = 200,
-        simSpeed = 1000
+        totalBikesToRun = 2000,
+        simSpeed = 3000
     ) {
         let intervalId;
         try {
@@ -35,7 +35,9 @@ const simulate = {
             let simBikes;
             try {
                 // Get bike with highest id
-                const bikeExists = await Bike.findByPk(simBikeStartIds + totalBikesToRun)
+                const bikeExists = await Bike.findByPk(
+                    simBikeStartIds + totalBikesToRun
+                );
 
                 // If it doesnt exist bikes will be created within given range
                 if (!bikeExists) {
