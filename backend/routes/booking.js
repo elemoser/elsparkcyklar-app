@@ -3,11 +3,6 @@ const router = express.Router();
 
 const booking = require("../models/booking.js");
 
-const isAuthenticated = require("../auth-utils.js");
-
-// Middleware för att skydda alla underliggande rutter
-router.use(isAuthenticated);
-
 //Get all bookings (including finished trips)
 router.get("/", (req, res) => booking.getAllBookings(req, res));
 

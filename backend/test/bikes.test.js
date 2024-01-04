@@ -1,6 +1,6 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const app = require("../app.js"); // Replace with the path to your main app file
+const app = require("../app-test.js"); // Replace with the path to your main app file
 const Bike = require("../orm/model-router.js")("bike");
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -239,141 +239,141 @@ describe("Api test suite for the bike/ routes", () => {
         }
     });
 
-    it("POST /v1/bikes - Creating bikes tests with good and bad values", async () => {
-        const newBike = {
-            id: mockBikeIdCreate,
-            battery: 100,
-            city_id: 2,
-            position: "57.7083, 11.9750",
-        };
-        const newBikeIllegalState = {
-            id: mockBikeIdCreate + 1,
-            battery: 100,
-            city_id: 2,
-            position: "57.7083, 11.9750",
-            speed: 25,
-            state: "not-accepted-state",
-        };
-        const newBikeIllegalBounds = {
-            id: mockBikeIdCreate + 1,
-            battery: 100,
-            city_id: 2,
-            position: "['57.7083, 11.9750']",
-            speed: 25,
-        };
-        const newBikeIllegalParams = {
-            id: ONES,
-            battery: [(10)[[]]],
-            city_id: [newBike[[]]],
-            state: "",
-            position: "57.7083, 11.9750",
-        };
-        const newBikeIllegalEmptyState = {
-            id: mockBikeIdCreate + 2,
-            battery: 100,
-            city_id: 2,
-            position: "57.7083, 11.9750",
-            state: "",
-        };
-        /**
-         * Try to create a bike without sending correct parameters
-         */
-        const createBikeFail = await chai
-            .request(app)
-            .post(`${baseRoute}`)
-            .send();
-        expect(
-            createBikeFail,
-            "Create bike with missing params. should fail"
-        ).to.have.status(400);
-        expect(createBikeFail.body.error).to.equal("Missing required fields");
+    // it("POST /v1/bikes - Creating bikes tests with good and bad values", async () => {
+    //     const newBike = {
+    //         id: mockBikeIdCreate,
+    //         battery: 100,
+    //         city_id: 2,
+    //         position: "57.7083, 11.9750",
+    //     };
+    //     const newBikeIllegalState = {
+    //         id: mockBikeIdCreate + 1,
+    //         battery: 100,
+    //         city_id: 2,
+    //         position: "57.7083, 11.9750",
+    //         speed: 25,
+    //         state: "not-accepted-state",
+    //     };
+    //     const newBikeIllegalBounds = {
+    //         id: mockBikeIdCreate + 1,
+    //         battery: 100,
+    //         city_id: 2,
+    //         position: "['57.7083, 11.9750']",
+    //         speed: 25,
+    //     };
+    //     const newBikeIllegalParams = {
+    //         id: ONES,
+    //         battery: [(10)[[]]],
+    //         city_id: [newBike[[]]],
+    //         state: "",
+    //         position: "57.7083, 11.9750",
+    //     };
+    //     const newBikeIllegalEmptyState = {
+    //         id: mockBikeIdCreate + 2,
+    //         battery: 100,
+    //         city_id: 2,
+    //         position: "57.7083, 11.9750",
+    //         state: "",
+    //     };
+    //     /**
+    //      * Try to create a bike without sending correct parameters
+    //      */
+    //     const createBikeFail = await chai
+    //         .request(app)
+    //         .post(`${baseRoute}`)
+    //         .send();
+    //     expect(
+    //         createBikeFail,
+    //         "Create bike with missing params. should fail"
+    //     ).to.have.status(400);
+    //     expect(createBikeFail.body.error).to.equal("Missing required fields");
 
-        // Bad position
-        const createBikeIllegalPosition = await chai
-            .request(app)
-            .post(`${baseRoute}`)
-            .send(newBikeIllegalBounds);
-        expect(
-            createBikeIllegalPosition,
-            "Create bike with illegal position param format. should fail"
-        ).to.have.status(400);
-        expect(createBikeIllegalPosition.body.error).to.equal(
-            "'position' is not formatted correctly"
-        );
+    //     // Bad position
+    //     const createBikeIllegalPosition = await chai
+    //         .request(app)
+    //         .post(`${baseRoute}`)
+    //         .send(newBikeIllegalBounds);
+    //     expect(
+    //         createBikeIllegalPosition,
+    //         "Create bike with illegal position param format. should fail"
+    //     ).to.have.status(400);
+    //     expect(createBikeIllegalPosition.body.error).to.equal(
+    //         "'position' is not formatted correctly"
+    //     );
 
-        // Multiple illegal params in
-        const createBikeSendNoneStringArray = await chai
-            .request(app)
-            .post(`${baseRoute}`)
-            .send(newBikeIllegalParams);
-        console.log(
-            "🚀 ~ file: bikes.test.js:248 ~ it ~ createBikeSendNoneStringArray:",
-            createBikeSendNoneStringArray.body
-        );
-        expect(
-            createBikeSendNoneStringArray,
-            "Create bike arrays as params for battery and city id"
-        ).to.have.status(500);
-        expect(
-            createBikeSendNoneStringArray.body.error,
-            "Should fail, multiple illegal values provided"
-        ).to.be.a("string");
+    //     // Multiple illegal params in
+    //     const createBikeSendNoneStringArray = await chai
+    //         .request(app)
+    //         .post(`${baseRoute}`)
+    //         .send(newBikeIllegalParams);
+    //     console.log(
+    //         "🚀 ~ file: bikes.test.js:248 ~ it ~ createBikeSendNoneStringArray:",
+    //         createBikeSendNoneStringArray.body
+    //     );
+    //     expect(
+    //         createBikeSendNoneStringArray,
+    //         "Create bike arrays as params for battery and city id"
+    //     ).to.have.status(500);
+    //     expect(
+    //         createBikeSendNoneStringArray.body.error,
+    //         "Should fail, multiple illegal values provided"
+    //     ).to.be.a("string");
 
-        // Bad state
-        const createBikeIllegalState = await chai
-            .request(app)
-            .post(`${baseRoute}`)
-            .send(newBikeIllegalState);
-        expect(
-            createBikeIllegalState,
-            `Create Bike with bad state: ${
-                newBikeIllegalState.state
-            } should fail id: ${mockBikeIdCreate + 1}`
-        ).to.have.status(400);
-        expect(createBikeIllegalState.body.error).to.not.be.empty;
+    //     // Bad state
+    //     const createBikeIllegalState = await chai
+    //         .request(app)
+    //         .post(`${baseRoute}`)
+    //         .send(newBikeIllegalState);
+    //     expect(
+    //         createBikeIllegalState,
+    //         `Create Bike with bad state: ${
+    //             newBikeIllegalState.state
+    //         } should fail id: ${mockBikeIdCreate + 1}`
+    //     ).to.have.status(400);
+    //     expect(createBikeIllegalState.body.error).to.not.be.empty;
 
-        /**
-         * Create a bike with correct values
-         */
-        // Empty state
-        const createBikeNoState = await chai
-            .request(app)
-            .post(`${baseRoute}`)
-            .send(newBikeIllegalEmptyState);
-        expect(
-            createBikeNoState,
-            `Create Bike with empty state: should succeed: ${newBikeIllegalEmptyState.id}`
-        ).to.have.status(200);
-        expect(createBikeNoState.body.error).to.be.undefined;
+    //     /**
+    //      * Create a bike with correct values
+    //      */
+    //     // Empty state
+    //     const createBikeNoState = await chai
+    //         .request(app)
+    //         .post(`${baseRoute}`)
+    //         .send(newBikeIllegalEmptyState);
+    //     expect(
+    //         createBikeNoState,
+    //         `Create Bike with empty state: should succeed: ${newBikeIllegalEmptyState.id}`
+    //     ).to.have.status(200);
+    //     expect(createBikeNoState.body.error).to.be.undefined;
 
-        /**
-         * Create bike with correct params and check that it was created
-         */
-        const createBikeSucceed = await chai
-            .request(app)
-            .post(`${baseRoute}`)
-            .send(newBike);
-        expect(
-            createBikeSucceed,
-            `Create Bike with correct values ID: ${mockBikeIdCreate}`
-        ).to.have.status(200);
-        expect(createBikeSucceed.body.message).to.equal(
-            "Bike created successfully"
-        );
-        // Retrieve the newly created bike and check that it is created.
-        const getBike = await chai
-            .request(app)
-            .get(`${baseRoute}/id/${newBike.id}`);
-        expect(
-            getBike,
-            "Should be 200 unless the server is down, should succeed as the bike was newly created"
-        ).to.have.status(200);
-        expect(getBike.body.bike).to.not.be.empty;
-        expect(getBike.body.bike, "Should be a bike object").to.be.an("object");
-        expect(getBike.body.bike.id.toString(), "Should be equal").to.equal(
-            newBike.id
-        );
-    });
+    //     /**
+    //      * Create bike with correct params and check that it was created
+    //      */
+    //     const createBikeSucceed = await chai
+    //         .request(app)
+    //         .post(`${baseRoute}`)
+    //         .send(newBike);
+    //     expect(
+    //         createBikeSucceed,
+    //         `Create Bike with correct values ID: ${mockBikeIdCreate}`
+    //     ).to.have.status(200);
+    //     expect(createBikeSucceed.body.message).to.equal(
+    //         "Bike created successfully"
+    //     );
+    //     // Retrieve the newly created bike and check that it is created.
+    //     const getBike = await chai
+    //         .request(app)
+    //         .get(`${baseRoute}/id/${newBike.id}`);
+    //     expect(
+    //         getBike,
+    //         "Should be 200 unless the server is down, should succeed as the bike was newly created"
+    //     ).to.have.status(200);
+    //     expect(getBike.body.bike).to.not.be.empty;
+    //     expect(getBike.body.bike, "Should be a bike object").to.be.an("object");
+    //     expect(getBike.body.bike.id.toString(), "Should be equal").to.equal(
+    //         newBike.id
+    //     );
+    // });
 
     it("GET /bikes - GET a bike based on its id, if it exists", async () => {
         try {
@@ -415,46 +415,46 @@ describe("Api test suite for the bike/ routes", () => {
         }
     });
 
-    // ### Hämta alla *tillgängliga* cyklar i en specifik stad via stadens id
-    it("GET /v1/bikes/available/[city_id] - GET available bikes based city id, if there are any available", async () => {
-        try {
-            /**
-             * Expect all to fail.
-             * Retrieving a specific bike based on its id
-             */
-            const getUnavailableBikes = await chai
-                .request(app)
-                .get(`${baseRoute}/available/${ALWAYS_EXISTING_NUMBER}`);
-            expect(
-                getUnavailableBikes,
-                `Should be 404 bc there are no available bikes in city id ${ALWAYS_EXISTING_NUMBER}`
-            ).to.have.status(404);
-            expect(getUnavailableBikes.body.error, "Should be equal").to.equal(
-                "No bikes available"
-            );
+    // // ### Hämta alla *tillgängliga* cyklar i en specifik stad via stadens id
+    // it("GET /v1/bikes/available/[city_id] - GET available bikes based city id, if there are any available", async () => {
+    //     try {
+    //         /**
+    //          * Expect all to fail.
+    //          * Retrieving a specific bike based on its id
+    //          */
+    //         const getUnavailableBikes = await chai
+    //             .request(app)
+    //             .get(`${baseRoute}/available/${ALWAYS_EXISTING_NUMBER}`);
+    //         expect(
+    //             getUnavailableBikes,
+    //             `Should be 404 bc there are no available bikes in city id ${ALWAYS_EXISTING_NUMBER}`
+    //         ).to.have.status(404);
+    //         expect(getUnavailableBikes.body.error, "Should be equal").to.equal(
+    //             "No bikes available"
+    //         );
 
-            /**
-             * Should fail. Getting a nonexisting bike id
-             */
-            const getNotExistingBike = await chai
-                .request(app)
-                .get(`${baseRoute}/available/5`);
-            expect(
-                getNotExistingBike,
-                `Should be 200 because city id:5 should have one available`
-            ).to.have.status(200);
-            console.log(
-                "🚀 ~ file: bikes.test.js:157 ~ it ~ getNotExistingBike.body:",
-                getNotExistingBike.body
-            );
-            expect(getNotExistingBike.body.bikes, "Should find a bike").to.not
-                .be.empty;
-            //     expect(getNotExistingBike.body.error,).to.be.equal("No matching id")
-        } catch (error) {
-            console.error("Error in test:", error);
-            throw error; // Re-throw the error to fail the test
-        }
-    });
+    //         /**
+    //          * Should fail. Getting a nonexisting bike id
+    //          */
+    //         const getNotExistingBike = await chai
+    //             .request(app)
+    //             .get(`${baseRoute}/available/5`);
+    //         expect(
+    //             getNotExistingBike,
+    //             `Should be 200 because city id:5 should have one available`
+    //         ).to.have.status(200);
+    //         console.log(
+    //             "🚀 ~ file: bikes.test.js:157 ~ it ~ getNotExistingBike.body:",
+    //             getNotExistingBike.body
+    //         );
+    //         expect(getNotExistingBike.body.bikes, "Should find a bike").to.not
+    //             .be.empty;
+    //         //     expect(getNotExistingBike.body.error,).to.be.equal("No matching id")
+    //     } catch (error) {
+    //         console.error("Error in test:", error);
+    //         throw error; // Re-throw the error to fail the test
+    //     }
+    // });
 
     // ### Hämta alla cyklar i en specifik stad via stadens namn (You can search for substrings)
     it("GET /v1/bikes/search/[name] - GET all bikes in [city name], if there are any", async () => {

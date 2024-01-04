@@ -40,6 +40,8 @@ done
 
 # Import rest of data dependent on CSV data above
 sqlite3 $DBFILE < sql/mock-data.sql
+sqlite3 $DBFILE < sql/simulation-trips.sql
+sqlite3 $DBFILE < sql/user-data.sql
 
 sqlite3 $DBFILE "SELECT * FROM city;"
 
@@ -47,6 +49,8 @@ sqlite3 $DBFILE "SELECT * FROM city;"
 rm -f bikr.db
 # Rename newly created db to bikr.db
 mv $DBFILE bikr.db
+
+# source "json.to.db.bash"
 
 # Check the exit status
 if [ $? -eq 0 ]; then

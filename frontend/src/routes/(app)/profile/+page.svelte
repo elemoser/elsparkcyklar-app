@@ -1,50 +1,29 @@
 <script>
-	import { onMount } from 'svelte';
-	let user = {};
+	import { user } from '$lib/stores/user';
 
-	async function userData() {
-		const id = sessionStorage.getItem('user');
-		const response = await fetch(`http://localhost:1338/v1/users/id/${id}`, {
-			method: 'GET',
-			credentials: 'include'
-		});
-		const res = await response.json();
-
-		return res.user;
-	}
-
-	function deleteSession() {
-		sessionStorage.removeItem('user');
-
-		document.getElementById('logoutForm').submit();
-	}
-
-	onMount(async () => {
-		user = await userData();
-	});
+	let userData = $user;
 </script>
 
 <div class="profile-container">
 	<div class="user-div">
-		<h1>{user.username}</h1>
-		<h4>Mail: {user.mail}</h4>
-		<h4>Phone: {user.phone}</h4>
-		<h5>Role: {user.role}</h5>
+		<h1>{userData.username}</h1>
+		<h4>Mail: {userData.mail || 'Showcasing@whatitcouldlooklike.com'}</h4>
+		<h4>Phone: {userData.phone || '070123456789'}</h4>
+		<h5>Role: {userData.role}</h5>
 
 		<a class="button" href="/profile/update">Update profile</a>
 	</div>
 	<div class="menu-div">
 		<div>
-			<h3>Balance: {user.balance}$</h3>
+			<h3>Balance: {parseFloat(userData.balance).toFixed(2)}$</h3>
 		</div>
 		<div class="options-div">
 			<h2><a class="button" href="/profile/travels">Travels</a></h2>
 			<h2><a class="button" href="/profile/invoice">Invoice</a></h2>
-			<h2><a class="button" href="/profile">Payment</a></h2>
-			<!-- TODO Implement payment and update href -->
+			<h2><a class="button" href="/profile/payment">Payment</a></h2>
 
 			<form id="logoutForm" method="POST" action="?/logout">
-				<button class="button" type="submit" on:click={deleteSession}>Logout</button>
+				<button class="button" type="submit">Logout</button>
 			</form>
 		</div>
 	</div>
@@ -78,10 +57,6 @@
 		a {
 			font-weight: 700;
 			font-family: $header-font;
-		}
-
-		.api-key {
-			word-break: break-all;
 		}
 	}
 

@@ -105,11 +105,9 @@ const charger = {
             );
 
             if (!parkingIds.includes(parseInt(parking_id))) {
-                return res
-                    .status(400)
-                    .json({
-                        error: `Parking_id must be one of: ${parkingIds}`,
-                    });
+                return res.status(400).json({
+                    error: `Parking_id must be one of: ${parkingIds}`,
+                });
             }
 
             const newCharger = await Charger.create({
@@ -160,11 +158,9 @@ const charger = {
             );
 
             if (!parkingIds.includes(parseInt(parking_id))) {
-                return res
-                    .status(400)
-                    .json({
-                        error: `Parking_id must be one of: ${parkingIds}`,
-                    });
+                return res.status(400).json({
+                    error: `Parking_id must be one of: ${parkingIds}`,
+                });
             }
 
             if (bike_id != 0) {
@@ -180,19 +176,15 @@ const charger = {
             const acceptedStatus = ["available", "occupied"];
 
             if (!acceptedStatus.includes(status)) {
-                return res
-                    .status(400)
-                    .json({
-                        error: `'status' must be one of: ${acceptedStatus}`,
-                    });
+                return res.status(400).json({
+                    error: `'status' must be one of: ${acceptedStatus}`,
+                });
             }
 
             if (bike_id == 0 && status != "available") {
-                return res
-                    .status(400)
-                    .json({
-                        error: "If no bike is using the charger, status should be 'available'",
-                    });
+                return res.status(400).json({
+                    error: "If no bike is using the charger, status should be 'available'",
+                });
             }
 
             await existingCharger.update({

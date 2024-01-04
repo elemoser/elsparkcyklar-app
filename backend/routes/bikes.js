@@ -2,10 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const bikes = require("../models/bikes.js");
-const isAuthenticated = require("../auth-utils.js");
-
-// Middleware för att skydda alla underliggande rutter
-router.use(isAuthenticated);
 
 //Get all bikes
 router.get("/", (req, res) => bikes.getBikes(req, res));
@@ -35,6 +31,12 @@ router.post("/", (req, res) => bikes.createBike(req, res));
 router.put("/id/:bike_id", (req, res) => {
     let bike_id = req.params.bike_id;
     bikes.updateBike(req, res, bike_id);
+});
+
+//Update ONLY position for bike
+router.put("/position/:bike_id", (req, res) => {
+    let bike_id = req.params.bike_id;
+    bikes.updatePosition(req, res, bike_id);
 });
 
 //Delete bike

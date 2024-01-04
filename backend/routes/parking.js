@@ -3,11 +3,6 @@ const router = express.Router();
 
 const parking = require("../models/parking.js");
 
-const isAuthenticated = require("../auth-utils.js");
-
-// Middleware för att skydda alla underliggande rutter
-router.use(isAuthenticated);
-
 //Get all Parkings
 router.get("/", (req, res) => parking.getParkings(req, res));
 

@@ -1,6 +1,6 @@
 /node_modules
 ../db/*.db
-orm/db-models
+# orm/db-models / återskapas vid omstart av databasen men ignoreras inte eftersom de används i tester"
 # Logs
 logs
 *.log

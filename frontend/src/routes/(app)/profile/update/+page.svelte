@@ -1,48 +1,50 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { updateUser } from '$lib/stores/user.js';
 	export let data;
 	const { user } = data;
 
 	async function handleSubmit(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
-		const userId = formData.get('id');
-		//TODO Fix update user in backend to allow user to update username.
-		/*
+
+		const username = formData.get('username') === '' ? user.username : formData.get('username');
+
 		const userObj = {
-			username: data.get('username'),
-			phone: data.get('phone'),
-			mail: data.get('email')
+			username: username,
+			role: user.role,
+			balance: user.balance
 		};
-		*/
-		/*
-		const response = await fetch(`http://server:1338/v1/users/id/${userId}`, {
+
+		const response = await fetch(`http://localhost:1338/v1/users/id/${user.id}`, {
 			method: 'PUT',
+			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(userObj)
-		});*/
+		});
 
-		const res = await response.json();
-
-		res.error ? console.log('Something went wrong.') : goto('/profile'); //TODO Actually implement error handling?
+		if (response.status === 200) {
+			updateUser(userObj);
+			goto('/profile');
+		} else {
+			console.log('Post a new username');
+		}
 	}
 </script>
 
 <div class="update-container">
 	<h1>Update user</h1>
 	<form on:submit={handleSubmit}>
-		<input id="id" name="id" type="hidden" value={user.id} required />
-
 		<label for="username">Username</label>
 		<input id="username" name="username" type="text" placeholder={user.username} />
 
 		<label for="phone">Phone</label>
-		<input id="phone" name="phone" type="tel" placeholder={user.phone} />
+		<input id="phone" name="phone" type="tel" placeholder={user.phone} disabled />
 
 		<label for="email">Mail</label>
-		<input id="email" name="email" type="email" placeholder={user.mail} />
+		<input id="email" name="email" type="email" placeholder={user.mail} disabled />
 
 		<input type="submit" value="Update" />
 	</form>
