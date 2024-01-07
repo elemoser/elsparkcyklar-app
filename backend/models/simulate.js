@@ -1,10 +1,12 @@
 const Simulate = require("../orm/model-router.js")("simulate");
 const User = require("../orm/model-router.js")("user");
 const Bike = require("../orm/model-router.js")("bike");
+const Booking = require("../orm/model-router.js")("booking");
 const { Op } = require("sequelize");
 const baseUrl = "http://localhost:1338";
 const simUsersOnlyBelowThis = 9005001; // used to get all simulator users as they start on 900001
 const maxSimBikes = 2000;
+const minSimSpeedMs = 300;
 const simulate = {
     /**
      * @description Getting all bikes from sqlite db
@@ -12,12 +14,12 @@ const simulate = {
     startSimulation: async function startSimulation(
         req,
         res,
-        totalBikesToRun = 2000,
-        simSpeed = 3000
+        totalBikesToRun = 500,
+        simSpeed = 2000
     ) {
         let intervalId;
         try {
-            simSpeed = simSpeed < 300 ? 300 : simSpeed; // Set simSpeed max speed at 300 ms
+            simSpeed = simSpeed < minSimSpeedMs ? minSimSpeedMs : simSpeed; // Set simSpeed max speed at minSimSpeedMs ms
             totalBikesToRun =
                 totalBikesToRun > maxSimBikes ? maxSimBikes : totalBikesToRun; // Set max simbikes for sim
 
@@ -77,7 +79,7 @@ const simulate = {
                         finished: true,
                     };
 
-                    const id = parseInt(nextPos.id) + 10000; // Id for finding a matching trip.
+                    const id = parseInt(nextPos.id) + simBikeStartIds; // Id for finding a matching trip.
                     if (trip.route[loop] !== undefined) {
                         nextPos = {
                             id: trip.id,
@@ -111,6 +113,12 @@ const simulate = {
                     clearInterval(intervalId);
                 }
                 res.on("close", async () => {
+                    // Booking.destroy({where : { // Doesnt work atm bc the booking.stop_time
+                    //         user_id: {
+                    //             [Op.lte]: simUsersOnlyBelowThis
+                    //         },
+                    //         stop_time: null
+                    // }})
                     console.log("Client closed the connection");
                     if (intervalId) {
                         clearInterval(intervalId);
@@ -252,7 +260,6 @@ const simulate = {
                 });
             }
             const ress = await booking.json();
-            console.log("\n\nasdas\n", ress);
             return booking;
         } catch (err) {
             console.error("Error in createBooking:", err);
