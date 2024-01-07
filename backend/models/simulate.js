@@ -6,7 +6,7 @@ const { Op } = require("sequelize");
 const baseUrl = "http://localhost:1338";
 const simUsersOnlyBelowThis = 9005001; // used to get all simulator users as they start on 900001
 const maxSimBikes = 2000;
-const minSimSpeedMs = 300;
+const minSimSpeedMs = 1000;
 const simulate = {
     /**
      * @description Getting all bikes from sqlite db
@@ -15,9 +15,10 @@ const simulate = {
         req,
         res,
         totalBikesToRun = 500,
-        simSpeed = 2000
+        simSpeed = 3
     ) {
         let intervalId;
+        simSpeed *= 1000
         try {
             simSpeed = simSpeed < minSimSpeedMs ? minSimSpeedMs : simSpeed; // Set simSpeed max speed at minSimSpeedMs ms
             totalBikesToRun =
@@ -200,12 +201,13 @@ const simulate = {
                     id: simBikeStartIds + trip.id,
                     city_id: trip.city,
                     position: `${trip.route[0][1]}, ${trip.route[0][0]}`,
-                    battery: Math.ceil(Math.random() * (100 - 60) + 60),
+                    battery: Math.ceil(Math.random() * (100 - 5) + 5),
                     speed: 10,
                     state: "available",
                     low_battery: 0,
                 };
             });
+            simulationBikes[0].battery = 1
             const bikes = await Bike.bulkCreate(simulationBikes, {
                 ignoreDuplicates: true,
             });
