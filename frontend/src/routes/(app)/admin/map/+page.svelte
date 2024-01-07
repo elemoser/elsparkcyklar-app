@@ -38,7 +38,7 @@
 				let bounds;
 
 				for (let key in cities) {
-					bounds = eval(cities[key].bounds);
+					bounds = JSON.parse(cities[key].bounds);
 					// Adjust for formatting
 					if (cities[key].name === 'Linköping') {
 						bounds = bounds[0];

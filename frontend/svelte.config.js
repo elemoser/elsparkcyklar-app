@@ -23,7 +23,20 @@ const config = {
 			fallback: undefined,
 			precompress: false,
 			strict: true
-		})
+		}),
+		prerender: {
+			entries: [
+				'*',
+				'/admin/bikes/5',
+				'/admin/cities/1',
+				'/admin/parking/5',
+				'/admin/users/2101020002', //gurkOlle
+				'/profile/invoice/4', //gurkOlle faktura
+				'/rent/1', //Cyklar i Stockholm
+				'/rent/1/1' //Bike id 1 i Stockholm
+			],
+			handleHttpError: 'warn'
+		},
 	}
 };
 
