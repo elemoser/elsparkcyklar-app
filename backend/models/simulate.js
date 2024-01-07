@@ -1,7 +1,7 @@
 const Simulate = require("../orm/model-router.js")("simulate");
 const User = require("../orm/model-router.js")("user");
 const Bike = require("../orm/model-router.js")("bike");
-const Booking = require("../orm/model-router.js")("booking");
+// const Booking = require("../orm/model-router.js")("booking");
 const { Op } = require("sequelize");
 const baseUrl = "http://localhost:1338";
 const simUsersOnlyBelowThis = 9005001; // used to get all simulator users as they start on 900001
@@ -18,7 +18,7 @@ const simulate = {
         simSpeed = 3
     ) {
         let intervalId;
-        simSpeed *= 1000
+        simSpeed *= 1000;
         try {
             simSpeed = simSpeed < minSimSpeedMs ? minSimSpeedMs : simSpeed; // Set simSpeed max speed at minSimSpeedMs ms
             totalBikesToRun =
@@ -207,7 +207,7 @@ const simulate = {
                     low_battery: 0,
                 };
             });
-            simulationBikes[0].battery = 1
+            simulationBikes[0].battery = 1;
             const bikes = await Bike.bulkCreate(simulationBikes, {
                 ignoreDuplicates: true,
             });
@@ -261,7 +261,6 @@ const simulate = {
                     },
                 });
             }
-            const ress = await booking.json();
             return booking;
         } catch (err) {
             console.error("Error in createBooking:", err);
