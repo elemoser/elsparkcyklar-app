@@ -1,10 +1,12 @@
 const Simulate = require("../orm/model-router.js")("simulate");
 const User = require("../orm/model-router.js")("user");
 const Bike = require("../orm/model-router.js")("bike");
+// const Booking = require("../orm/model-router.js")("booking");
 const { Op } = require("sequelize");
 const baseUrl = "http://localhost:1338";
 const simUsersOnlyBelowThis = 9005001; // used to get all simulator users as they start on 900001
-const maxSimBikes = 1000;
+const maxSimBikes = 2000;
+const minSimSpeedMs = 1000;
 const simulate = {
     /**
      * @description Getting all bikes from sqlite db
@@ -12,12 +14,13 @@ const simulate = {
     startSimulation: async function startSimulation(
         req,
         res,
-        totalBikesToRun = 1000,
-        simSpeed = 2500
+        totalBikesToRun = 500,
+        simSpeed = 3
     ) {
         let intervalId;
+        simSpeed *= 1000;
         try {
-            simSpeed = simSpeed < 300 ? 300 : simSpeed; // Set simSpeed max speed at 300 ms
+            simSpeed = simSpeed < minSimSpeedMs ? minSimSpeedMs : simSpeed; // Set simSpeed max speed at minSimSpeedMs ms
             totalBikesToRun =
                 totalBikesToRun > maxSimBikes ? maxSimBikes : totalBikesToRun; // Set max simbikes for sim
 
@@ -34,8 +37,16 @@ const simulate = {
             let trips = await this.getTrips(totalBikesToRun);
             let simBikes;
             try {
-                // Create bikes for the sim if the bike, if already created the id will be skipped and create next
-                await this.createSimulationBikes(trips, simBikeStartIds);
+                // Get bike with highest id
+                const bikeExists = await Bike.findByPk(
+                    simBikeStartIds + totalBikesToRun
+                );
+
+                // If it doesnt exist bikes will be created within given range
+                if (!bikeExists) {
+                    // Create bikes for the sim if the bike, if already created the id will be skipped and create next
+                    await this.createSimulationBikes(trips, simBikeStartIds);
+                }
             } finally {
                 simBikes = await Bike.findAll({
                     // Get all bikes needed for sim
@@ -69,7 +80,7 @@ const simulate = {
                         finished: true,
                     };
 
-                    const id = parseInt(nextPos.id) + 10000; // Id for finding a matching trip.
+                    const id = parseInt(nextPos.id) + simBikeStartIds; // Id for finding a matching trip.
                     if (trip.route[loop] !== undefined) {
                         nextPos = {
                             id: trip.id,
@@ -103,16 +114,20 @@ const simulate = {
                     clearInterval(intervalId);
                 }
                 res.on("close", async () => {
+                    // Booking.destroy({where : { // Doesnt work atm bc the booking.stop_time
+                    //         user_id: {
+                    //             [Op.lte]: simUsersOnlyBelowThis
+                    //         },
+                    //         stop_time: null
+                    // }})
                     console.log("Client closed the connection");
                     if (intervalId) {
                         clearInterval(intervalId);
                     }
-                    // await this.destroySimulationBikes(simBikeStartIds)
                 });
                 res.write(`data: ${jsonData}\n\n`);
 
                 if (trips.length - 1 == finishedCounter) {
-                    // await this.destroySimulationBikes(simBikeStartIds)
                     res.end();
                     console.log("\n\nEND OF SIMULATION\n\n");
                 }
@@ -186,12 +201,13 @@ const simulate = {
                     id: simBikeStartIds + trip.id,
                     city_id: trip.city,
                     position: `${trip.route[0][1]}, ${trip.route[0][0]}`,
-                    battery: Math.ceil(Math.random() * (100 - 60) + 60),
+                    battery: Math.ceil(Math.random() * (100 - 5) + 5),
                     speed: 10,
                     state: "available",
                     low_battery: 0,
                 };
             });
+            simulationBikes[0].battery = 1;
             const bikes = await Bike.bulkCreate(simulationBikes, {
                 ignoreDuplicates: true,
             });
@@ -245,8 +261,6 @@ const simulate = {
                     },
                 });
             }
-            const ress = await booking.json();
-            console.log("\n\nasdas\n", ress);
             return booking;
         } catch (err) {
             console.error("Error in createBooking:", err);
