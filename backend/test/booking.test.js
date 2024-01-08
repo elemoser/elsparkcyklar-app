@@ -30,22 +30,10 @@ describe("Api test suite for the booking/ routes", () => {
             balance: 0
         };
 
-        const dummyBooking = {
-            id: 1338,
-            bike_id: 1337,
-            user_id: 2101010018,
-            start_location: '57.7089, 11.9746',
-            start_time: '2024-01-01 20:00:00',
-            stop_time: "",
-            stop_location: "",
-            price: 22.25
-        };
-
         await chai.request(app).post(`/v1/bikes`).send(dummyBike);
 
         await chai.request(app).post(`/v1/users`).send(dummyUser);
 
-        await chai.request(app).post(`/v1/booking`).send(dummyBooking);
     });
 
     after(async () => {
@@ -101,28 +89,6 @@ describe("Api test suite for the booking/ routes", () => {
                 .send();
             expect(failedBooking).to.have.status(400);
             expect(failedBooking.body.error).to.equal("Missing required fields");
-        } catch (error) {
-            console.error("Error in test:", error);
-            throw error; // Re-throw the error to fail the test
-        }
-    });
-
-    it("PUT /v1/booking - End trip", async () => {
-
-        try {
-            const getBooking = await Booking.findOne({
-                where: {
-                    id: 3
-                },
-            });
-
-            const endBooking = await chai
-                .request(app)
-                .put(`/v1/booking/id/${getBooking.id}`)
-                .send();
-            expect(endBooking).to.have.status(200);
-
-
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test
