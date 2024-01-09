@@ -3,7 +3,7 @@ const passport = require("passport");
 const GitHubStrategy = require("passport-github").Strategy;
 const User = require("../orm/model-router.js")("user");
 
-const admins = ["elemoser", "Ylih"];
+const admins = ["elemoser", "Ylih", "mosbth"];
 
 passport.use(
     new GitHubStrategy(
