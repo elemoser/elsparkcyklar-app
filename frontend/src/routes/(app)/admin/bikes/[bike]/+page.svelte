@@ -102,10 +102,11 @@
 				id="battery"
 				name="battery"
 				type="number"
-				value={data.props.data.battery}
+				value={Math.round(data.props.data.battery)}
 				readonly={!edit}
 				max="100"
 				min="0"
+				step="1"
 			/>
 		</label>
 		<label for="city_id"

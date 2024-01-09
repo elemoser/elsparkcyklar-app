@@ -153,7 +153,7 @@
 				id="balance"
 				name="balance"
 				type="number"
-				value={user.balance}
+				value={user.balance.toFixed(2)}
 				readonly={!edit}
 				min="0"
 				max="10000"
