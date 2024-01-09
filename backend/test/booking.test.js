@@ -16,24 +16,23 @@ describe("Api test suite for the booking/ routes", () => {
             id: 1337,
             battery: 17,
             city_id: 1,
-            speed: 0.00,
-            state: 'available',
-            position: '59.3293, 18.0686',
-            low_battery: 0
+            speed: 0.0,
+            state: "available",
+            position: "59.3293, 18.0686",
+            low_battery: 0,
         };
 
         // Skapa testanvändare
         const dummyUser = {
             id: 2101010018,
-            username: 'dummy_guy',
-            role: 'admin',
-            balance: 0
+            username: "dummy_guy",
+            role: "admin",
+            balance: 0,
         };
 
         await chai.request(app).post(`/v1/bikes`).send(dummyBike);
 
         await chai.request(app).post(`/v1/users`).send(dummyUser);
-
     });
 
     after(async () => {
@@ -41,14 +40,13 @@ describe("Api test suite for the booking/ routes", () => {
             where: {
                 id: 1337,
             },
-        })
+        });
 
         await User.destroy({
             where: {
-                id: 2101010018
+                id: 2101010018,
             },
-        })
-
+        });
     });
 
     it("GET v1/booking - Get bookings", async () => {
@@ -57,9 +55,10 @@ describe("Api test suite for the booking/ routes", () => {
                 .request(app)
                 .get(`${baseRoute}`)
                 .send();
-            expect(getBookings,
-                "Should be 200 unless the server is down")
-                .to.have.status(200, "Got bookings");
+            expect(
+                getBookings,
+                "Should be 200 unless the server is down"
+            ).to.have.status(200, "Got bookings");
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test
@@ -72,9 +71,10 @@ describe("Api test suite for the booking/ routes", () => {
                 .request(app)
                 .get(`${baseRoute}/ongoing`)
                 .send();
-            expect(getBookings,
-                "Should be 200 unless the server is down")
-                .to.have.status(200, "Got ongoing bookings");
+            expect(
+                getBookings,
+                "Should be 200 unless the server is down"
+            ).to.have.status(200, "Got ongoing bookings");
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test
@@ -88,7 +88,9 @@ describe("Api test suite for the booking/ routes", () => {
                 .post(`${baseRoute}`)
                 .send();
             expect(failedBooking).to.have.status(400);
-            expect(failedBooking.body.error).to.equal("Missing required fields");
+            expect(failedBooking.body.error).to.equal(
+                "Missing required fields"
+            );
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test

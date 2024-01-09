@@ -12,10 +12,10 @@ describe("Api test suite", () => {
             id: 1337,
             battery: 17,
             city_id: 1,
-            speed: 0.00,
-            state: 'available',
-            position: '59.3293, 18.0686',
-            low_battery: 0
+            speed: 0.0,
+            state: "available",
+            position: "59.3293, 18.0686",
+            low_battery: 0,
         };
 
         await chai.request(app).post(`/v1/bikes`).send(dummyBike);
@@ -26,9 +26,8 @@ describe("Api test suite", () => {
             where: {
                 id: 1337,
             },
-        })
+        });
     });
-
 
     it("GET /charger - GET all chargers", async () => {
         try {
@@ -78,7 +77,7 @@ describe("Api test suite", () => {
         const dummyCharger = {
             parking_id: 1,
             bike_id: 0,
-            status: "mumin"
+            status: "mumin",
         };
 
         try {
@@ -87,7 +86,6 @@ describe("Api test suite", () => {
                 .put(`${baseRoute}/id/133713371337`)
                 .send(dummyCharger);
             expect(createCharger).to.have.status(404);
-
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test
@@ -101,11 +99,9 @@ describe("Api test suite", () => {
                 .delete(`${baseRoute}/id/133713371337`)
                 .send();
             expect(deleteCharger).to.have.status(404);
-
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test
         }
-
     });
 });

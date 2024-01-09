@@ -373,5 +373,4 @@ describe("Api test suite for the bike/ routes", () => {
             throw error;
         }
     });
-
 });

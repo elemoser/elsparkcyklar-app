@@ -110,12 +110,8 @@ describe("Api test suite", () => {
             });
     });
 
-
     it("GET /v1/users - Get all users", async () => {
-        const res = await chai
-            .request(app)
-            .get(`/v1/users`)
-            .send();
+        const res = await chai.request(app).get(`/v1/users`).send();
         expect(res).to.have.status(200);
     });
 
