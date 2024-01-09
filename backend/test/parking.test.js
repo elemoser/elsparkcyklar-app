@@ -4,7 +4,7 @@ const app = require("../app-test.js"); // Replace with the path to your main app
 const Bike = require("../orm/model-router.js")("bike");
 chai.use(chaiHttp);
 const expect = chai.expect;
-const baseRoute = "/v1/charger";
+const baseRoute = "/v1/parking";
 
 describe("Api test suite", () => {
     before(async () => {
@@ -30,63 +30,45 @@ describe("Api test suite", () => {
     });
 
 
-    it("GET /charger - GET all chargers", async () => {
+    it("GET /parking - GET all parkings", async () => {
         try {
             /**
              * Expect to succeed
              */
-            const getChargers = await chai.request(app).get(`${baseRoute}`);
-            expect(getChargers).to.have.status(200, "should succeed");
+            const getParkings = await chai.request(app).get(`${baseRoute}`);
+            expect(getParkings).to.have.status(200, "should succeed");
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test
         }
     });
 
-    it("GET /charger - GET specific charger", async () => {
+    it("GET /parking - GET specific parking", async () => {
         try {
             /**
              * Expect to succeed
              */
-            const getChargers = await chai
+            const getSpecificParking = await chai
                 .request(app)
                 .get(`${baseRoute}/id/1`);
-            expect(getChargers).to.have.status(200, "should succeed");
+            expect(getSpecificParking).to.have.status(200, "should succeed");
         } catch (error) {
             console.error("Error in test:", error);
             throw error; // Re-throw the error to fail the test
         }
     });
 
-    it("GET /charger - GET charger by status", async () => {
-        try {
-            /**
-             * Expect to succeed
-             */
-            const getChargers = await chai
-                .request(app)
-                .get(`${baseRoute}/search/available`);
-            expect(getChargers).to.have.status(200, "should succeed");
-            expect(getChargers.body.chargers).to.be.an("array");
-        } catch (error) {
-            console.error("Error in test:", error);
-            throw error; // Re-throw the error to fail the test
-        }
-    });
-
-    it("PUT /charger - Update charger that doesn't exist", async () => {
-        const dummyCharger = {
-            parking_id: 1,
-            bike_id: 0,
-            status: "mumin"
+    it("PUT /parking - Failed Parking", async () => {
+        const dummyParking = {
+            notAParking: 'notAParking'
         };
 
         try {
-            const createCharger = await chai
+            const createParking = await chai
                 .request(app)
                 .put(`${baseRoute}/id/133713371337`)
-                .send(dummyCharger);
-            expect(createCharger).to.have.status(404);
+                .send(dummyParking);
+            expect(createParking).to.have.status(400);
 
         } catch (error) {
             console.error("Error in test:", error);
@@ -94,13 +76,13 @@ describe("Api test suite", () => {
         }
     });
 
-    it("DELETE /charger - Delete charger that doesn't exist", async () => {
+    it("DELETE /Parking - Delete Parking that doesn't exist", async () => {
         try {
-            const deleteCharger = await chai
+            const deleteParking = await chai
                 .request(app)
                 .delete(`${baseRoute}/id/133713371337`)
                 .send();
-            expect(deleteCharger).to.have.status(404);
+            expect(deleteParking).to.have.status(400);
 
         } catch (error) {
             console.error("Error in test:", error);
