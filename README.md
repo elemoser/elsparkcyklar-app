@@ -23,6 +23,42 @@ If you do not have a SSH key added to your account yet, follow the steps below:
 * [add the key to your account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account#adding-a-new-ssh-key-to-your-account)
 * clone repository with `git clone git@github.com:elemoser/elsparkcyklar-app.git`
 
+## Start-up and important notes
+
+### Start app:
+
+From /elsparkcyklar-app run:
+```
+docker compose up sqlite-db
+```
+
+Then:
+```
+docker compose up dev-server webapp
+```
+
+Head to "localhost:5173" and login with your GitHub account to start biking!
+
+### IMPORTANT
+
+Backend is running at localhost:1338. The API is procected by Oauth-tecnology. You can't reach the information unless you are authenticated (logged in). If you are planning to use the API for your own project, you need to comment out this line at ROW 77 in APP.JS:
+```
+app.use(isAuthenticated);
+```
+
+### Start simulation:
+
+From /elsparkcyklar-app run:
+```
+docker compose up sqlite-db
+```
+
+Then:
+```
+docker compose up dev-server-test webapp
+```
+
+Head to "localhost:5173/simulation" and fill in your desired values. Hit the start-button!
 
 ## Workflow
 
