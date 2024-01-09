@@ -24,7 +24,7 @@
 	const mapData = {
 		markers: {
 			0: {
-				text: `Bike ${bike.id} (${bike.battery}%) </br> ${bike.state}`,
+				text: `Bike ${bike.id} (${Math.round(bike.battery)}%) </br> ${bike.state}`,
 				coordinates: [coords[0], coords[1]],
 				state: bike.state
 			}

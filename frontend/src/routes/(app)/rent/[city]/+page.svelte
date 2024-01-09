@@ -14,7 +14,7 @@
 			<a href="{cityId}/{bike.id}">
 				<div class="bike-data">
 					<h2>Bike {bike.id}</h2>
-					<h5>Battery: {bike.battery}%</h5>
+					<h5>Battery: {Math.round(bike.battery)}%</h5>
 					<h5>{bike.state}</h5>
 				</div>
 			</a>

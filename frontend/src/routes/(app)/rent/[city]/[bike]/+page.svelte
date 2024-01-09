@@ -14,7 +14,7 @@
 	const mapData = {
 		markers: {
 			0: {
-				text: `Bike ${bike.id} (${bike.battery}%) </br> ${bike.state}`,
+				text: `Bike ${bike.id} (${Math.round(bike.battery)}%) </br> ${bike.state}`,
 				coordinates: [coords[0], coords[1]],
 				state: bike.state
 			}
@@ -54,7 +54,7 @@
 <div class="map-container">
 	<LeafletMap data={mapData} />
 </div>
-<p>Battery: {bike.battery}%</p>
+<p>Battery: {Math.round(bike.battery)}%</p>
 <p>Status: {bike.state}</p>
 
 <button class="button" type="submit" on:click={rentBike} value={bike.id}>Rent</button>
