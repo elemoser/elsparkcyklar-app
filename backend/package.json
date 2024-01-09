@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "nyc --reporter=text mocha --timeout 10000 --recursive",
-        "test-cov": "nyc --reporter=html --reporter=text --reporter=clover mocha --timeout 10000 --recursive",
+        "test": "nyc --exclude 'models/**' --exclude 'routes/simulate.js' --reporter=text mocha --timeout 10000 --recursive",
+        "test-cov": "nyc --exclude 'models/**' --exclude 'routes/simulate.js' --reporter=html --reporter=text --reporter=clover mocha --timeout 10000 --recursive",
         "start": "node app.js",
         "start-dev": "nodemon app.js",
         "start-dev-test": "nodemon app-test.js",
