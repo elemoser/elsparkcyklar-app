@@ -201,13 +201,13 @@ const simulate = {
                     id: simBikeStartIds + trip.id,
                     city_id: trip.city,
                     position: `${trip.route[0][1]}, ${trip.route[0][0]}`,
-                    battery: Math.ceil(Math.random() * (100 - 5) + 5),
+                    battery: Math.ceil(Math.random() * (100 - 60) + 60),
                     speed: 10,
                     state: "available",
                     low_battery: 0,
                 };
             });
-            simulationBikes[0].battery = 1;
+            // simulationBikes[0].battery = 1;
             const bikes = await Bike.bulkCreate(simulationBikes, {
                 ignoreDuplicates: true,
             });
