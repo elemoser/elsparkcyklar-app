@@ -249,7 +249,7 @@ const booking = {
             const existingBike = await Bike.findByPk(bikeId);
 
             //grov uppskattning för hur mycket batteri som dras varje minut
-            const batteryLevel = existingBike.battery - 2.5 * convertToMinutes;
+            const batteryLevel = existingBike.battery - 0.5 * convertToMinutes;
 
             //Om batteriet är mindre än 20 får cykeln panik och varnar (läskigt)
             if (batteryLevel < 20) {

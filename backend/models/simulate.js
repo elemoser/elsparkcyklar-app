@@ -224,7 +224,7 @@ const simulate = {
                     id: simBikeStartIds + trip.id,
                     city_id: trip.city,
                     position: `${trip.route[0][1]}, ${trip.route[0][0]}`,
-                    battery: Math.ceil(Math.random() * (100 - 60) + 60),
+                    battery: Math.ceil(Math.random() * (100 - 80) + 80),
                     speed: 10,
                     state: "available",
                     low_battery: 0,
@@ -232,7 +232,7 @@ const simulate = {
             });
             // First bike will have low battery on first simulation, any subsequent simulations
             // the first bike will most likely lack battery and will therefore be filtered out.
-            simulationBikes[0].battery = 1;
+            // simulationBikes[0].battery = 1; NOT ENOUGH ERROR HANDLING SO IS COMMENTED OUT FOR NOW
             const bikes = await Bike.bulkCreate(simulationBikes, {
                 ignoreDuplicates: true,
             });
