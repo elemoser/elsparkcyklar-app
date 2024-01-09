@@ -25,6 +25,7 @@
 		// Create table content
 		for (const row in bikeData) {
 			content = Object.values(bikeData[row]);
+			content[1] = Math.round(content[1]); //Round battery to nearest integer.
 			// Replace city id with name
 			if (data.props.data.city) {
 				city_id = content.splice(2, 1);

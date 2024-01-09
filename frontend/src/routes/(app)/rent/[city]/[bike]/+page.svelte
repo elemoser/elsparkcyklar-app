@@ -2,25 +2,32 @@
 	import { goto } from '$app/navigation';
 	import { user } from '$lib/stores/user.js';
 	import LeafletMap from '$lib/components/LeafletMap.svelte';
-	import { onDestroy } from 'svelte';
 	export let data;
+
 	const { cityId } = data;
 	const { bike } = data;
-	let userData;
+	const { parkings } = data;
 
-	const unsubscribe = user.subscribe((val) => {
-		userData = val;
-	});
+	let userData = $user;
 
 	const coords = bike.position.split(', ');
 	const mapData = {
 		markers: {
 			0: {
-				text: `Bike ${bike.id}`,
-				coordinates: [coords[0], coords[1]]
+				text: `Bike ${bike.id} (${Math.round(bike.battery)}%) </br> ${bike.state}`,
+				coordinates: [coords[0], coords[1]],
+				state: bike.state
 			}
 		}
 	};
+
+	for (let key in parkings) {
+		mapData.markers[key + 1] = {
+			text: `${parkings[key].name} (${parkings[key].number_of_chargers} laddare)`,
+			coordinates: parkings[key].center.split(', '),
+			radius: parkings[key].radius
+		};
+	}
 
 	async function rentBike() {
 		const bookingObj = {
@@ -41,17 +48,13 @@
 
 		res.error ? console.log('something went wrong') : goto('/active');
 	}
-
-	onDestroy(() => {
-		unsubscribe();
-	});
 </script>
 
 <h2>Bike {bike.id}</h2>
 <div class="map-container">
 	<LeafletMap data={mapData} />
 </div>
-<p>Battery: {bike.battery}%</p>
+<p>Battery: {Math.round(bike.battery)}%</p>
 <p>Status: {bike.state}</p>
 
 <button class="button" type="submit" on:click={rentBike} value={bike.id}>Rent</button>

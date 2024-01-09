@@ -24,6 +24,7 @@
 			}
 
 			body[row] = Object.values(inputData[row]);
+			body[row][7] = parseFloat(body[row][7]).toFixed(2); //Parse price to be formatted like: 10.00.
 			links[row] = [`/admin/users/${inputData[row].user_id}`, 'visa kund'];
 		}
 

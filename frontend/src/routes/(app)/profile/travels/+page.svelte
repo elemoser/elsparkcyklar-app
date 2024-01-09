@@ -61,7 +61,7 @@
 							<h5>ID: {log.id}</h5>
 							<h5>Time: {log.start_time.slice(11, 16)}-{log.stop_time.slice(11, 16)}</h5>
 							<h5>Date: {log.start_time.slice(0, 11)}</h5>
-							<h5>Price: {log.price}</h5>
+							<h5>Price: {parseFloat(log.price).toFixed(2)}</h5>
 							<h5>From: {log.start_location}</h5>
 							<h5>To: {log.stop_location}</h5>
 						</div>

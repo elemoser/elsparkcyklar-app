@@ -38,7 +38,7 @@
 				let bounds;
 
 				for (let key in cities) {
-					bounds = eval(cities[key].bounds);
+					bounds = JSON.parse(cities[key].bounds);
 					// Adjust for formatting
 					if (cities[key].name === 'Linköping') {
 						bounds = bounds[0];
@@ -78,7 +78,9 @@
 				for (let key in data.props.data.bike) {
 					coordinates = data.props.data.bike[key].position.split(', ');
 					coordinates = coordinates.map((x) => parseFloat(x));
-					text = `Cykel ${data.props.data.bike[key].id} (${data.props.data.bike[key].battery}%, ${data.props.data.bike[key].state})`;
+					text = `Cykel ${data.props.data.bike[key].id} (${Math.round(
+						data.props.data.bike[key].battery
+					)}%, ${data.props.data.bike[key].state})`;
 
 					if (data.props.data.bike[key].state === 'available') {
 						bikeIcon = new L.Icon({

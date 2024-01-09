@@ -48,7 +48,9 @@
 		for (let key in bikes) {
 			if (bikes[key].state === 'available') {
 				markers[nextKey] = {
-					text: `Bike ${bikes[key].id} (battery level: ${bikes[key].battery}%, ${bikes[key].state})`,
+					text: `Bike ${bikes[key].id} (battery level: ${Math.round(bikes[key].battery)}%, ${
+						bikes[key].state
+					})`,
 					coordinates: bikes[key].position.split(', '),
 					state: bikes[key].state
 				};

@@ -11,7 +11,7 @@
 		<h4>Phone: {userData.phone || '070123456789'}</h4>
 		<h5>Role: {userData.role}</h5>
 
-		<a class="button" href="/profile/update">Update profile</a>
+		<a class="button update-profile" href="/profile/update">Update profile</a>
 	</div>
 	<div class="menu-div">
 		<div>
@@ -40,6 +40,7 @@
 	}
 
 	.user-div {
+		margin-bottom: $calculated-line-height;
 		h1,
 		h4,
 		h5 {

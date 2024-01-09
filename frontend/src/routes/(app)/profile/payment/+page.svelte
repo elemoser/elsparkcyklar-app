@@ -13,9 +13,10 @@
 		formBalance = isNaN(formBalance) || formBalance < 0 ? 0 : formBalance;
 
 		let userBalance = user.balance;
+		let newBalance = parseFloat(userBalance) + parseFloat(formBalance);
 		const userObj = {
 			role: user.role,
-			balance: userBalance + formBalance
+			balance: newBalance
 		};
 
 		const response = await fetch(`http://localhost:1338/v1/users/id/${user.id}`, {

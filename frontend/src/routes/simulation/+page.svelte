@@ -62,9 +62,10 @@
 		let markers = {};
 		let lat = 0;
 		let lon = 0;
-		let text = "";
+		let text = '';
 		let greenIcon = new L.Icon({
-			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+			iconUrl:
+				'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
 			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 			iconSize: [25, 41],
 			iconAnchor: [12, 41],
@@ -72,7 +73,8 @@
 			shadowSize: [41, 41]
 		});
 		let yellowIcon = new L.Icon({
-			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+			iconUrl:
+				'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
 			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
 			iconSize: [25, 41],
 			iconAnchor: [12, 41],
@@ -102,11 +104,11 @@
 				for (let key in data) {
 					lat = parseFloat(data[key].lat);
 					lon = parseFloat(data[key].lon);
-					text = `Cykel ${data[key].id}`
+					text = `Cykel ${data[key].id}`;
 
 					if (markers[key]) {
 						marker = markers[key];
-						
+
 						// If trip finished change icon color
 						if (data[key].finished) {
 							marker.setIcon(yellowIcon);
@@ -115,7 +117,7 @@
 						// Update coordinates
 						marker.setLatLng([lat, lon]);
 					} else {
-						marker = L.marker([lat, lon],{icon: greenIcon}).bindPopup(text).addTo(markerLayer);
+						marker = L.marker([lat, lon], { icon: greenIcon }).bindPopup(text).addTo(markerLayer);
 						markers[key] = marker;
 					}
 				}
@@ -144,19 +146,18 @@
 	<form class="submit-form-online" on:submit={startSimulation}>
 		<label>
 			Antal cycklar (min=1, max=2000)
-			<input name="number_of_bikes" type="number" min="1" max="2000" required>
+			<input name="number_of_bikes" type="number" min="1" max="2000" required />
 		</label>
 		<label>
 			Simuleringshastighet i sekunder (min=1, max=10)
-			<input name="simulation_speed" type="number" min="1" max="10" required>
+			<input name="simulation_speed" type="number" min="1" max="10" required />
 		</label>
 		{#if !simulation}
-		<input type="submit" value="Start" disabled={simulation}>
+			<input type="submit" value="Start" disabled={simulation} />
 		{:else}
-		<button on:click={stopUpdates}>Stop</button>
+			<button on:click={stopUpdates}>Stop</button>
 		{/if}
 	</form>
-
 </div>
 
 <div class="map" bind:this={mapElement} />
@@ -185,12 +186,12 @@
 
 	button,
 	input[type='submit'] {
-		background: #FF4742;
-		border: 1px solid #FF4742;
+		background: #ff4742;
+		border: 1px solid #ff4742;
 		border-radius: 6px;
 		box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
 		box-sizing: border-box;
-		color: #FFFFFF;
+		color: #ffffff;
 		cursor: pointer;
 		display: inline-block;
 		font-family: sans-serif;
@@ -212,14 +213,14 @@
 	button:active,
 	input:hover[type='submit'],
 	input:active[type='submit'] {
-	background-color: initial;
-	background-position: 0 0;
-	color: #FF4742;
+		background-color: initial;
+		background-position: 0 0;
+		color: #ff4742;
 	}
 
 	button:active,
 	input:active[type='submit'] {
-	opacity: .5;
+		opacity: 0.5;
 	}
 
 	input:disabled[type='submit'] {

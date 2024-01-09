@@ -14,8 +14,21 @@ export const load = async ({ params, fetch }) => {
 		return bike.bike;
 	};
 
+	const parkings = async () => {
+		const parkingRes = await fetch(`http://localhost:1338/v1/parking`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		});
+		const parkings = await parkingRes.json();
+		return parkings.parking;
+	};
+
 	return {
 		cityId: cityId,
-		bike: bike()
+		bike: bike(),
+		parkings: parkings()
 	};
 };

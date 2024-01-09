@@ -59,9 +59,4 @@
 			padding: 0.2em 0.7em;
 		}
 	}
-
-	.date-div {
-		display: flex;
-		gap: 1em;
-	}
 </style>

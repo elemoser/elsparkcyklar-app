@@ -113,7 +113,7 @@
 
 	function addPolygoneToMap(polygoneData) {
 		// Transform the incomming string of coordinates into arrays
-		let boundsArray = eval(polygoneData.coordinates);
+		let boundsArray = JSON.parse(polygoneData.coordinates);
 
 		// Adjust for formatting
 		if (polygoneData.text === 'Linköping') {

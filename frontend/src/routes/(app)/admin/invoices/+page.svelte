@@ -20,6 +20,7 @@
 		// Create table content
 		for (const row in inputData) {
 			body[row] = Object.values(inputData[row]);
+			body[row][3] = parseFloat(body[row][3]).toFixed(2); //Parse price to be formatted like: 10.00.
 			links[row] = [`/admin/users/${inputData[row].user_id}`, 'visa kund'];
 		}
 
