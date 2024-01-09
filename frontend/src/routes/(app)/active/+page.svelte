@@ -4,10 +4,12 @@
 	import { updateUser } from '$lib/stores/user.js';
 	export let data;
 
-	const { active } = data;
+	const { booking } = data.active;
+	const { bike } = data.active;
+	const { parkings } = data;
 
 	async function stopRide() {
-		const endResponse = await fetch(`http://localhost:1338/v1/booking/id/${active.id}`, {
+		const endResponse = await fetch(`http://localhost:1338/v1/booking/id/${booking.id}`, {
 			method: 'PUT',
 			credentials: 'include'
 		});
@@ -18,19 +20,28 @@
 		}
 	}
 
-	const coords = active.start_location.split(', ');
+	const coords = booking.start_location.split(', ');
 	const mapData = {
 		markers: {
 			0: {
-				text: `Bike ${active.bike_id}`,
-				coordinates: [coords[0], coords[1]]
+				text: `Bike ${bike.id} (${bike.battery}%) </br> ${bike.state}`,
+				coordinates: [coords[0], coords[1]],
+				state: bike.state
 			}
 		}
 	};
+
+	for (let key in parkings) {
+		mapData.markers[key + 1] = {
+			text: `${parkings[key].name} (${parkings[key].number_of_chargers} laddare)`,
+			coordinates: parkings[key].center.split(', '),
+			radius: parkings[key].radius
+		};
+	}
 </script>
 
 <div class="tour-container">
-	<h1>Bike {active.bike_id}</h1>
+	<h1>Bike {booking.bike_id}</h1>
 	<div class="map-container">
 		<LeafletMap data={mapData} />
 	</div>
