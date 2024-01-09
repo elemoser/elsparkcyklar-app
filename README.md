@@ -45,6 +45,7 @@ Backend is running at localhost:1338. The API is procected by Oauth-tecnology. Y
 ```
 app.use(isAuthenticated);
 ```
+The API-documenatation can be found [here](https://github.com/elemoser/elsparkcyklar-app/wiki).
 
 ### Start simulation:
 
