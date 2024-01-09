@@ -35,6 +35,7 @@ const simulate = {
             let simBikeStartIds = 10000; // is incremented by a trips id in: createSimulationBikes (first id is 10001)
 
             let trips = await this.getTrips(totalBikesToRun);
+
             let simBikes;
             try {
                 // Get bike with highest id
@@ -57,8 +58,36 @@ const simulate = {
                                 simBikeStartIds + totalBikesToRun,
                             ],
                         },
+                        state: {
+                            [Op.ne]: "disabled",
+                        },
                     },
                 });
+
+                let simBikesDisabled = await Bike.findAll({
+                    // Get all disabled sim bikes
+                    where: {
+                        id: {
+                            [Op.between]: [
+                                simBikeStartIds,
+                                simBikeStartIds + totalBikesToRun,
+                            ],
+                        },
+                        state: {
+                            [Op.eq]: "disabled",
+                        },
+                    },
+                });
+
+                // Extract the trip ids that match each bike by subtracting the simBikeStartId.
+                // All simbikes should match a trip id when simBikeStartId is subtracted
+                const simBikesDisabledArrId = simBikesDisabled.map(
+                    (obj) => obj.dataValues.id - simBikeStartIds
+                );
+                // Filter out all simbikes that are disabled. Example for having battery = 0
+                trips = trips.filter(
+                    (obj) => !simBikesDisabledArrId.includes(obj.id)
+                );
             }
             let simUsers = await this.getSimulationCustomers(
                 parseInt(totalBikesToRun)
@@ -114,12 +143,6 @@ const simulate = {
                     clearInterval(intervalId);
                 }
                 res.on("close", async () => {
-                    // Booking.destroy({where : { // Doesnt work atm bc the booking.stop_time
-                    //         user_id: {
-                    //             [Op.lte]: simUsersOnlyBelowThis
-                    //         },
-                    //         stop_time: null
-                    // }})
                     console.log("Client closed the connection");
                     if (intervalId) {
                         clearInterval(intervalId);
@@ -201,13 +224,15 @@ const simulate = {
                     id: simBikeStartIds + trip.id,
                     city_id: trip.city,
                     position: `${trip.route[0][1]}, ${trip.route[0][0]}`,
-                    battery: Math.ceil(Math.random() * (100 - 60) + 60),
+                    battery: Math.ceil(Math.random() * (100 - 80) + 80),
                     speed: 10,
                     state: "available",
                     low_battery: 0,
                 };
             });
-            // simulationBikes[0].battery = 1;
+            // First bike will have low battery on first simulation, any subsequent simulations
+            // the first bike will most likely lack battery and will therefore be filtered out.
+            // simulationBikes[0].battery = 1; NOT ENOUGH ERROR HANDLING SO IS COMMENTED OUT FOR NOW
             const bikes = await Bike.bulkCreate(simulationBikes, {
                 ignoreDuplicates: true,
             });
@@ -344,66 +369,3 @@ const simulate = {
 };
 
 module.exports = simulate;
-
-// Sparas kortsiktigt!!
-//     intervalId = setInterval(async () => {
-
-//         // Set counter of total bikes (-1 to match arrays)
-//         let finishedCounter = trips.length - 1
-
-//         let newPosition = await trips.map(trip => {
-//             let nextPos = {
-//                 id: trip.id,
-//                 lat: trip.route[trip.route.length - 1][1],
-//                 lon: trip.route[trip.route.length - 1][0],
-//                 finished: true
-//                 }
-
-//                 // If they have a next pos they are still active in the simulation
-//                 // If finishCounter remains unchanged all bikes are done and the sim should be over
-//                 const id = parseInt(nextPos.id) + 10000 // Id for finding a matching trip.
-//                 if (trip.route[loop] !== undefined) {
-//                     nextPos = {
-//                     id: trip.id,
-//                     city: trip.city,
-//                     lat: trip.route[loop][1],
-//                     lon: trip.route[loop][0],
-//                     finished: false
-//                 }
-//                 finishedCounter --;
-//             }
-//             if (nextPos.finished && !activeBookings[`${id}`].isFinished) {
-//             // if (nextPos.finished) {
-//                 this.updateBikePosition(
-//                     id,
-//                     nextPos.lat,
-//                     nextPos.lon
-//                     )
-//                 this.endTrip(activeBookings[`${id}`].bookingId);
-//                 activeBookings[`${id}`].isFinished = true
-//             }
-//             return nextPos
-//         })
-//         // SSE must send text/string
-//         let jsonData = JSON.stringify(newPosition);
-//         if (finishedCounter === trips.length - 1) {
-//             jsonData = JSON.stringify({simulationDone: true})
-//             clearInterval(intervalId);
-//         }
-//         res.on('close', async () => {
-//             console.log('Client closed the connection');
-//             if (intervalId) {
-//                 clearInterval(intervalId);
-//             }
-//             await this.destroySimulationBikes(simBikeStartIds)
-//         });
-//         res.write(`data: ${jsonData}\n\n`);
-
-//         if (trips.length - 1 == finishedCounter) {
-//             await this.destroySimulationBikes(simBikeStartIds)
-//             res.end();
-//             console.log("\n\n\nSLUUUUT\n\n");
-//         }
-
-//         loop++; // Increment to next position value
-// },1000);
