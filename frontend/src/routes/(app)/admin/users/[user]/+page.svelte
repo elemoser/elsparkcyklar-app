@@ -29,12 +29,16 @@
 		let body = {};
 		let header = {};
 
-		
-
 		for (let key in inputData) {
 			if (inputData[key].user_id === userId) {
-				inputData[key].price ? inputData[key].price = parseFloat(inputData[key].price).toFixed(2) : undefined;
-				inputData[key].total_price ? inputData[key].total_price = parseFloat(inputData[key].total_price).toFixed(2) : undefined;
+				if (inputData[key].price) {
+					inputData[key].price = parseFloat(inputData[key].price).toFixed(2);
+				}
+
+				if (inputData[key].total_price) {
+					inputData[key].total_price = parseFloat(inputData[key].total_price).toFixed(2);
+				}
+
 				body[key] = Object.values(inputData[key]);
 			}
 		}

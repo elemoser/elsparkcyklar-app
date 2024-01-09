@@ -78,7 +78,9 @@
 				for (let key in data.props.data.bike) {
 					coordinates = data.props.data.bike[key].position.split(', ');
 					coordinates = coordinates.map((x) => parseFloat(x));
-					text = `Cykel ${data.props.data.bike[key].id} (${Math.round(data.props.data.bike[key].battery)}%, ${data.props.data.bike[key].state})`;
+					text = `Cykel ${data.props.data.bike[key].id} (${Math.round(
+						data.props.data.bike[key].battery
+					)}%, ${data.props.data.bike[key].state})`;
 
 					if (data.props.data.bike[key].state === 'available') {
 						bikeIcon = new L.Icon({
